@@ -25,7 +25,7 @@ if add_openmp_flags_if_available(cpp_module):
 
 setup(
     name="opticalmapping",
-    url="https://gitlab.com/cardiac-vision/optimap",
+    url="https://github.com/cardiacvision/optimap",
     description="A toolbox for analyzing optical mapping and fluorescence imaging data.",
     classifiers=["Private :: Do not Upload"],
     python_requires=">=3.7",

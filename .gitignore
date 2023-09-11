@@ -1,6 +1,7 @@
 optimap/_version.py
 *.whl
 public
+example_data
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,pycharm,vscode,linux,macos,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,pycharm,vscode,linux,macos,windows

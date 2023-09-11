@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Union
 
 import numpy as np
-from tqdm.auto import tqdm
+from tqdm import tqdm
 import skvideo.io
 import matplotlib.pyplot as plt
 from scipy.special import comb

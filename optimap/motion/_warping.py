@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from tqdm.auto import tqdm
+from tqdm import tqdm
 
 
 def warp_video(
