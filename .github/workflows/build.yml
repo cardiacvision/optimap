@@ -7,6 +7,10 @@ on:
       - '*'
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build_wheels:
     name: Build wheels on ${{ matrix.os }}
@@ -37,3 +41,33 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           path: dist/*.tar.gz
+
+  build_docs:
+    name: Build documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: pip install .[docs] opencv-python-headless
+      
+      - name: Build documentation
+        run: python -m sphinx -b html docs public
+
+      - uses: actions/upload-pages-artifact@v2
+        with:
+          path: ./public
+
+  deploy:
+    permissions:
+      pages: write
+      id-token: write
+    needs: build_docs
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
