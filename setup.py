@@ -73,6 +73,7 @@ setup(
             "furo",
             "myst_nb @ git+https://github.com/executablebooks/MyST-NB.git",  # TODO: use pypi once released
             "jupytext",
+            "jupyter-cache"
         ],
         "readthedocs": [
             "sphinx",
@@ -84,6 +85,7 @@ setup(
             "furo",
             "myst_nb @ git+https://github.com/executablebooks/MyST-NB.git",  # TODO: use pypi once released
             "jupytext",
+            "jupyter-cache",
             "opencv-python-headless",
         ]
     }

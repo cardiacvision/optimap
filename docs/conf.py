@@ -104,8 +104,8 @@ autodoc_default_options = {
 }
 autosummary_generate = True
 
-nb_execution_mode = "off"  # disable for CI runner for now
-nb_execution_timeout = 240 # 4 minutes
+nb_execution_mode = "cache"
+nb_execution_timeout = 600  # seconds
 
 # add_module_names = False
 # napoleon_google_docstring = False
