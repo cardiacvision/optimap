@@ -43,6 +43,7 @@ jobs:
           path: dist/*.tar.gz
 
   build_docs:
+    if: github.ref == 'refs/heads/main'
     name: Build documentation
     runs-on: ubuntu-latest
     steps:
@@ -59,6 +60,8 @@ jobs:
           path: ./public
 
   deploy:
+    if: github.ref == 'refs/heads/main'
+    name: Deploy documentation
     permissions:
       pages: write
       id-token: write
@@ -71,3 +74,22 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
+
+  upload_pypi:
+    name: Upload to PyPI
+    needs: [build_wheels, build_sdist]
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/opticalmapping
+    permissions:
+      id-token: write
+    if: github.event_name == 'release' && github.event.action == 'published'
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: artifact
+          path: dist
+
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
