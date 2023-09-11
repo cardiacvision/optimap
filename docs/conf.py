@@ -16,12 +16,39 @@ import os
 import shutil
 import subprocess
 import sys
+from pathlib import Path
+
+import jupytext
+import jupytext.config
 
 try:
     from optimap import __version__ as release
 except ImportError:
     release = "unknown"
 
+
+# -- Convert tutorials -------------------------------------------------------
+# convert notebooks to python files for download
+def convert_notebooks():
+    tutorials = Path(__file__).parent / "tutorials"
+    for path in tutorials.glob("*.ipynb"):
+        nb = jupytext.read(path)
+
+        remove_cells_for_tags = ["remove-input"]
+
+        def f(cell):
+            for tag in remove_cells_for_tags:
+                if tag in cell.metadata.get("tags", []):
+                    return False
+            return True
+        nb['cells'] = list(filter(f, nb.cells))
+
+        config = jupytext.config.JupytextConfiguration()
+        config.notebook_metadata_filter = "-all"
+        config.cell_metadata_filter = "-all"
+
+        jupytext.write(nb, path.with_suffix('.py'), fmt="py:percent", config=config)
+convert_notebooks()
 
 # -- Project information -----------------------------------------------------
 

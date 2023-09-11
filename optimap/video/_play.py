@@ -11,6 +11,8 @@ def play(video, skip_frame=1, title="", vmin=None, vmax=None, cmap="gray", inter
     """
     Simple video player based on matplotlib's animate function.
 
+    See :py:func:`optimap.video.play2` for a player for two videos side-by-side, and :py:func:`optimap.video.playn` for a player for `n` videos side-by-side.
+
     .. note::
         Using Monochrome is an alternative to this function, which allows for more control over the video player.
 

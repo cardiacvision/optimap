@@ -3,7 +3,7 @@
 :hidden:
 :caption: 🚀 Getting Started
 
-getting_started.md
+chapters/getting_started.md
 ```
 
 ```{toctree}
@@ -19,7 +19,7 @@ tutorials/motion_compensation.ipynb
 :maxdepth: 2
 :hidden:
 :caption: Miscellaneous
-misc.md
+chapters/misc.md
 ```
 
 ```{toctree}

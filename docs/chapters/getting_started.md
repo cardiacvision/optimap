@@ -13,7 +13,7 @@ pip install opticalmapping[all]
 ```
 
 ```{note}
-`pip install opticalmapping` will install the core functionality of optimap. However, the [OpenCV](https://opencv.org/) and dependencies are not installed by default which are required for the [`optimap.motion`](api/optimap.motion) and [`optimap.video`](api/optimap.video) modules. To install these dependencies use `pip install opticalmapping[all]` or install OpenCV manually.
+`pip install opticalmapping` will install the core functionality of optimap. However, the [OpenCV](https://opencv.org/) and dependencies are not installed by default which are required for the [`optimap.motion`](/api/optimap.motion) and [`optimap.video`](/api/optimap.video) modules. To install these dependencies use `pip install opticalmapping[all]` or install OpenCV manually.
 
 To use GPU-accelerated motion tracking algorithms a CUDA-enabled version of OpenCV is required, which is currently not available on PyPI. See [](#opencv) for more information.
 ```
@@ -46,12 +46,13 @@ for convenience.
 
 We recommend [Visual Studio Code](https://code.visualstudio.com) to edit and run Python code using the official [Python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python). In particular, we recommend using regular `.py` files  with automatic code cells by typing `# %%`.
 
-![code cells](_static/vscode-code-cells.png)
+![code cells](/_static/vscode-code-cells.png)
 
 See the [Visual Studio Code documentation](https://code.visualstudio.com/docs/python/jupyter-support-py) for more information. Code cells are also supported in other editors such as [PyCharm](https://www.jetbrains.com/pycharm/) and [Spyder](https://www.spyder-ide.org/).
 
-![plot viewer](_static/vscode-plot-viewer.gif)
+![plot viewer](/_static/vscode-plot-viewer.gif)
 
+(monochrome)=
 # Monochrome
 Monochrome is a separate project ... TODO
 

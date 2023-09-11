@@ -6,9 +6,11 @@ from ._version import __version__, __version_tuple__
 from .activation import compute_activation_map
 from .video import (
     load_video,
+    load_metadata,
     save_image_sequence,
     save_video,
     export_video,
+    play as play_video,
 )
 from .image import (
     show_image,
@@ -65,9 +67,11 @@ __all__ = [
     "background_mask",
     "foreground_mask",
     "load_video",
+    "load_metadata",
     "save_image",
     "save_image_sequence",
     "save_video",
     "export_video",
+    "play_video",
     "motion_compensate",
 ]
