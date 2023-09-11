@@ -62,9 +62,7 @@ setup(
             "PySide6",
             "pycairo",
         ],
-        "test": [
-            "pytest"
-        ],
+        "test": ["pytest"],
         "docs": [
             "sphinx",
             "sphinxcontrib-napoleon",
@@ -75,6 +73,18 @@ setup(
             "furo",
             "myst_nb @ git+https://github.com/executablebooks/MyST-NB.git",  # TODO: use pypi once released
             "jupytext",
+        ],
+        "readthedocs": [
+            "sphinx",
+            "sphinxcontrib-napoleon",
+            "sphinx-autobuild",
+            "sphinx-copybutton",
+            "sphinxcontrib-bibtex",
+            "sphinxcontrib-video",
+            "furo",
+            "myst_nb @ git+https://github.com/executablebooks/MyST-NB.git",  # TODO: use pypi once released
+            "jupytext",
+            "opencv-python-headless",
         ]
     }
 )
