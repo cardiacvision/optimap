@@ -27,14 +27,15 @@ def test_sliding_window():
     assert np.isnan(out).sum() == 0
 
     t = 50
-    window = vid[t-10:t+10, 50, 50]
+    window = vid[t-10:t+11, 50, 50]
     expected = (vid[t, 50, 50] - window.min()) / (window.max() - window.min()) * 1 - 0.5
     assert np.allclose(out[t, 50, 50], expected)
 
     vid = (np.random.random((10, 128, 128)) * 8000).astype(np.uint16)
     out = om.video.normalize_pixelwise_slidingwindow(vid, 20)
     out2 = om.video.normalize_pixelwise(vid)
-    assert np.allclose(out, out2) 
+    assert np.allclose(out, out2)
+
 
 def test_alpha_blending():
     base = np.full((10, 128, 128), 0, dtype=np.float32)
