@@ -29,7 +29,7 @@ setup(
     author="Jan Lebert, Jan Christoph",
     author_email="jan.lebert@ucsf.edu",
     license="MIT",
-    version="0.1.0",
+    version="0.1.1",
     description="A toolbox for analyzing optical mapping and fluorescence imaging data.",
     long_description=open("README.md", encoding="utf8").read(),
     long_description_content_type='text/markdown',

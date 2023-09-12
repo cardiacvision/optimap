@@ -19,10 +19,10 @@ will install optimap and all recommended dependencies (including OpenCV and PySi
 pip install opticalmapping
 ```
 
-instead. See [Installing Optimap](https://optimap.readthedocs.io/en/latest/chapters/getting_started.html#installing-optimap) for more information.
+instead. See [Installing Optimap](https://optimap.readthedocs.io/en/latest/chapters/getting_started/#installing-optimap) for more information.
 
 ## Getting Started
-See the [Getting Started](https://optimap.readthedocs.io/en/latest/chapters/getting_started.html) guide for installation instructions and a quick introduction to optimap. See the [Tutorials](https://optimap.readthedocs.io/en/latest/tutorials/basics.html) for more detailed examples.
+See the [Getting Started](https://optimap.readthedocs.io/en/latest/chapters/getting_started/) guide for installation instructions and a quick introduction to optimap. See the [Tutorials](https://optimap.readthedocs.io/en/latest/tutorials/basics/) for more detailed examples.
 
 ## Links
 

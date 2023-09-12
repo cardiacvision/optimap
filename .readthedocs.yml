@@ -8,8 +8,8 @@ build:
     - ffmpeg
   jobs:
     pre_install:
-     - pip install opencv-python-headless
-     - pip install git+https://github.com/executablebooks/MyST-NB.git
+     - python -m pip install opencv-python-headless
+     - python -m pip install git+https://github.com/executablebooks/MyST-NB.git
 
 sphinx:
   configuration: docs/conf.py
