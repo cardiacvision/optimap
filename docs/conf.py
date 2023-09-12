@@ -47,7 +47,10 @@ def convert_notebooks():
         config.notebook_metadata_filter = "-all"
         config.cell_metadata_filter = "-all"
 
-        jupytext.write(nb, path.with_suffix('.py'), fmt="py:percent", config=config)
+        output_folder = path.parent / "converted"
+        output_folder.mkdir(exist_ok=True)
+        jupytext.write(nb, output_folder / f'{path.stem}.py', fmt="py:percent", config=config)
+        jupytext.write(nb, output_folder / f'{path.stem}.ipynb', fmt="ipynb", config=config)
 convert_notebooks()
 
 # -- Project information -----------------------------------------------------
