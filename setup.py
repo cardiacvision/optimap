@@ -27,6 +27,8 @@ setup(
     name="opticalmapping",
     url="https://github.com/cardiacvision/optimap",
     description="A toolbox for analyzing optical mapping and fluorescence imaging data.",
+    long_description=open("README.md", encoding="utf8").read(),
+    long_description_content_type='text/markdown',
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
