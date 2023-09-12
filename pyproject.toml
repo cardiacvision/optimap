@@ -2,17 +2,12 @@
 requires = [
     "setuptools>=42",
     "wheel",
-    "setuptools_scm>=6.2",
     "pybind11>=2.6.0",
     "extension-helpers",
     "oldest-supported-numpy"
 ]
 
 build-backend = "setuptools.build_meta"
-
-[tool.setuptools_scm]
-write_to = "optimap/_version.py"
-fallback_version = "0.1.0"
 
 [tool.cibuildwheel]
 archs = ["auto64"]  # 64-bit only

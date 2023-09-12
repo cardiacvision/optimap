@@ -6,10 +6,18 @@ build:
     python: "3.8"
   apt_packages:
     - ffmpeg
+  jobs:
+    pre_install:
+     - pip install opencv-python-headless
+     - pip install git+https://github.com/executablebooks/MyST-NB.git
+
+sphinx:
+  configuration: docs/conf.py
+  builder: "dirhtml"
 
 python:
   install:
     - method: pip
       path: .
       extra_requirements:
-        - readthedocs
+        - docs

@@ -26,6 +26,10 @@ if add_openmp_flags_if_available(cpp_module):
 setup(
     name="opticalmapping",
     url="https://github.com/cardiacvision/optimap",
+    author="Jan Lebert, Jan Christoph",
+    author_email="jan.lebert@ucsf.edu",
+    license="MIT",
+    version="0.1.0",
     description="A toolbox for analyzing optical mapping and fluorescence imaging data.",
     long_description=open("README.md", encoding="utf8").read(),
     long_description_content_type='text/markdown',
@@ -73,22 +77,9 @@ setup(
             "sphinxcontrib-bibtex",
             "sphinxcontrib-video",
             "furo",
-            "myst_nb @ git+https://github.com/executablebooks/MyST-NB.git",  # TODO: use pypi once released
+            "myst_nb",  # TODO: needs git version right now, but can't use "myst_nb @ git+https://github.com/executablebooks/MyST-NB.git" here as PyPi allow it
             "jupytext",
             "jupyter-cache"
         ],
-        "readthedocs": [
-            "sphinx",
-            "sphinxcontrib-napoleon",
-            "sphinx-autobuild",
-            "sphinx-copybutton",
-            "sphinxcontrib-bibtex",
-            "sphinxcontrib-video",
-            "furo",
-            "myst_nb @ git+https://github.com/executablebooks/MyST-NB.git",  # TODO: use pypi once released
-            "jupytext",
-            "jupyter-cache",
-            "opencv-python-headless",
-        ]
     }
 )

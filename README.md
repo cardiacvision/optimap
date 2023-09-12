@@ -26,7 +26,7 @@ See the [Getting Started](https://optimap.readthedocs.io/en/latest/chapters/gett
 
 ## Links
 
-* [Documentation](https://optimap.readthedocs.io/en/latest/index.html)
+* [Documentation](https://optimap.readthedocs.io)
 * [Issue tracker](https://github.com/cardiacvision/optimap/issues)
 * [Source code](https://github.com/cardiacvision/optimap)
 
