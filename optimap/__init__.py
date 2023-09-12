@@ -1,6 +1,11 @@
 """
 optimap - An open-source Python toolbox for processing optical mapping and fluorescence imaging data.
 """
+try:
+    import cv2 as _cv2
+except ImportError as e:
+    raise ImportError("\n\nERROR: Unable to import opencv, which we require. Please install it, e.g. with `pip install opencv-python`. See https://optimap.readthedocs.io/en/latest/chapters/getting_started/ for details.\n\n")
+
 from . import activation, motion, phase, trace, utils, video, image
 from ._version import __version__, __version_tuple__
 from .activation import compute_activation_map

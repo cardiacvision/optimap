@@ -4,7 +4,7 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 
-from ..utils import _print, print_bar
+from ..utils import _print
 
 def show_image(image, title="", vmin=None, vmax=None, cmap="gray", ax=None, **kwargs):
     """
