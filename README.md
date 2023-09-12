@@ -1,4 +1,10 @@
 # optimap
+[![docs](https://readthedocs.org/projects/optimap/badge/?version=latest&style=)](https://optimap.readthedocs.org)
+[![tests](https://github.com/cardiacvision/optimap/actions/workflows/main.yml/badge.svg)]()
+[![PyPI](https://img.shields.io/pypi/v/opticalmapping.svg)](https://pypi.org/project/opticalmapping/)
+[![Supported Python versions](https://img.shields.io/pypi/pyversions/opticalmapping.svg)](https://python.org)
+[![DOI](https://zenodo.org/badge/677528623.svg)](https://zenodo.org/badge/latestdoi/677528623)
+
 
 ### Python toolbox for analyzing optical mapping data
 

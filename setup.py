@@ -42,7 +42,10 @@ setup(
         "Operating System :: MacOS",
         "Operating System :: POSIX :: Linux",
         "Operating System :: Microsoft :: Windows",
-        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Topic :: Scientific/Engineering :: Image Processing",
         "Topic :: Scientific/Engineering :: Physics"
         ],
@@ -77,7 +80,7 @@ setup(
             "sphinxcontrib-bibtex",
             "sphinxcontrib-video",
             "furo",
-            "myst_nb",  # TODO: needs git version right now, but can't use "myst_nb @ git+https://github.com/executablebooks/MyST-NB.git" here as PyPi allow it
+            "myst_nb",  # TODO: needs git version right now, but can't use "myst_nb @ git+https://github.com/executablebooks/MyST-NB.git" here as PyPi doesn't allow it. https://github.com/executablebooks/MyST-NB/issues/530
             "jupytext",
             "jupyter-cache"
         ],
