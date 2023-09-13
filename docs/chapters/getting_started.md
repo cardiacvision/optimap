@@ -89,7 +89,7 @@ plt.switch_backend('QtAgg')  # or 'QtCairo'
 
 # How to cite
 
-A publication about optimap is currently in preparation. In the meantime, please cite the following papers if you use optimap in your research: {footcite:t}`Christoph2018a,Lebert2022`.
+A publication about optimap is currently in preparation. In the meantime, please cite the following papers if you use optimap in your research: {footcite:t}`Lebert2022,Christoph2018a`.
 
 ```{footbibliography}
 ```
