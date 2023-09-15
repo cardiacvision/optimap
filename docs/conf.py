@@ -109,6 +109,7 @@ autosummary_generate = True
 
 nb_execution_mode = "cache"
 nb_execution_timeout = 600  # seconds
+nb_execution_excludepatterns = ['tutorials/converted/*']
 
 # add_module_names = False
 # napoleon_google_docstring = False

@@ -18,8 +18,10 @@ tutorials/motion_compensation.ipynb
 ```{toctree}
 :maxdepth: 2
 :hidden:
-:caption: Miscellaneous
-chapters/misc.md
+:caption: Notes
+chapters/contributing
+chapters/misc
+chapters/bibliography
 ```
 
 ```{toctree}

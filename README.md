@@ -36,6 +36,10 @@ See the [Getting Started](https://optimap.readthedocs.io/en/latest/chapters/gett
 * [Issue tracker](https://github.com/cardiacvision/optimap/issues)
 * [Source code](https://github.com/cardiacvision/optimap)
 
+## Contributing
+
+We welcome bug reports, questions, ideas for new features and pull-requests to fix issues or add new features to optimap. See [Contributing](https://optimap.readthedocs.io/en/latest/chapters/contributing/) for more information.
+
 ## License
 
 optimap is licensed under the [MIT License](https://github.com/cardiacvision/optimap/blob/main/LICENSE.md).
