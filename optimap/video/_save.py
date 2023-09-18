@@ -6,7 +6,7 @@ import tifffile
 import skimage.io as sio
 
 
-def save_image_sequence(video: np.ndarray, filepattern: str = 'frame_{:03d}', directory: str = None, suffix='.png'):
+def save_image_sequence(video: np.ndarray, filepattern: str = 'frame_{:03d}', directory: str = None, suffix='.png', **kwargs):
     """
     Save a video as a sequence of images.
     
@@ -20,13 +20,18 @@ def save_image_sequence(video: np.ndarray, filepattern: str = 'frame_{:03d}', di
         Extension to use, by default ``'.png'``
     directory : str or pathlib.Path, optional
         Directory to save to, by default None
+    **kwargs : dict
+        Additional arguments to pass to :func:`skimage.io.imsave` or :func:`tifffile.imwrite` (for ``.tiff`` files)
     """
 
     for i, frame in enumerate(video):
         fn = filepattern.format(i) + suffix
         if directory is not None:
             fn = Path(directory) / fn
-        sio.imsave(fn, frame)
+        if suffix.lower() in ['.tif', '.tiff']:
+            save_tiff(frame, fn, **kwargs)
+        else:
+            sio.imsave(fn, frame, **kwargs)
 
 
 def save_tiff(video, filename, photometric='minisblack', **kwargs):
