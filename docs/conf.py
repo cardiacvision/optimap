@@ -13,8 +13,6 @@ import inspect
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
-import shutil
-import subprocess
 import sys
 from pathlib import Path
 
@@ -58,27 +56,6 @@ convert_notebooks()
 project = 'optimap'
 copyright = '2023, Jan Lebert, Jan Christoph'
 author = 'Jan Lebert, Jan Christoph'
-
-
-# -- Generate API ------------------------------------------------------------
-api_folder_name = "api"
-shutil.rmtree(api_folder_name, ignore_errors=True)  # in case of new or renamed modules
-subprocess.call(
-    " ".join(
-        [
-            "sphinx-apidoc",
-            f"-o {api_folder_name}/",
-            "--force",
-            "--no-toc",
-            "--templatedir _templates",
-            "--separate",
-            "../optimap/",
-            # excluded modules
-            # nothing here for cookiecutter
-        ]
-    ),
-    shell=True,
-)
 
 
 # -- General configuration ---------------------------------------------------

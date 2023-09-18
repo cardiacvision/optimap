@@ -32,6 +32,16 @@ chapters/bibliography
 api/optimap
 ```
 
+% Generate API reference
+```{eval-rst}
+.. autosummary::
+   :toctree: api
+   :template: custom-module-template.rst
+   :recursive:
+   :hidden:
+
+   optimap
+```
 
 ```{include} ../README.md
 ```
