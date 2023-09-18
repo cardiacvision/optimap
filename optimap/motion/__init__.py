@@ -9,16 +9,16 @@ See :footcite:t:`Christoph2018a` and :footcite:t:`Lebert2022` for details.
 """
 
 __all__ = [
-    "FlowEstimator",
+    "motion_compensate",
+    "estimate_displacements",
+    "estimate_reverse_displacements",
     "warp_video",
     "warp_image",
     "contrast_enhancement",
     "smooth_displacements",
-    "estimate_displacements",
-    "estimate_reverse_displacements",
-    "motion_compensate",
     "play_displacements",
     "play_displacements_points",
+    "FlowEstimator",
 ]
 
 from ._flowestimator import FlowEstimator

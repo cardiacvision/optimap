@@ -82,6 +82,7 @@ autodoc_default_options = {
     # "undoc-members": True,
     # "imported-members": True
 }
+autodoc_member_order = 'bysource'
 autosummary_generate = True
 
 nb_execution_mode = "cache"
