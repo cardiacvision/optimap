@@ -9,25 +9,20 @@ from ._points import random_positions, positions_from_A_to_B
 from ._detrend import detrend_timeseries
 
 __all__ = [
-    # core
+    'select_traces',
     'extract_traces',
-    'set_default_trace_window',
-    'get_default_trace_window',
+    'select_positions',
+    'compare_traces',
+    
     'show_positions',
     'show_trace',
     'show_traces',
 
-    # interactive
-    'select_positions',
-    'select_traces',
+    'detrend_timeseries',
 
-    # compare
-    'compare_traces',
-
-    # points
     'random_positions',
     'positions_from_A_to_B',
 
-    # detrend
-    'detrend_timeseries',
+    'set_default_trace_window',
+    'get_default_trace_window',
 ]

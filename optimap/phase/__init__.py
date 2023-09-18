@@ -7,8 +7,9 @@ from ._singularities import detect_phase_singularities
 
 __all__ = [
     'compute_phase',
+    'detect_phase_singularities',
+    
     'phasefilter_angle_threshold',
     'phasefilter_disc',
     'phasefilter_fillsmooth',
-    'detect_phase_singularities',
 ]

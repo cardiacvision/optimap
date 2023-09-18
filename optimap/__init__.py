@@ -53,30 +53,37 @@ __all__ = [
     "activation",
 
     # functions
-    "set_verbose",
-    "is_verbose",
-    "print_bar",
-    "print_properties",
-    "compute_phase",
-    "compute_activation_map",
-    "show_positions",
-    "show_traces",
-    "extract_traces",
-    "compare_traces",
-    "select_positions",
-    "select_traces",
-    "show_image",
-    "show_mask",
-    "load_image",
-    "load_mask",
-    "background_mask",
-    "foreground_mask",
     "load_video",
     "load_metadata",
+    "load_image",
+    "load_mask",
+
+    "show_image",
+    "show_mask",
+    "show_positions",
+    "show_traces",
+    "play_video",
+
     "save_image",
     "save_image_sequence",
     "save_video",
     "export_video",
-    "play_video",
+
+    "extract_traces",
+    "compare_traces",
+    "select_positions",
+    "select_traces",
+
     "motion_compensate",
+
+    "background_mask",
+    "foreground_mask",
+
+    "compute_phase",
+    "compute_activation_map",
+
+    "set_verbose",
+    "is_verbose",
+    "print_bar",
+    "print_properties",
 ]
