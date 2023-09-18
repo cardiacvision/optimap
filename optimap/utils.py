@@ -30,6 +30,8 @@ FILE_HASHES = {
     "Example_02_VF_Rabbit_Di-4-ANEPPS_Basler_acA720-520um.npy": "sha256:6252da91db434cad95758830fdf7c13a9db6793da30dd8e85e6878736e20787e",
     "Example_03_Pacing_Rabbit_Di-4-ANEPPS_Basler_acA720-520um.npy": "sha256:50113334e6955f5abb3658b5027447f507fd9eef6bfef766a628c2365ff848be",
     "Example_04_Pacing_Rabbit_Di-4-ANEPPS_Basler_acA720-520um.npy": "sha256:674603f64ccf754f73a264986e0bf1ee93d03ce3a9ea88f248620632046e3c40",
+    "Example_05_Ratiometry.npy":
+    "sha256:10a59863ee23abc689d8ee4cd27542ef1b7b8b8eb5668a7f2dc49572f18319f2"
 }
 
 
