@@ -71,14 +71,16 @@ def flip_horizontally(video):
     print_bar()
     return video
 
-def rotate_left(video):
+def rotate_left(video, k=1):
     """
-    Rotate Video counter-clockwise (left).
+    Rotate video by 90° counter-clockwise (left).
     
     Parameters
     ----------
     video : {t, x, y} ndarray
         Video to rotate.
+    k : int, optional
+        Number of times to rotate by 90°, by default 1
     
     Returns
     -------
@@ -86,19 +88,20 @@ def rotate_left(video):
         Rotated video.
     """
     _print('rotating video 90 degree to the left (counter-clockwise)')
-    video = np.transpose(video, (0, 2, 1))
-    video = video[:,::-1,:]
+    video = np.rot90(video, k=k, axes=(1, 2))
     print_bar()
     return video
 
-def rotate_right(video):
+def rotate_right(video, k=1):
     """
-    Rotate Video clockwise (right).
+    Rotate video by 90° clockwise (right).
 
     Parameters
     ----------
     video : {t, x, y} ndarray
         Video to rotate.
+    k : int, optional
+        Number of times to rotate by 90°, by default 1
     
     Returns
     -------
@@ -106,8 +109,7 @@ def rotate_right(video):
         Rotated video.
     """
     _print('rotating video 90 degree to the right (clockwise)')
-    video = np.transpose(video, (0, 2, 1))
-    video = video[:,:,::-1]
+    video = np.rot90(video, k=-k, axes=(1, 2))
     print_bar()
     return video
 
