@@ -13,10 +13,10 @@ except ImportError:
 
 if CV2_AVAILABLE:
     from ._edit import (
-        flip_horizontally,
-        flip_vertically,
         rotate_left,
         rotate_right,
+        flip_up_down,
+        flip_left_right,
         resize,
         crop,
         pad,
@@ -76,10 +76,10 @@ __all__ = [
     "playn",
     "play_with_overlay",
 
-    "flip_horizontally",
-    "flip_vertically",
     "rotate_left",
     "rotate_right",
+    "flip_up_down",
+    "flip_left_right",
     "resize",
     "crop",
     "pad",
