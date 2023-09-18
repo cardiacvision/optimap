@@ -7,7 +7,7 @@ from ._point_clicker import PointClicker
 from ..utils import interactive_backend
 
 @interactive_backend
-def _compare_traces_interactive(videos, labels=None, size=5, ref_frame=0):
+def _compare_traces_interactive(videos, labels=None, size=5, ref_frame=0, colors=None):
     """
     Compare traces of multiple videos interactively. Click on the image to select a position. Close the window to finish.
 
@@ -50,7 +50,7 @@ def _compare_traces_interactive(videos, labels=None, size=5, ref_frame=0):
     klicker.on_point_added(on_point_added)
     plt.show(block=True)
 
-def _compare_traces_plot(videos, coords, size=5, labels=None):
+def _compare_traces_plot(videos, coords, size=5, labels=None, colors=None):
     """
     Plot traces from multiple videos at given coordinates.
 
@@ -70,6 +70,7 @@ def _compare_traces_plot(videos, coords, size=5, labels=None):
         return
     elif len(coords) == 2 and isinstance(coords[0], int):
         coords = [coords]
+    colors = colors or [None] * len(videos)
 
     all_traces = []
     for coord in coords:
@@ -78,12 +79,13 @@ def _compare_traces_plot(videos, coords, size=5, labels=None):
             traces.append(extract_traces(video, coord, size))
         traces = np.array(traces).T
         all_traces.append(traces)
-
+    
     fig, ax = plt.subplots(nrows=len(coords), ncols=1, sharex=True, figsize=(5, 2.5*len(coords)))
     if len(coords) == 1:
         ax = [ax]
     for i, traces in enumerate(all_traces):
-        ax[i].plot(traces)
+        for j in range(traces.shape[1]):
+            ax[i].plot(traces[:, j], color=colors[j])
         ax[i].set_title(f"({coords[i][0]}, {coords[i][1]})")
         # ax[i].set_ylabel("Intensity")
     ax[-1].set_xlabel("Frame")
@@ -92,7 +94,7 @@ def _compare_traces_plot(videos, coords, size=5, labels=None):
     plt.xlim(0, videos[0].shape[0])
     plt.show()
 
-def compare_traces(videos, coords=None, labels=None, size=5, ref_frame=0):
+def compare_traces(videos, coords=None, labels=None, size=5, ref_frame=0, colors=None):
     """
     Compare traces of multiple videos. If ``coords`` is given, traces are plotted at the given coordinates. Otherwise, an interactive window is opened to select coordinates by clicking on the image. Close the window to finish.
 
@@ -112,6 +114,6 @@ def compare_traces(videos, coords=None, labels=None, size=5, ref_frame=0):
     """
 
     if coords is None:
-        return _compare_traces_interactive(videos, labels=labels, size=size, ref_frame=ref_frame)
+        return _compare_traces_interactive(videos, labels=labels, size=size, ref_frame=ref_frame, colors=colors)
     else:
-        return _compare_traces_plot(videos, coords, size=size, labels=labels)
+        return _compare_traces_plot(videos, coords, size=size, labels=labels, colors=colors)
