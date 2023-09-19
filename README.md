@@ -13,22 +13,24 @@
 > ⚠️ optimap is currently in early development, expect breaking changes and bugs.
 
 ## Installation
+optimap is available for Mac OSX, Windows and Linux. See [Installing optimap](https://optimap.readthedocs.io/en/latest/chapters/getting_started/#installing-optimap) for more detailed information regarding the installation of optimap.
+
 ### Installing pre-built binaries (Mac OSX, Windows, Linux)
 
-optimap is available for Mac OSX, Windows and Linux. See [Installing Optimap](https://optimap.readthedocs.io/en/latest/chapters/getting_started/#installing-optimap) for more detailed information regarding the installation of optimap.
+Pre-built binaries can be installed directly using pip:
 
 ```bash
 pip install opticalmapping[all]
 ```
 
-will install optimap and all recommended dependencies (including OpenCV and PySide2). If you wish to install your own version of OpenCV (e.g. for CUDA support) or Qt implementation use
+The above command will install optimap and all recommended dependencies (including OpenCV and PySide2). If you wish to install your own version of OpenCV (e.g. for CUDA support) or Qt implementation use:
 
 ```bash
 pip install opticalmapping
 ```
 
 ## Getting Started
-optimap is a script-based software package, which means that you run Python-based analysis scripts rather than working with a graphical user interface. We provide several example scripts, which explain the usage of optimap, see [Tutorials](https://optimap.readthedocs.io/en/latest/tutorials/basics/). The scripts can also be downloaded directly here: example script 1, example script 2. See the [Getting Started](https://optimap.readthedocs.io/en/latest/chapters/getting_started/) guide for installation instructions and a quick introduction to optimap.
+optimap is a script-based software, which means that you run Python-based analysis scripts rather than working with a graphical user interface. We provide several example scripts, which explain the usage of optimap, see [Tutorials](https://optimap.readthedocs.io/en/latest/tutorials/basics/). The example scripts can also be downloaded directly here: example script 1, example script 2. See the [Getting Started](https://optimap.readthedocs.io/en/latest/chapters/getting_started/) guide for installation instructions and a quick introduction to optimap.
 
 ## Links
 
