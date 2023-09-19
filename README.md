@@ -8,7 +8,7 @@
 
 ### optimap: An open-source library for the processing of fluorescence video data
 
-``optimap`` is an open-source Python toolbox for exploring, visualizing, and analyzing high-speed fluorescence imaging data with a focus on cardiac optical mapping data. It includes modules for loading, processing and exporting videos, extracting and measuring optical traces, action potential or calcium waves, performing motion compensation, spatio-temporal smoothing, measuring contractility and further post-processing, analyzing and visualizing the results.
+``optimap`` is an open-source Python toolbox for exploring, visualizing, and analyzing high-speed fluorescence imaging data with a focus on cardiac optical mapping data. It includes modules for loading, processing and exporting videos, post-processing videos (e.g. spatio-temporal smoothing), extracting and measuring optical traces, visualizing action potential or calcium waves, computing activation maps, performing motion compensation and inhibiting motion artifacts, measuring contractility and further post-processing, analyzing and visualizing the results.
 
 > ⚠️ optimap is currently in early development, expect breaking changes and bugs.
 
@@ -26,10 +26,9 @@ will install optimap and all recommended dependencies (including OpenCV and PySi
 ```bash
 pip install opticalmapping
 ```
-optimap is a script-based software package, which means that you run Python-based analysis scripts rather than working with a graphical user interface.
 
 ## Getting Started
-We provide several examples which explain the usage of optimap, see [Tutorials](https://optimap.readthedocs.io/en/latest/tutorials/basics/). See the [Getting Started](https://optimap.readthedocs.io/en/latest/chapters/getting_started/) guide for installation instructions and a quick introduction to optimap.
+optimap is a script-based software package, which means that you run Python-based analysis scripts rather than working with a graphical user interface. We provide several example scripts, which explain the usage of optimap, see [Tutorials](https://optimap.readthedocs.io/en/latest/tutorials/basics/). The scripts can also be downloaded directly here: example script 1, example script 2. See the [Getting Started](https://optimap.readthedocs.io/en/latest/chapters/getting_started/) guide for installation instructions and a quick introduction to optimap.
 
 ## Links
 
