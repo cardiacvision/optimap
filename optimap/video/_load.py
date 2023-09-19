@@ -67,7 +67,7 @@ def load_tiff_folder(folder_path, prefix="", start_frame=0, end_frame=None, step
     """
     # TODO: use skimage.io.ImageCollection or tifffile.FileSequence instead
     # loads all .tiff images inside a folder, or a sequence from - to
-    _print(f"loading video from series of .tif/.tiff-images in folder '{path}'")
+    _print(f"loading video from series of .tif/.tiff-images in folder '{folder_path}'")
     path = Path(folder_path)
     if not path.exists():
         raise ValueError(f"Folder '{path}' does not exist")
