@@ -6,14 +6,16 @@
 [![DOI](https://zenodo.org/badge/677528623.svg)](https://zenodo.org/badge/latestdoi/677528623)
 
 
-### Python toolbox for analyzing optical mapping data
+### optimap: An open-source library for the processing of fluorescence video data
 
-``optimap`` is an open-source Python toolbox for exploring, visualizing, and analyzing high-speed fluorescence imaging data with a focus on cardiac optical mapping data. It includes modules for data input/output, processing scientific video recordings, visualization, motion compensation, trace extraction, and analysis.
+``optimap`` is an open-source Python toolbox for exploring, visualizing, and analyzing high-speed fluorescence imaging data with a focus on cardiac optical mapping data. It includes modules for loading, processing and exporting videos, extracting and measuring optical traces, action potential or calcium waves, performing motion compensation, spatio-temporal smoothing, measuring contractility and further post-processing, analyzing and visualizing the results.
 
 > ⚠️ optimap is currently in early development, expect breaking changes and bugs.
 
 ## Installation
 ### Installing pre-built binaries (Mac OSX, Windows, Linux)
+
+optimap is available for Mac OSX, Windows and Linux. See [Installing Optimap](https://optimap.readthedocs.io/en/latest/chapters/getting_started/#installing-optimap) for more detailed information regarding the installation of optimap.
 
 ```bash
 pip install opticalmapping[all]
@@ -24,11 +26,10 @@ will install optimap and all recommended dependencies (including OpenCV and PySi
 ```bash
 pip install opticalmapping
 ```
-
-instead. See [Installing Optimap](https://optimap.readthedocs.io/en/latest/chapters/getting_started/#installing-optimap) for more information.
+optimap is a script-based software package, which means that you run Python-based analysis scripts rather than working with a graphical user interface.
 
 ## Getting Started
-See the [Getting Started](https://optimap.readthedocs.io/en/latest/chapters/getting_started/) guide for installation instructions and a quick introduction to optimap. See the [Tutorials](https://optimap.readthedocs.io/en/latest/tutorials/basics/) for more detailed examples.
+We provide several examples which explain the usage of optimap, see [Tutorials](https://optimap.readthedocs.io/en/latest/tutorials/basics/). See the [Getting Started](https://optimap.readthedocs.io/en/latest/chapters/getting_started/) guide for installation instructions and a quick introduction to optimap.
 
 ## Links
 
