@@ -13,6 +13,7 @@ chapters/getting_started.md
 
 tutorials/basics.ipynb
 tutorials/motion_compensation.ipynb
+tutorials/ratiometry.ipynb
 ```
 
 ```{toctree}
