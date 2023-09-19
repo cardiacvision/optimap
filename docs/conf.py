@@ -64,11 +64,12 @@ author = 'Jan Lebert, Jan Christoph'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "sphinx_copybutton",
     "sphinx.ext.napoleon",
     "sphinx.ext.autosummary",
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
+    "sphinx_copybutton",
+    "sphinx_codeautolink",
     'sphinxcontrib.bibtex',
     "sphinxcontrib.video",
     "sphinx.ext.viewcode",
@@ -84,6 +85,8 @@ autodoc_default_options = {
 }
 autodoc_member_order = 'bysource'
 autosummary_generate = True
+
+codeautolink_global_preface = "import optimap as om"
 
 nb_execution_mode = "cache"
 nb_execution_timeout = 600  # seconds
