@@ -8,12 +8,12 @@
 
 ### optimap: An open-source library for the processing of fluorescence video data
 
-``optimap`` is an open-source Python toolbox for exploring, visualizing, and analyzing high-speed fluorescence imaging data with a focus on cardiac optical mapping data. It includes modules for loading, processing and exporting videos, post-processing videos (e.g. spatio-temporal smoothing), extracting and measuring optical traces, visualizing action potential or calcium waves, computing activation maps, performing motion compensation and inhibiting motion artifacts, measuring contractility and further post-processing, analyzing and visualizing the results.
+``optimap`` is an open-source Python toolbox for exploring, visualizing, and analyzing high-speed fluorescence imaging data with a focus on cardiac optical mapping data. It includes modules for loading, processing and exporting videos, extracting and measuring optical traces, visualizing action potential or calcium waves, computing activation maps, performing motion compensation and inhibiting motion artifacts, measuring contractility and further post-processing, analyzing and visualizing the results. Refer to the documentation and tutorials for a more detailed list of features.
 
 > ⚠️ optimap is currently in early development, expect breaking changes and bugs.
 
 ## Installation
-optimap is available for Mac OSX, Windows and Linux. See [Installing optimap](https://optimap.readthedocs.io/en/latest/chapters/getting_started/#installing-optimap) for more detailed information regarding the installation of optimap.
+optimap is available for Mac OSX, Windows and Linux, see [Installing optimap](https://optimap.readthedocs.io/en/latest/chapters/getting_started/#installing-optimap) for more detailed information.
 
 ### Installing pre-built binaries (Mac OSX, Windows, Linux)
 
