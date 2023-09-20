@@ -68,10 +68,11 @@ def load_image(filename, as_gray=False, **kwargs):
     _print(f'loading image from {fn.absolute()} ... ')
 
     if fn.suffix == '.npy':
-        image = np.load(filename, **kwargs)
+        image = np.load(fn, **kwargs)
     else:
         # image = skimage.io.imread(filename, as_gray=as_gray, **kwargs)
-        image = cv2.imread(filename, cv2.IMREAD_ANYDEPTH | cv2.IMREAD_UNCHANGED)
+        image = cv2.imread(str(fn),
+                           cv2.IMREAD_ANYDEPTH | cv2.IMREAD_UNCHANGED)
         if as_gray and image.ndim == 3:
             if image.shape[2] == 3:
                 image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -131,7 +132,7 @@ def save_image(image, filename, **kwargs):
     _print(f"saving image to {Path(filename).absolute()}")
     fn = Path(filename)
     if fn.suffix == '.npy':
-        np.save(filename, image, **kwargs)
+        np.save(fn, image, **kwargs)
     else:
         # skimage.io.imsave(filename, image, **kwargs)
-        cv2.imwrite(filename, image, **kwargs)
+        cv2.imwrite(str(fn), image, **kwargs)

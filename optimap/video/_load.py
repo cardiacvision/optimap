@@ -41,7 +41,7 @@ def load_tiff(filename, start_frame=0, end_frame=None, step=1, use_mmap=False):
     )
     return video
 
-def load_image_folder(folder_path, prefix="", start_frame=0, end_frame=None, step=1):
+def load_image_folder(path, prefix="", start_frame=0, end_frame=None, step=1):
     """
     Loads a sequences of images from a folder as a video.
 
@@ -53,7 +53,7 @@ def load_image_folder(folder_path, prefix="", start_frame=0, end_frame=None, ste
 
     Parameters
     ----------
-    folder_path : str or pathlib.Path
+    path : str or pathlib.Path
         Path to folder containing .tiff images
     prefix : str, optional
         Prefix of the files to load
@@ -69,8 +69,8 @@ def load_image_folder(folder_path, prefix="", start_frame=0, end_frame=None, ste
     np.ndarray
         3D numpy array containing the loaded images
     """
-    _print(f"loading video from series of .tif/.tiff-images in folder '{folder_path}'")
-    path = Path(folder_path)
+    _print(f"loading video from series of images files in folder '{path}'")
+    path = Path(path)
     if not path.is_dir():
         raise ValueError(f"'{path}' is not a directory")
 
