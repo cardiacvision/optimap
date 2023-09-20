@@ -4,6 +4,7 @@ import numpy as np
 import tifffile
 
 import skimage.io as sio
+from scipy.io import savemat
 
 
 def save_image_sequence(video: np.ndarray, filepattern: str = 'frame_{:03d}', directory: str = None, suffix='.png', **kwargs):
@@ -75,7 +76,7 @@ def save_matlab(array, filename, fieldname='video', appendmat=True):
     appendmat : bool, optional
         Whether to append to an existing file, by default ``True``
     """
-    sio.savemat(filename, {fieldname: array}, appendmat=appendmat)
+    savemat(filename, {fieldname: array}, appendmat=appendmat)
 
 
 def save_video(video, filename, **kwargs):

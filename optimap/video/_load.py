@@ -4,6 +4,7 @@ from pathlib import Path
 import numpy as np
 import skimage.io as sio
 from tifffile import imread as tifffile_imread, memmap as tifffile_memmap
+from scipy.io import loadmat
 
 from ..utils import _print
 from ._importers import MultiRecorderImporter, MiCAM05_Importer, MiCAM_ULTIMA_Importer
@@ -40,11 +41,14 @@ def load_tiff(filename, start_frame=0, end_frame=None, step=1, use_mmap=False):
     )
     return video
 
-def load_tiff_folder(folder_path, prefix="", start_frame=0, end_frame=None, step=1):
+def load_image_folder(folder_path, prefix="", start_frame=0, end_frame=None, step=1):
     """
-    Loads a sequence of .tiff images from a folder as a video.
+    Loads a sequences of images from a folder as a video.
 
-    Supported extensions: .tif and .tiff (case-insensitive).
+    Supported extensions (case-insensitive):
+
+    * .tif and .tiff
+    * .png
 
 
     Parameters
@@ -65,22 +69,21 @@ def load_tiff_folder(folder_path, prefix="", start_frame=0, end_frame=None, step
     np.ndarray
         3D numpy array containing the loaded images
     """
-    # TODO: use skimage.io.ImageCollection or tifffile.FileSequence instead
-    # loads all .tiff images inside a folder, or a sequence from - to
     _print(f"loading video from series of .tif/.tiff-images in folder '{folder_path}'")
     path = Path(folder_path)
-    if not path.exists():
-        raise ValueError(f"Folder '{path}' does not exist")
     if not path.is_dir():
         raise ValueError(f"'{path}' is not a directory")
+
     files = []
-    for extension in [".tif", ".tiff", ".TIF", ".TIFF"]:
+    for extension in [".tif", ".tiff", ".TIF", ".TIFF", ".png", ".PNG"]:
         files.extend(path.glob(f"{prefix}*{extension}"))
+        if len(files) > 0:
+            break
     if not files:
-        raise ValueError(f"No .tif or .tiff files found in folder '{path}'")
+        raise ValueError(f"No .tif, .tiff or .png files found in folder '{path}'")
 
     files = sorted(files, key=_natural_sort_path_key)
-    _print(f"found {len(files)} .tif/.tiff files in '{path}'")
+    _print(f"found {len(files)} files to load in '{path}'")
     files = files[start_frame:end_frame:step]
     _print(
         f"loading '{files[0].name}' as first frame, and '{files[-1].name}' as last frame"
@@ -101,7 +104,7 @@ def load_MATLAB(filename, fieldname=None, start_frame=0, end_frame=None, step=1)
         Name of the field to load, by default None. If None, loads the first field.
     """
 
-    data = sio.loadmat(filename)
+    data = loadmat(filename)
     if fieldname is None:
         fields = [key for key in data.keys() if not key.startswith("__")]
         if len(fields) == 0:
@@ -146,9 +149,11 @@ def load_SciMedia_MiCAMULTIMA_metadata(filename):
     dat = MiCAM_ULTIMA_Importer(filename)
     return dat.get_metadata()
 
-def load_video(filename, start_frame=0, frames=None, step=1, use_mmap=False):
+def load_video(path, start_frame=0, frames=None, step=1, use_mmap=False):
     """
-    Loads a video from a file, automatically detecting the file type.
+    Loads a video from a file or folder, automatically detecting the file type.
+
+    If ``path`` is a folder, it will load a video from a series of images in the folder.
 
     Supported file types:
 
@@ -159,9 +164,20 @@ def load_video(filename, start_frame=0, frames=None, step=1, use_mmap=False):
     - .rsh, .rsm, .rsd (SciMedia MiCAM ULTIMA)
     - .npy (numpy array)
 
+    Supported file types when loading a folder:
+
+    - .tif, .tiff images
+    - .png images
+    
+    For some file types read-only memory mapping is used when ``use_mmap=True``. This is useful for large videos, as it does not load the entire video into memory, only loading the frames when they are accessed. However, it is not supported for all file types, and it is not possible to write to the video array. Supported file types for memory mapping:
+
+    - .tif, .tiff (TIFF stack)
+    - .dat (MultiRecorder)
+    - .npy (numpy array)
+
     Parameters
     ----------
-    filename : str or pathlib.Path
+    path : str or pathlib.Path
         Path to video file, or folder containing images
     start_frame : int, optional
         Index of the starting frame (0-indexed). Defaults to 0.
@@ -170,36 +186,39 @@ def load_video(filename, start_frame=0, frames=None, step=1, use_mmap=False):
     step : int, optional
         Steps between frames. If greater than 1, it will skip frames. Defaults to 1.
     use_mmap : bool, optional
-        If True, uses memory mapping to load the video in read-only mode. This is useful for large videos, as it does not load the entire video into memory. Defaults to False.
+        If True, uses memory mapping to load the video in read-only mode, defaults to False.
         Only supported for some file types.
     """
-    filename = Path(filename)
+    path = Path(path)
+    suffix = path.suffix.lower()
+
+    if step > 1 and frames is not None:
+        frames *= step
+
     if frames is not None:
         end_frame = start_frame + frames
     else:
         end_frame = None
-
-    if filename.is_dir():
-        return load_tiff_folder(
-            str(filename), start_frame=start_frame, end_frame=end_frame, step=step
-        )
-
-    suffix = filename.suffix.lower()
-    if suffix in [".tif", ".tiff"]:
-        return load_tiff(filename, start_frame=start_frame, end_frame=end_frame, step=step)
+    
+    if not path.exists():
+        raise ValueError(f"File or folder '{path}' does not exist")
+    elif path.is_dir():
+        return load_image_folder(path, start_frame=start_frame, end_frame=end_frame, step=step)
+    elif suffix in [".tif", ".tiff"]:
+        return load_tiff(path, start_frame=start_frame, end_frame=end_frame, step=step, use_mmap=use_mmap)
     elif suffix in [".mat"]:
-        return load_MATLAB(filename, start_frame=start_frame, end_frame=end_frame, step=step)
+        return load_MATLAB(path, start_frame=start_frame, end_frame=end_frame, step=step)
     elif suffix in [".gsd", ".gsh"]:
-        return load_SciMedia_MiCAM05(filename, start_frame=start_frame, frames=frames, step=step)
+        return load_SciMedia_MiCAM05(path, start_frame=start_frame, frames=frames, step=step)
     elif suffix in [".rsh", ".rsm", ".rsd"]:
-        return load_SciMedia_MiCAMULTIMA(filename, start_frame=start_frame, frames=frames, step=step)
+        return load_SciMedia_MiCAMULTIMA(path, start_frame=start_frame, frames=frames, step=step)
     elif suffix in [".dat"]:
-        return load_MultiRecorder(filename, start_frame=start_frame, frames=frames, step=step)
+        return load_MultiRecorder(path, start_frame=start_frame, frames=frames, step=step, use_mmap=use_mmap)
     elif suffix in [".npy"]:
-        return load_numpy(filename, start_frame=start_frame, end_frame=end_frame, step=step, use_mmap=use_mmap)
+        return load_numpy(path, start_frame=start_frame, end_frame=end_frame, step=step, use_mmap=use_mmap)
     else:
         raise ValueError(
-            f"Unable to find videoloader for file extension {suffix} (for file '{filename}')"
+            f"Unable to find videoloader for file extension {suffix} (for file '{path}')"
         )
 
 def load_metadata(filename):
