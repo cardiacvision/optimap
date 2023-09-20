@@ -1,11 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from ._core import extract_traces
+from ._core import extract_traces, show_traces
 from ._point_clicker import PointClicker
-from ..utils import _print, print_bar
 
-from ..utils import interactive_backend
+from ..utils import _print, interactive_backend
 
 @interactive_backend
 def select_positions(image, as_integers=True):
@@ -41,7 +40,7 @@ def select_positions(image, as_integers=True):
     return coords
 
 @interactive_backend
-def select_traces(video, size=5, ref_frame=0):
+def select_traces(video, size=5, ref_frame=0, x=None, fps=None):
     """
     Interactive selection/plotting of traces from a video. Click on the image to select a position. Right click to remove a position. Close the window to finish.
 
@@ -53,6 +52,10 @@ def select_traces(video, size=5, ref_frame=0):
         Size parameter for trace
     ref_frame : int
         Reference frame of the first video to show
+    x : 1D array, optional
+        X-axis values, by default None. See :py:func:`show_traces` for details.
+    fps : float, optional
+        Frames per second, by default None. See :py:func:`show_traces` for details.
 
     Returns
     -------
@@ -66,8 +69,6 @@ def select_traces(video, size=5, ref_frame=0):
     )
 
     image = video[ref_frame]
-    coords = []
-    traces = None
 
     fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(14, 7))
 
@@ -83,31 +84,17 @@ def select_traces(video, size=5, ref_frame=0):
         axs[1].set_ylabel("Intensity")
     setup_trace_axis()
 
-    def on_point_added(pos):
-        nonlocal coords, traces, axs, fig
-        trace = extract_traces(video, [pos], size)
-        axs[1].plot(trace)
-        fig.canvas.draw()
-
-        coords.append(pos)
-        if traces is None:
-            traces = trace
-        else:
-            traces = np.hstack((traces, trace))
-
-    def on_point_removed(pos, idx):
-        nonlocal coords, traces, axs, fig
-        coords = klicker.get_positions()
-        traces = extract_traces(video, coords, size)
+    def update():
+        nonlocal axs, fig
         axs[1].clear()
-        setup_trace_axis()
-        axs[1].plot(traces)
+        traces = extract_traces(video, klicker.get_positions(), size)
+        show_traces(traces, ax=axs[1], x=x, fps=fps)
         fig.canvas.draw()
 
-    klicker.on_point_added(on_point_added)
-    klicker.on_point_removed(on_point_removed)
+    klicker.on_point_added(lambda pos: update())
+    klicker.on_point_removed(lambda pos, idx: update())
     plt.show(block=True)
 
-    # coords = klicker.get_positions()
-    # traces = extract_trace_values(video, coords, size)
+    coords = klicker.get_positions()
+    traces = extract_traces(video, coords, size)
     return traces, coords

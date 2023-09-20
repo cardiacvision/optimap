@@ -87,22 +87,21 @@ class PointClicker:
                 )
 
     def _update_points(self):
-        new_off = np.array(self._positions)
-        if new_off.ndim == 1:
-            # no points left
-            new_off = np.zeros([0, 2])
-        self._scat.remove()
-        
         pos = np.array(self._positions)
         colors = cm.tab10.colors
         while len(colors) < len(pos):
             colors += colors
         colors = colors[:len(pos)]
-
+        
+        try:
+            self._scat.remove()
+        except ValueError:  # raises an error when scatter empty
+            pass
+    
         if len(pos) == 0:
             self._scat = self.ax.scatter([], [])
         else:
-            self._scat = self.ax.scatter(pos[:, 0], pos[:, 1], color=colors)
+            self._scat = self.ax.scatter(pos[:, 0], pos[:, 1], c=colors)
         self._fig.canvas.draw()
 
     def on_point_added(self, func):
