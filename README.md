@@ -8,7 +8,7 @@
 
 ### optimap: An open-source library for the processing of fluorescence video data
 
-``optimap`` is an open-source Python toolbox for exploring, visualizing, and analyzing high-speed fluorescence imaging data with a focus on cardiac optical mapping data. It includes modules for loading, processing and exporting videos, extracting and measuring optical traces, visualizing action potential or calcium waves, tracking motion and compensating motion artifacts, computing activation maps, measuring contractility and further analyzing and visualizing the results. Refer to the documentation and tutorials for a more detailed list of features.
+``optimap`` is an open-source Python toolbox for exploring, visualizing, and analyzing high-speed fluorescence imaging data with a focus on cardiac optical mapping data. It includes modules for loading, processing and exporting videos, extracting and measuring optical traces, visualizing action potential or calcium waves, tracking motion and compensating motion artifacts, computing activation maps, measuring contractility and further analyzing and visualizing the results. Refer to the [Documentation](https://optimap.readthedocs.io/en/latest/) and [Tutorials](https://optimap.readthedocs.io/en/latest/tutorials/basics/) for more detailed information about optimap's features.
 
 > ⚠️ optimap is currently in early development, expect breaking changes and bugs.
 
@@ -23,14 +23,17 @@ Pre-built binaries can be installed using pip:
 pip install opticalmapping[all]
 ```
 
-The above command will install optimap and all recommended dependencies (including OpenCV and PySide2). If you wish to install your own version of OpenCV (e.g. for CUDA support) or Qt implementation use:
+The above command will install optimap and all recommended dependencies including OpenCV and PySide2. If you wish to install your own version of OpenCV (e.g. for CUDA support) or Qt implementation use:
 
 ```bash
 pip install opticalmapping
 ```
 
 ## Getting Started
-optimap is a script-based software, which means that you run Python-based analysis scripts rather than using a graphical user interface. We provide several very simple example scripts, which explain the usage of optimap, see [Tutorials](https://optimap.readthedocs.io/en/latest/tutorials/basics/). The example scripts can also be downloaded directly here: example script 1, example script 2. See the [Getting Started](https://optimap.readthedocs.io/en/latest/chapters/getting_started/) guide for installation instructions and a quick introduction to optimap. optimap relies on other packages such as numpy, matplotlib and OpenCV.
+See the [Getting Started](https://optimap.readthedocs.io/en/latest/chapters/getting_started/) guide for an introduction to optimap and installation instructions. 
+
+## About optimap
+optimap is a script-based software, which means that you run Python-based analysis scripts rather than using a graphical user interface. We provide several example scripts, which explain the usage of optimap, see [Tutorials](https://optimap.readthedocs.io/en/latest/tutorials/basics/). The example scripts can also be downloaded directly by clicking on the right link in the green box at the top of each tutorial page. optimap is developed by members of the Cardiac Vision Laboratory at the University of California, San Franicsco, for the cardiovascular science community. optimap relies on packages such as numpy, matplotlib and OpenCV. 
 
 ## Links
 
