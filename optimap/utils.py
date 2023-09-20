@@ -23,7 +23,7 @@ import pooch
 from ._version import __version__
 
 VERBOSE = False
-INTERACTIVE_BACKEND = 'QtCairo'
+INTERACTIVE_BACKEND = 'QtAgg'
 INTERACTIVE_BACKEND_SWITCHING = True
 FILE_HASHES = {
     'Example_01_Sinus_Rabbit_Basler.npy': "sha256:5c692cca0459c931b7f767c27162a42b31e3df90a6aeac53bb182affa2135678",
