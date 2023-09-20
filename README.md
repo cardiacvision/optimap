@@ -13,7 +13,7 @@
 > ⚠️ optimap is currently in early development, expect breaking changes and bugs.
 
 ## Installation
-optimap is available for Mac OSX, Windows and Linux, see [Installing optimap](https://optimap.readthedocs.io/en/latest/chapters/getting_started/#installing-optimap) for more detailed information.
+``optimap`` is available for Mac OSX, Windows and Linux, see [Installing optimap](https://optimap.readthedocs.io/en/latest/chapters/getting_started/#installing-optimap) for more detailed information.
 
 ### Installing pre-built binaries (Mac OSX, Windows, Linux)
 
