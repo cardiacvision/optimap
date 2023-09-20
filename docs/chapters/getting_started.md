@@ -12,6 +12,11 @@ The easiest way to install optimap is using pip on the command line:
 pip install opticalmapping[all]
 ```
 
+If this command fails, please try the following:
+```{code-block} bash
+python -m pip install opticalmapping\[all\]
+```
+
 ```{note}
 `pip install opticalmapping` will install the core functionality of optimap. However, the [OpenCV](https://opencv.org/) and dependencies are not installed by default which are required for the {mod}`optimap.motion` and {mod}`optimap.video` modules. To install these dependencies use `pip install opticalmapping[all]` or install OpenCV manually.
 
