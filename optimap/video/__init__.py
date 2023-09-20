@@ -1,26 +1,16 @@
 """
 Functions for loading, viewing, filtering, saving and exporting videos.
 """
-try:
-    import cv2
 
-    CV2_AVAILABLE = True
-except ImportError:
-    CV2_AVAILABLE = False
-    print(
-        "\n\nERROR: Unable to import opencv, optimap.video functions will be unavailable. Please install it, e.g. with `pip install opencv-python`.\n\n"
-    )
-
-if CV2_AVAILABLE:
-    from ._edit import (
-        rotate_left,
-        rotate_right,
-        flip_up_down,
-        flip_left_right,
-        resize,
-        crop,
-        pad,
-    )
+from ._edit import (
+    rotate_left,
+    rotate_right,
+    flip_up_down,
+    flip_left_right,
+    resize,
+    crop,
+    pad,
+)
 
 from ._filters import (
     normalize,

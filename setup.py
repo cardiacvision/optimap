@@ -68,7 +68,6 @@ setup(
         "all": [
             "opencv-contrib-python",
             "PySide6",
-            "cairocffi",
         ],
         "test": ["pytest"],
         "docs": [
