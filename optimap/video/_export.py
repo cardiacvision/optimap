@@ -88,6 +88,8 @@ def export_video(
     """
     Export a video numpy array to a video file (e.g. ``.mp4``) using `ffmpeg <https://www.ffmpeg.org>`_.
 
+    ... note:: If you get an error like ``'ffmpeg' executable not found``, you need to install ffmpeg first. See `here <https://www.ffmpeg.org/download.html>`_ for instructions. On macOS, you can install ffmpeg using ``brew install ffmpeg``.
+
     Parameters
     ----------
     video : np.ndarray

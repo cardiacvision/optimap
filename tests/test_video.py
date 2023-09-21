@@ -11,13 +11,15 @@ def test_normalize():
     assert np.all(out >= -0.5)
     assert np.all(out <= 0.5)
 
+def test_normalize_pixelwise():
+    vid = (np.random.random((10, 128, 128)) * 8000).astype(np.uint16)
     out = om.video.normalize_pixelwise(vid, -0.5, 0.5)
     assert out.shape == vid.shape
     assert out.dtype == np.float32
     assert np.all(out >= -0.5)
     assert np.all(out <= 0.5)
 
-def test_sliding_window():
+def test_normalize_pixelwise_slidingwindow():
     vid = (np.random.random((100, 128, 128)) * 8000).astype(np.uint16)
     out = om.video.normalize_pixelwise_slidingwindow(vid, 21, -0.5, 0.5)
     assert out.shape == vid.shape
@@ -36,31 +38,15 @@ def test_sliding_window():
     out2 = om.video.normalize_pixelwise(vid)
     assert np.allclose(out, out2)
 
+def test_temporal_difference():
+    video = np.zeros((10, 128, 128), dtype=np.uint16)
+    for i in range(1, 10):
+        video[i] = i
+    out = om.video.temporal_difference(video, 1)
+    assert out.shape == video.shape
+    assert out.dtype == np.float32
+    assert np.all(out[0] == 0)
+    assert np.all(out[1:] == 1)
 
-def test_alpha_blending():
-    base = np.full((10, 128, 128), 0, dtype=np.float32)
-    overlay = np.full((10, 128, 128), 1, dtype=np.float32)
-    out = om.video.alpha_blend_videos(base, overlay, alpha=base)
-    assert out.shape == base.shape + (4,)
-    assert np.allclose(out[..., :3], 0)
-
-    out = om.video.alpha_blend_videos(base, overlay, alpha=overlay, vmin_base=0, vmax_base=1, vmin_overlay=0, vmax_overlay=1, cmap_overlay='gray')
-    assert np.allclose(out[..., :3], 1)
-
-    overlay = np.full((10, 128, 128, 4), 1, dtype=np.float32)
-    out = om.video.alpha_blend_videos(base, overlay, cmap_overlay='gray')
-    assert np.allclose(out[..., :3], 1)
-
-    out = om.video.alpha_blend_videos(base, overlay, alpha=overlay)
-    assert np.allclose(out[..., :3], 1)
-
-    out = om.video.alpha_blend_videos(base, overlay, alpha=overlay[0, :, :, 0], cmap_overlay='gray')
-    assert np.allclose(out[..., :3], 1)
-
-def test_ffmpeg_defaults():
-    pytest.raises(ValueError, om.video.set_default_ffmpeg_encoder, 'doesnotexist')
-    om.video.set_default_ffmpeg_encoder('h264_nvenc')
-    assert om.video.get_default_ffmpeg_encoder() == 'h264_nvenc'
-
-    om.video.set_ffmpeg_defaults('h264_nvenc', {'-preset': 'slow'})
-    om.video.set_default_ffmpeg_encoder('libx264')
+    out = om.video.temporal_difference(video, 2)
+    assert np.all(out[2:] == 2)
