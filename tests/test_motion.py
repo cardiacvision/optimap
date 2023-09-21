@@ -35,3 +35,10 @@ def test_warp():
     assert out.shape == vid.shape
     assert out.dtype == np.float32
     assert np.all(out == vid)
+
+
+def test_motion_compensate():
+    video = (np.random.random((10, 10, 10)) * 16535).astype(np.uint16)
+    warped = om.motion.motion_compensate(video)
+    assert warped.shape == video.shape
+    assert warped.dtype == video.dtype

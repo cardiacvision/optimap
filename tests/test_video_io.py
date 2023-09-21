@@ -4,6 +4,7 @@ import mimetypes
 import pytest
 import numpy as np
 import optimap as om
+import skvideo
 
 
 def test_npy_video(tmpdir):
@@ -134,6 +135,7 @@ def test_ffmpeg_defaults():
     om.video.set_default_ffmpeg_encoder('libx264')
 
 
+@pytest.mark.skipif(skvideo._HAS_FFMPEG == 0, reason="ffmpeg not installed")
 def test_export_video(tmpdir):
     video = np.random.random((10, 4, 6)).astype(np.float32)
     filename = tmpdir / "test.mp4"
@@ -143,6 +145,7 @@ def test_export_video(tmpdir):
     assert mimetypes.guess_type(filename)[0] == "video/mp4"
 
 
+@pytest.mark.skipif(skvideo._HAS_FFMPEG == 0, reason="ffmpeg not installed")
 def test_export_video_overlay(tmpdir):
     video = np.random.random((10, 4, 4)).astype(np.float32)
     overlay = np.random.random((10, 4, 4)).astype(np.float32)
