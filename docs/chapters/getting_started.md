@@ -49,7 +49,13 @@ for convenience.
 
 # Using optimap
 
-We recommend [Visual Studio Code](https://code.visualstudio.com) to edit and run Python code using the official [Python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python). In particular, we recommend using regular `.py` files  with automatic code cells by typing `# %%`.
+We highly recommend using [Visual Studio Code](https://code.visualstudio.com) for working with optimap. Visual Studio Code is a free and open-source editor with excellent support for Python and Jupyter notebooks.
+
+* Download and install [Visual Studio Code](https://code.visualstudio.com)
+* Install the Microsoft [Python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
+* Install the Microsoft [Jupyter extension](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter)
+
+In particular, we recommend using regular `.py` files with automatic code cells by typing `# %%`. This allows you to run code cells directly from the editor, as shown below:
 
 ![code cells](/_static/vscode-code-cells.png)
 
