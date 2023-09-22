@@ -1,9 +1,9 @@
 (installing)=
 # Installing optimap
 
-``optimap`` is available for Windows, Mac OSX, and Linux. The installation procedure slightly varies depending on the operating system.
+``optimap`` is available for Windows, Mac OSX, and Linux. You can find detailed installation instructions here: [Installation Guide](https://optimap.readthedocs.io/en/latest/chapters/installation/) 
 
-``optimap`` requires Python 3.8 or later. To install Python we recommend installing the [Anaconda distribution](https://www.anaconda.com/distribution/), which includes Python and many useful packages for scientific computing, or by installing [Python directly](https://code.visualstudio.com/docs/python/python-tutorial#_install-a-python-interpreter).
+``optimap`` requires Python 3.8 or later. To install [Python](https://en.wikipedia.org/wiki/Python_programming_language) we recommend installing the [Anaconda distribution](https://www.anaconda.com/distribution/), which includes Python and many useful packages for scientific computing, or by installing [Python directly](https://code.visualstudio.com/docs/python/python-tutorial#_install-a-python-interpreter).
 
 ```{tip}
 optimap relies heavily on [NumPy](https://numpy.org) and [Matplotlib](https://matplotlib.org). We recommend the [Scientific Python Lectures](https://lectures.scientific-python.org) and the [Python Data Science Handbook](https://jakevdp.github.io/PythonDataScienceHandbook/) for an introduction to Python and these libraries.
@@ -26,6 +26,7 @@ python -m pip install opticalmapping\[all\]
 To use GPU-accelerated motion tracking algorithms a CUDA-enabled version of OpenCV is required, which is currently not available on PyPI. See [](#opencv) for more information.
 ```
 To update optimap to the latest version run `pip install --upgrade opticalmapping[all]`. See [](#contributing) for instructions on how to install optimap from source.
+
 
 # Overview
 
