@@ -1,12 +1,14 @@
 # Installing optimap
 
+``optimap`` is available for Windows, Mac OSX, and Linux. The installation procedure slightly varies depending on the operating system.
+
 ``optimap`` requires Python 3.8 or later. To install Python we recommend installing the [Anaconda distribution](https://www.anaconda.com/distribution/), which includes Python and many useful packages for scientific computing, or by installing [Python directly](https://code.visualstudio.com/docs/python/python-tutorial#_install-a-python-interpreter).
 
 ```{tip}
 optimap relies heavily on [NumPy](https://numpy.org) and [Matplotlib](https://matplotlib.org). We recommend the [Scientific Python Lectures](https://lectures.scientific-python.org) and the [Python Data Science Handbook](https://jakevdp.github.io/PythonDataScienceHandbook/) for an introduction to Python and these libraries.
 ```
 
-The easiest way to install optimap is using pip on the command line:
+The easiest way to install optimap is using `pip` in the command line:
 
 ```{code-block} bash
 pip install opticalmapping[all]
@@ -60,6 +62,9 @@ In particular, we recommend using regular `.py` files with automatic code cells 
 ![code cells](/_static/vscode-code-cells.png)
 
 See the [Visual Studio Code documentation](https://code.visualstudio.com/docs/python/jupyter-support-py) for more information. Code cells are also supported in other editors such as [PyCharm](https://www.jetbrains.com/pycharm/) and [Spyder](https://www.spyder-ide.org/).
+
+Purists who would like to run their `.py` scripts in the command line
+You could run the Python script in a terminal with ``python3 basics.py`` from the folder where the file is located. Alternatively, one can start Python in the command line (by typing in ``python3.9`` and pressing 'Enter') and type in the above command and press 'Enter'. 
 
 ![plot viewer](/_static/vscode-plot-viewer.gif)
 
