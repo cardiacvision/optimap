@@ -1,3 +1,4 @@
+(installing)=
 # Installing optimap
 
 ``optimap`` is available for Windows, Mac OSX, and Linux. The installation procedure slightly varies depending on the operating system.
@@ -49,6 +50,7 @@ Some of the most important functions are imported into the top-level namespace:
 
 for convenience.
 
+(vscode)=
 # Using optimap
 
 We highly recommend using [Visual Studio Code](https://code.visualstudio.com) for working with optimap. Visual Studio Code is a free and open-source editor with excellent support for Python and Jupyter notebooks.
