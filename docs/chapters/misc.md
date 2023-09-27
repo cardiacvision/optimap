@@ -20,7 +20,7 @@ Download and install the [NVIDIA CUDA Toolkit](https://developer.nvidia.com/cuda
 
 Open a PowerShell window and run the following commands:
 ```powershell
-git clone https://github.com/opencv/opencv-python.git
+git clone --recurse-submodules https://github.com/opencv/opencv-python.git
 cd opencv-python
 $env:CMAKE_ARGS="-DWITH_CUDA=ON -DWITH_CUDNN=OFF -DWITH_NVCUVID=OFF -DOPENCV_DNN_CUDA=OFF -DOPENCV_ENABLE_NONFREE=OFF -DBUILD_opencv_cudacodec=OFF -DCUDA_GENERATION=Auto -DCUDA_TOOLKIT_ROOT_DIR='C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.6'"
 $env:ENABLE_CONTRIB=1
@@ -59,7 +59,7 @@ If you are using Arch/Manjaro Linux prebuilt CUDA versions of OpenCV are availab
 Otherwise you can build OpenCV with CUDA support yourself. The following instructions are for Arch/Manjaro Linux, but should be easily adaptable to other distributions.
 
 ```bash
-git clone https://github.com/opencv/opencv-python.git
+git clone --recurse-submodules https://github.com/opencv/opencv-python.git
 cd opencv-python
 export CMAKE_ARGS="-DWITH_CUDA=ON -DWITH_CUDNN=OFF -DWITH_NVCUVID=OFF -DOPENCV_DNN_CUDA=OFF -DOPENCV_ENABLE_NONFREE=OFF -DBUILD_opencv_cudacodec=OFF -DCUDA_GENERATION=Auto -DCUDA_TOOLKIT_ROOT_DIR=/opt/cuda -DCUDA_HOST_COMPILER=/usr/bin/gcc-10"
 export ENABLE_CONTRIB=1
