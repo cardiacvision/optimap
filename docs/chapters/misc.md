@@ -1,7 +1,9 @@
 (opencv)=
 # OpenCV with CUDA support
 
-Some of motion estimation & compensation functions of {mod}`optimap.motion` support GPU-accelerated computing using supported NVIDIA GPUs. They rely on a OpenCV version which was built with CUDA support, which is unfortunately not the default on most prebuilt OpenCV versions. To check if your OpenCV version supports CUDA, run the following code:
+Some of motion estimation & compensation functions of {mod}`optimap.motion` support GPU-accelerated computing using supported NVIDIA GPUs. They rely on a OpenCV version which was built with CUDA support, which is unfortunately not the default on most prebuilt OpenCV versions.
+
+To check if your OpenCV version supports CUDA, run the following code:
 
 ```python
 import cv2
@@ -47,7 +49,8 @@ import os
 os.add_dll_directory("C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.6/bin")
 import cv2
 ```
-Add the ``os.add_dll_directory`` line to the top of `C:\Users\USERNAME\AppData\Local\Programs\Python\Python311\Lib\site-packages\cv2\__init__.py` to make it permanent on every import. 
+To avoid having to do this every time you import OpenCV, you can edit the OpenCV Python package to do this automatically.
+Add the ``os.add_dll_directory`` line to the top of `C:\Users\USERNAME\AppData\Local\Programs\Python\Python311\Lib\site-packages\cv2\__init__.py` (see error message for the exact path).
 
 ### Linux
 
