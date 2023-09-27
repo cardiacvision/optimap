@@ -8,7 +8,7 @@ import cv2
 print(cv2.cuda.getCudaEnabledDeviceCount())
 ```
 
-if CUDA is not supported or no NVIDIA GPU was found it prints ``0``.
+which prints ``0`` if CUDA is not supported or no NVIDIA GPU was found.
 
 ## Building OpenCV with CUDA support
 
@@ -34,7 +34,7 @@ Test if CUDA is supported:
 ```python
 py -c "import cv2; print(cv2.cuda.getCudaEnabledDeviceCount())"
 ```
-If you get an error
+If you get an error similar to:
 ```
 File "C:\Users\USERNAME\AppData\Local\Programs\Python\Python311\Lib\importlib\__init__.py", line 126, in import_module
     return _bootstrap._gcd_import(name[level:], package, level) 
@@ -47,7 +47,7 @@ import os
 os.add_dll_directory("C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.6/bin")
 import cv2
 ```
-Add the ``os.add_dll_directory`` line on the top of `C:\Users\USERNAME\AppData\Local\Programs\Python\Python311\Lib\site-packages\cv2\__init__.py` to make it permanent on every import. 
+Add the ``os.add_dll_directory`` line to the top of `C:\Users\USERNAME\AppData\Local\Programs\Python\Python311\Lib\site-packages\cv2\__init__.py` to make it permanent on every import. 
 
 ### Linux
 
