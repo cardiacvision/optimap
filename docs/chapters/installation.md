@@ -56,10 +56,3 @@ By default, `optimap` will be installed without GPU-acceleration (graphics proce
 
 
 
-
-# How to cite
-
-A publication about optimap is currently in preparation. In the meantime, please cite the following papers if you use optimap in your research: {footcite:t}`Lebert2022,Christoph2018a`.
-
-```{footbibliography}
-```
