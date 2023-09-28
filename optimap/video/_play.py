@@ -193,7 +193,7 @@ def play_with_overlay(
 
     suptitle = fig.suptitle(f"Frame {0:4d}", font="monospace")
 
-    imshow = ax.imshow(base[0])
+    imshow = ax.imshow(base[0], vmin=0, vmax=1)
     ax.axis("off")
     fig.tight_layout()
 
