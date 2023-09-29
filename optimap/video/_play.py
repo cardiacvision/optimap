@@ -5,6 +5,7 @@ from matplotlib.colors import Colormap
 
 from ..utils import interactive_backend
 from ._export import iter_alpha_blend_videos
+from ._player import Player
 
 
 def play(video, skip_frame=1, title="", vmin=None, vmax=None, cmap="gray", interval=10, **kwargs):
@@ -151,7 +152,7 @@ def playn(videos, skip_frame=1, titles=None, cmaps="gray", vmins=None, vmaxs=Non
     for i in range(n):
         if videos[i].shape[0] < nt:
             raise ValueError("videos have to be same length!")
-        videos[i] = videos[i][::skip_frame]
+        videos[i] = videos[i]
 
     if titles is None:
         titles = [f"Video {i}" for i in range(n)]
@@ -171,7 +172,9 @@ def playn(videos, skip_frame=1, titles=None, cmaps="gray", vmins=None, vmaxs=Non
     if n == 1:
         axs = [axs]
 
-    suptitle = fig.suptitle(f"Frame {0:4d}", font="monospace")
+    # TODO: this is needed here to set the correct spacing between GUI elements for Player
+    suptitle = fig.suptitle(f"  ", font="monospace")
+
     imshows = []
     for i in range(n):
         imshows.append(
@@ -181,13 +184,19 @@ def playn(videos, skip_frame=1, titles=None, cmaps="gray", vmins=None, vmaxs=Non
         axs[i].axis("off")
     fig.tight_layout()
 
-    def update(frame):
-        for i in range(n):
-            imshows[i].set_data(videos[i][frame])
-            suptitle.set_text(f"Frame {frame*skip_frame:4d}")
+    def update(i):
+        for j in range(n):
+            imshows[j].set_data(videos[j][i])
+            # suptitle.set_text(f"Frame {frame*skip_frame:4d}")
 
-    ani = animation.FuncAnimation(
-        fig, update, frames=videos[0].shape[0], interval=interval
+    ani = Player(
+        fig=fig,
+        func=update,
+        frames=videos[0].shape[0],
+        interval=interval,
+        mini=0,
+        maxi=videos[0].shape[0]-1,
+        step=skip_frame
     )
     plt.show(block=True)
     return ani
