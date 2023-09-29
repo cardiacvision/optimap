@@ -66,3 +66,12 @@ export ENABLE_CONTRIB=1
 export ENABLE_HEADLESS=1
 python -m pip wheel .
 ```
+
+Now install the generated wheel file (name will be different):
+```bash
+python -m pip install ./opencv_contrib_python_headless-4.5.5+209d32e-cp310-cp310-linux_x86.whl
+```
+and test if everything works:
+```bash
+python -c "import cv2; print(cv2.cuda.getCudaEnabledDeviceCount())"
+```
