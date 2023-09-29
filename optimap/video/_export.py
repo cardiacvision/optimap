@@ -240,6 +240,7 @@ def iter_alpha_blend_videos(
             f_overlay = cmap_overlay(norm2(f_overlay))
 
         frame = f_base * (1 - f_alpha) + f_overlay * f_alpha
+        frame = np.clip(frame, 0, 1)  # sometimes rounding errors lead to values > 1
         yield frame
 
 
