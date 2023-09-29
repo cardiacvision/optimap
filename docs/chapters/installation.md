@@ -1,4 +1,4 @@
-(installing)=
+(installing2)=
 # Installing optimap
 
 ``optimap`` is available for Windows, Mac OSX, and Linux.
