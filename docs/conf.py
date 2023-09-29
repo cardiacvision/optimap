@@ -75,6 +75,9 @@ extensions = [
     "sphinx.ext.viewcode",
     "myst_nb",
 ]
+myst_enable_extensions = [
+    "dollarmath"
+]
 
 # API settings
 autodoc_default_options = {

@@ -33,7 +33,7 @@ Install the generated wheel file (name will be different):
 py -m pip install .\opencv_contrib_python-4.6.0+4638ce5-cp311-cp311-win_amd64.wh
 ```
 Test if CUDA is supported:
-```python
+```bash
 py -c "import cv2; print(cv2.cuda.getCudaEnabledDeviceCount())"
 ```
 If you get an error similar to:
