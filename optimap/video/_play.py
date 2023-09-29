@@ -64,6 +64,10 @@ def play2(
     cmap1="gray",
     cmap2="gray",
     interval=10,
+    vmin1=None,
+    vmax1=None,
+    vmin2=None,
+    vmax2=None,
     **kwargs,
 ):
     """
@@ -85,6 +89,14 @@ def play2(
         Colormap to use for the first video, by default "gray"
     cmap2 : str, optional
         Colormap to use for the second video, by default "gray"
+    vmin1 : float, optional
+        Minimum value for the colorbar of the first video, by default None
+    vmax1 : float, optional
+        Maximum value for the colorbar of the first video, by default None
+    vmin2 : float, optional
+        Minimum value for the colorbar of the second video, by default None
+    vmax2 : float, optional
+        Maximum value for the colorbar of the second video, by default None
     interval : int, optional
         Delay between frames in ms, by default 10. This is not the actual framerate, but the delay between frames.
     **kwargs
@@ -94,8 +106,15 @@ def play2(
     -------
     matplotlib.animation.FuncAnimation
     """
-    
-    return playn([video1, video2], skip_frame=skip_frame, titles=[title1, title2], cmaps=[cmap1, cmap2], interval=interval, **kwargs)
+    if vmin1 is None and vmin2 is None:
+        vmins = None
+    else:
+        vmins = [vmin1, vmin2]
+    if vmax1 is None and vmax2 is None:
+        vmaxs = None
+    else:
+        vmaxs = [vmax1, vmax2]
+    return playn([video1, video2], skip_frame=skip_frame, titles=[title1, title2], cmaps=[cmap1, cmap2], vmins=vmins, vmaxs=vmaxs, interval=interval, **kwargs)
 
 
 @interactive_backend
