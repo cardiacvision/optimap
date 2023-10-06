@@ -210,6 +210,7 @@ def iter_alpha_blend_videos(
         The blended video frame.
     """
 
+    # Create alpha channel with shape (frames, height, width, 1)
     if alpha is None:
         if overlay.ndim == 4:
             alpha = overlay[..., 3, np.newaxis]
@@ -218,9 +219,14 @@ def iter_alpha_blend_videos(
     else:
         if alpha.ndim == 2:
             alpha = alpha[np.newaxis, :, :, np.newaxis]
+            alpha = np.repeat(alpha, overlay.shape[0], axis=0)
         elif alpha.ndim == 3:
             alpha = alpha[..., np.newaxis]
-    alpha[np.isnan(overlay)] = 0
+    
+    if overlay.ndim == 4:
+        alpha[np.isnan(overlay[..., 3])] = 0
+    else:
+        alpha[np.isnan(overlay)] = 0
 
     if isinstance(cmap_base, str):
         cmap_base = plt.get_cmap(cmap_base)
