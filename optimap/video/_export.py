@@ -220,11 +220,21 @@ def iter_alpha_blend_videos(
             alpha = alpha[np.newaxis, :, :, np.newaxis]
         elif alpha.ndim == 3:
             alpha = alpha[..., np.newaxis]
+    alpha[np.isnan(overlay)] = 0
 
     if isinstance(cmap_base, str):
         cmap_base = plt.get_cmap(cmap_base)
     if isinstance(cmap_overlay, str):
         cmap_overlay = plt.get_cmap(cmap_overlay)
+
+    if vmin_base is None:
+        vmin_base = np.nanmin(base[0])
+    if vmax_base is None:
+        vmax_base = np.nanmax(base[0])
+    if vmin_overlay is None:
+        vmin_overlay = np.nanmin(overlay)
+    if vmax_overlay is None:
+        vmax_overlay = np.nanmax(overlay)
 
     norm1 = Normalize(vmin=vmin_base, vmax=vmax_base, clip=True)
     norm2 = Normalize(vmin=vmin_overlay, vmax=vmax_overlay, clip=True)
