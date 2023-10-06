@@ -33,7 +33,9 @@ FILE_HASHES = {
     "Example_05_Ratiometry.npy":
     "sha256:10a59863ee23abc689d8ee4cd27542ef1b7b8b8eb5668a7f2dc49572f18319f2",
     "optimap-test-download-file.npy":
-    "sha256:0d3cfca36d8e3ad935de4d0681ddd510c1590212a99dccb196353c8ce85b7491"
+    "sha256:0d3cfca36d8e3ad935de4d0681ddd510c1590212a99dccb196353c8ce85b7491",
+    "Example_02_VF_Rabbit_Di-4-ANEPPS_Basler_acA720-520um_warped.npy":
+    "sha256:a1781582b669a69a9753b1c43d23e0acf26fb372426eeb6d880d2e66420b2107"  # warped version of Example_02, used to speed up documentation build
 }
 
 
@@ -146,7 +148,7 @@ def interactive_backend(func):
 
     return wrapper
 
-def retrieve_example_data(name, directory="./example_data"):
+def retrieve_example_data(name, directory="./example_data", silent=False):
     """
     Download example data if not already present.
 
@@ -156,6 +158,8 @@ def retrieve_example_data(name, directory="./example_data"):
         Name of the file to download.
     directory : str
         Directory to download the file to.
+    silent : bool
+        If True, set logging level to WARNING.
 
     Returns
     -------
@@ -165,6 +169,9 @@ def retrieve_example_data(name, directory="./example_data"):
     known_hash = FILE_HASHES.get(name, None)
     if known_hash is None:
         print(f"WARNING: Example file '{name}' is not known. Attempting to download it anyway.")
+    if silent:
+        silent = pooch.get_logger().level
+        pooch.get_logger().setLevel("WARNING")
 
     # The CMS server only allows files with a certain extensions to be uploaded.
     # We use .webm as dummy extension to upload the files, and rename them after download.
@@ -177,4 +184,7 @@ def retrieve_example_data(name, directory="./example_data"):
         fname=name,
         path=directory,
     )
+
+    if silent:
+        pooch.get_logger().setLevel(silent)
     return path
