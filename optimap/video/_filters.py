@@ -5,17 +5,26 @@ from .. import _cpp
 from ..utils import _print
 
 
-def normalize(video: np.ndarray, ymin=0, ymax=1):
+def normalize(video: np.ndarray, ymin=0, ymax=1, vmin=None, vmax=None, clip=True):
     """
-    Normalizes video to interval [ymin, ymax]
+    Normalizes video to interval [``ymin``, ``ymax``]. If ``vmin`` or ``vmax`` are specified, the normalization is done using these values and the resulting video will be clipped.
 
     Parameters
     ----------
     video : {t, x, y} ndarray
     ymin : float, optional
-        Minimum value, by default 0
+        Minimum value of the resulting video, by default 0
     ymax : float, optional
-        Maximum value, by default 1
+        Maximum value of the resulting video, by default 1
+    vmin : float, optional
+        Minimum value of the input video, by default None
+        If None, the minimum value of the input video is calculated.
+    vmax : float, optional
+        Maximum value of the input video, by default None
+        If None, the maximum value of the input video is calculated.
+    clip : bool, optional
+        If True, the resulting video will be clipped to [``ymin``, ``ymax``], by default True
+        Only applies if ``vmin`` or ``vmax`` are specified.
 
     Returns
     -------
@@ -24,10 +33,17 @@ def normalize(video: np.ndarray, ymin=0, ymax=1):
     """
     _print(f"normalizing video to interval [{ymin}, {ymax}] ...")
     video = video.astype("float32")
-    min_ = np.min(video)
-    max_ = np.max(video)
+    do_clip = clip and (vmin is not None or vmax is not None)
+    if vmin is None:
+        vmin = np.nanmin(video)
+    if vmax is None:
+        vmax = np.nanmax(video)
+    
     eps = np.finfo(np.float32).eps
-    video = (video - min_) / (max_ - min_ + eps) * (ymax - ymin) + ymin
+    video = (video - vmin) / (vmax - vmin + eps) * (ymax - ymin) + ymin
+
+    if do_clip:
+        video = np.clip(video, ymin, ymax)
     return video
 
 
