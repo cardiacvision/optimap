@@ -1,7 +1,7 @@
 (installing)=
 # Installing optimap
 
-``optimap`` is available for Windows, Mac OSX, and Linux. You can find detailed installation instructions here: [Installation Guide](https://optimap.readthedocs.io/en/latest/chapters/installation/) 
+``optimap`` is available for Windows, Mac OSX, and Linux. You can find detailed installation instructions in our [Installation Guide](https://optimap.readthedocs.io/en/latest/chapters/installation/). The latest version of our sourcode can be found on [https://github.com/cardiacvision/optimap](https://github.com/cardiacvision/optimap).
 
 ``optimap`` requires Python 3.8 or later. To install [Python](https://en.wikipedia.org/wiki/Python_programming_language) we recommend installing the [Anaconda distribution](https://www.anaconda.com/download), which includes Python and many useful packages for scientific computing, or by installing [Python directly](https://code.visualstudio.com/docs/python/python-tutorial#_install-a-python-interpreter).
 
