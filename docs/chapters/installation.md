@@ -9,30 +9,33 @@
 optimap relies heavily on [NumPy](https://numpy.org) and [Matplotlib](https://matplotlib.org). We recommend the [Scientific Python Lectures](https://lectures.scientific-python.org) and the [Python Data Science Handbook](https://jakevdp.github.io/PythonDataScienceHandbook/) for an introduction to Python and these libraries.
 ```
 
+```{warning}
+This Installation Guide is currently work in progress. We will add more information soon.
+```
+
 ## Installing optimap on Windows
 
-Installing `optimap` on Windows requires Python to be installed on the system.
+Installing `optimap` on Windows requires `Python`, `Numpy` and `matplotlib` to be installed on the system.
 
 ## Installing optimap on Mac OSX
 
-Installing `optimap` on Mac OSX requires [Homebrew](https://brew.sh/). `Homebrew` is a popular and very useful package manager which is freely available for Mac OSX. Paste and execute the following command in the Mac OSX terminal to install `Homebrew`: `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`. Note that Mac OSX has a native Python version installed and it is necessary to install a separate Python 3.8 version or later. Next, you need to install `pip`, which is a package installer specifically for Python packages. You can install `pip` using Homebrew: `brew install pip`. `pip` is a 
+Installing `optimap` on Mac OSX requires `Python`, `Numpy` and `matplotlib` to be installed on the system. On Mac OSX, [Homebrew](https://brew.sh/) is a popular and very useful, freely available package manager with which one can install `Python`, `Numpy` and `matplotlib`. Paste and execute the following command in the Mac OSX terminal to install `Homebrew`: `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`. Note that Mac OSX has a native Python version installed and it is necessary to install a separate Python 3.8 version or later. Next, you need to install `pip`, which is a package installer specifically for Python packages. You can install `pip` using Homebrew: `brew install pip`. You can then use `pip` to install optimap:
+
+```{code-block} bash
+pip install opticalmapping[all]
+```
 
 ## Installing optimap on Linux
 
-With `pip` and `python` already installed it is very straight-forward to install `optimap` on Linux systems:
+With `pip` and `Python` already installed it is very straight-forward to install `optimap` on Linux systems:
 
 ```{code-block} bash
 pip install opticalmapping[all]
 ```
 
-This will install
+This will install the core functionality of optimap. However, the [OpenCV](https://opencv.org/) and dependencies are not installed by default which are required for the {mod}`optimap.motion` and {mod}`optimap.video` modules. To install these dependencies use `pip install opticalmapping[all]` or install OpenCV manually.
 
 
-The easiest way to install optimap is using `pip` in the command line:
-
-```{code-block} bash
-pip install opticalmapping[all]
-```
 
 If this command fails, please try the following:
 ```{code-block} bash
