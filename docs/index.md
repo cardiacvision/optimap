@@ -16,6 +16,7 @@ tutorials/basics.ipynb
 tutorials/signal_extraction.ipynb
 tutorials/motion_compensation.ipynb
 tutorials/ratiometry.ipynb
+tutorials/phase.ipynb
 ```
 
 ```{toctree}
