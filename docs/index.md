@@ -15,7 +15,9 @@ chapters/getting_started.md
 tutorials/basics.ipynb
 tutorials/signal_extraction.ipynb
 tutorials/motion_compensation.ipynb
+tutorials/activation.ipynb
 tutorials/ratiometry.ipynb
+tutorials/apd.ipynb
 tutorials/phase.ipynb
 ```
 
