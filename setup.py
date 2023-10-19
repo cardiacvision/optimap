@@ -55,6 +55,7 @@ setup(
         "matplotlib",
         "scipy",
         "scikit-image",
+        "pillow<10.1.0",  # Remove when https://github.com/scikit-image/scikit-image/issues/7207 is fixed
         "scikit-video",
         "tqdm",
         "pooch",
