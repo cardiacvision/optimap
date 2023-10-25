@@ -21,6 +21,7 @@ tutorials/ratiometry.ipynb
 tutorials/apd.ipynb
 tutorials/phase.ipynb
 tutorials/plotting.ipynb
+tutorials/smoothing.ipynb
 ```
 
 ```{toctree}
