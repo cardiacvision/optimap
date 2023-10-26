@@ -109,7 +109,7 @@ def extract_traces(video, coords, size=5, show=False, window=None, **kwargs):
     if single_coord:
         traces = traces[..., 0]
 
-    if show:
+    if show or 'ax' in kwargs:
         show_traces(traces, **kwargs)
     return traces
 
