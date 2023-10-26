@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import skimage
+from scipy import ndimage
 
 from ._GHT import im2hist, GHT
 
@@ -188,3 +189,106 @@ def largest_mask_island(mask: np.ndarray, invert: bool = False):
     if invert:
         new_mask = np.logical_not(new_mask)
     return new_mask
+
+
+def erode_mask(binary_mask, iterations=1, **kwargs):
+    """
+    Erode a binary mask.
+
+    Parameters
+    ----------
+    binary_mask : 2D ndarray
+        Binary mask.
+    iterations : int, optional
+        Number of iterations, by default 1
+    **kwargs : dict, optional
+        Additional arguments passed to `scipy.ndimage.binary_erosion`.
+
+    Returns
+    -------
+    2D ndarray
+        Eroded mask.
+    """
+    return ndimage.binary_erosion(binary_mask, iterations=iterations, **kwargs)
+
+
+def dilate_mask(binary_mask, iterations=1, **kwargs):
+    """
+    Dilate a binary mask.
+
+    Parameters
+    ----------
+    binary_mask : 2D ndarray
+        Binary mask.
+    iterations : int, optional
+        Number of iterations, by default 1
+    **kwargs : dict, optional
+        Additional arguments passed to `scipy.ndimage.binary_dilation`.
+
+    Returns
+    -------
+    2D ndarray
+        Dilated mask.
+    """
+    return ndimage.binary_dilation(binary_mask, iterations=iterations, **kwargs)
+
+
+def fill_mask_holes(binary_mask, **kwargs):
+    """
+    Fill holes in a binary mask.
+
+    Parameters
+    ----------
+    binary_mask : 2D ndarray
+        Binary mask.
+    **kwargs : dict, optional
+        Additional arguments passed to `scipy.ndimage.binary_fill_holes`.
+
+    Returns
+    -------
+    2D ndarray
+        Mask with filled holes.
+    """
+    return ndimage.binary_fill_holes(binary_mask, **kwargs)
+
+
+def binary_opening(binary_mask, iterations=1, **kwargs):
+    """
+    Perform binary opening on a binary mask. Consists of an erosion followed by a dilation. See https://en.wikipedia.org/wiki/Opening_(morphology).
+
+    Parameters
+    ----------
+    binary_mask : 2D ndarray
+        Binary mask.
+    iterations : int, optional
+        Number of iterations, by default 1
+    **kwargs : dict, optional
+        Additional arguments passed to `scipy.ndimage.binary_opening`.
+
+    Returns
+    -------
+    2D ndarray
+        Mask after binary opening.
+    """
+    return ndimage.binary_opening(binary_mask, iterations=iterations, **kwargs)
+
+
+def binary_closing(binary_mask, iterations=1, **kwargs):
+    """
+    Perform binary closing on a binary mask. Consists of a dilation followed by an erosion. See https://en.wikipedia.org/wiki/Closing_(morphology).
+
+    Parameters
+    ----------
+    binary_mask : 2D ndarray
+        Binary mask.
+    iterations : int, optional
+        Number of iterations, by default 1
+    **kwargs : dict, optional
+        Additional arguments passed to `scipy.ndimage.binary_closing`.
+
+    Returns
+    -------
+    2D ndarray
+        Mask after binary closing.
+    """
+    return ndimage.binary_closing(binary_mask, iterations=iterations, **kwargs)

@@ -3,6 +3,7 @@ from pathlib import Path
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
+from scipy import ndimage
 
 from ..utils import _print
 
@@ -136,3 +137,24 @@ def save_image(image, filename, **kwargs):
     else:
         # skimage.io.imsave(filename, image, **kwargs)
         cv2.imwrite(str(fn), image, **kwargs)
+
+
+def smooth_gaussian(image, sigma, **kwargs):
+    """
+    Smooth an image or mask using a Gaussian filter.
+    
+    Uses `scipy.ndimage.gaussian_filter` internally with ``mode='nearest'``.
+    
+    Parameters
+    ----------
+    image : {X, Y} np.ndarray
+        Image or mask to smooth
+    sigma : float
+        Standard deviation of the Gaussian kernel
+    **kwargs : dict
+        passed to `scipy.ndimage.gaussian_filter`
+    """
+    if 'mode' not in kwargs:
+        kwargs['mode'] = 'nearest'
+    
+    return ndimage.gaussian_filter(image, sigma=sigma, **kwargs)
