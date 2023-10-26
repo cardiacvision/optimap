@@ -19,6 +19,16 @@ def test_normalize_pixelwise():
     assert np.all(out >= -0.5)
     assert np.all(out <= 0.5)
 
+    vid = np.random.random((10, 128, 128))
+    vid[:, 0, 0] = np.nan
+    vid[2:, 1, 1] = np.nan
+    out = om.video.normalize_pixelwise(vid)
+    assert np.isnan(out[:, 0, 0]).all()
+    assert np.isnan(out[2:, 1, 1]).all()
+    out[:, 0, 0] = 1
+    out[2:, 1, 1] = 1
+    assert not np.isnan(out).any()
+
 def test_normalize_pixelwise_slidingwindow():
     vid = (np.random.random((100, 128, 128)) * 8000).astype(np.uint16)
     out = om.video.normalize_pixelwise_slidingwindow(vid, 21, -0.5, 0.5)
