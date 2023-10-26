@@ -3,11 +3,12 @@ from pathlib import Path
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy import ndimage
 
 from ..utils import _print
 
-def show_image(image, title="", vmin=None, vmax=None, cmap="gray", ax=None, **kwargs):
+def show_image(image, title="", vmin=None, vmax=None, cmap="gray", show_colorbar=False, colorbar_title="", ax=None, **kwargs):
     """
     Show an image.
 
@@ -23,6 +24,10 @@ def show_image(image, title="", vmin=None, vmax=None, cmap="gray", ax=None, **kw
         Maximum value for the colorbar, by default None
     cmap : str, optional
         Colormap to use, by default "gray"
+    show_colorbar : bool, optional
+        Show colorbar on the side of the image, by default False
+    colorbar_title : str, optional
+        Label of the colorbar, by default ""
     ax : `matplotlib.axes.Axes`, optional
         Axes to plot on. If None, a new figure and axes is created.
     **kwargs : passed to :func:`matplotlib.pyplot.imshow`
@@ -35,11 +40,20 @@ def show_image(image, title="", vmin=None, vmax=None, cmap="gray", ax=None, **kw
         fig, ax = plt.subplots()
         show = True
     else:
+        fig = ax.figure
         show = False
     
-    ax.imshow(image, cmap=cmap, vmin=vmin, vmax=vmax, **kwargs)
+    if show_colorbar:
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes('right', size='5%', pad=0.05)
+    
+    im = ax.imshow(image, cmap=cmap, vmin=vmin, vmax=vmax, **kwargs)
     ax.set_title(title)
     ax.axis("off")
+
+    if show_colorbar:
+        cbar = fig.colorbar(im, cax=cax, orientation='vertical')
+        cbar.set_label(colorbar_title)
 
     if show:
         plt.show()
