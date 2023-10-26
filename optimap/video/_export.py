@@ -98,7 +98,7 @@ class FFmpegWriter(skvideo.io.FFmpegWriter):
 
 
 def export_video(
-    video: np.ndarray,
+    video: Union[np.ndarray, Iterable[np.ndarray]],
     filename: Union[str, Path],
     fps: int = 60,
     skip_frames: int = 1,
@@ -110,13 +110,13 @@ def export_video(
     """
     Export a video numpy array to a video file (e.g. ``.mp4``) using `ffmpeg <https://www.ffmpeg.org>`_.
 
-    ... note:: If you get an error like ``'ffmpeg' executable not found``, you need to install ffmpeg first. See `here <https://www.ffmpeg.org/download.html>`_ for instructions. On macOS, you can install ffmpeg using ``brew install ffmpeg``.
+    Downloads pre-built ffmpeg automatically if ffmpeg is not installed.
 
     Parameters
     ----------
-    video : np.ndarray
+    video : np.ndarray or Iterable[np.ndarray]
         The video to export. Should be of shape (frames, height, width, channels) or (frames, height, width).
-        If the video is grayscale, the colormap will be applied. If it's an RGB video, its values should range from 0 to 1.
+        If the video is grayscale, the colormap will be applied. If it's an RGB video, its values should range [0, 1] or [0, 255] (np.uint8).
     filename : str or Path
         Video file path for writing.
     fps : int, optional
@@ -139,12 +139,16 @@ def export_video(
         cmap = plt.get_cmap(cmap)
     norm = Normalize(vmin=vmin, vmax=vmax, clip=True)
 
+    if skip_frames != 1:
+        video = video[::skip_frames]
+
     writer = FFmpegWriter(
         filename,
         inputdict={"-r": f"{fps}"},
         outputdict=_ffmpeg_defaults(ffmpeg_encoder),
     )
-    for frame in tqdm(video[::skip_frames], desc="exporting video"):
+
+    for frame in tqdm(video, desc="exporting video"):
         if frame.ndim == 2:
             frame = cmap(norm(frame))
 
