@@ -66,8 +66,8 @@ def normalize_pixelwise(video: np.ndarray, ymin=0, ymax=1):
     """
     _print(f"normalizing video pixel-wise to interval [{ymin}, {ymax}] ...")
     video = video.astype("float32")
-    min_ = np.min(video, axis=0)
-    max_ = np.max(video, axis=0)
+    min_ = np.nanmin(video, axis=0)
+    max_ = np.nanmax(video, axis=0)
     eps = np.finfo(np.float32).eps
     video = (video - min_) / (max_ - min_ + eps) * (ymax - ymin) + ymin
     return video

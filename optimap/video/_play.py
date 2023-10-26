@@ -160,11 +160,11 @@ def playn(videos, skip_frame=1, titles=None, cmaps="gray", vmins=None, vmaxs=Non
         cmaps = [cmaps for i in range(n)]
 
     if vmins is None:
-        vmins = [np.min(videos[i][0]) for i in range(n)]
+        vmins = [np.nanmin(videos[i][0]) for i in range(n)]
     elif isinstance(vmins, (int, float)):
         vmins = [vmins for _ in range(n)]
     if vmaxs is None:
-        vmaxs = [np.max(videos[i][0]) for i in range(n)]
+        vmaxs = [np.nanmax(videos[i][0]) for i in range(n)]
     elif isinstance(vmaxs, (int, float)):
         vmaxs = [vmaxs for _ in range(n)]
 

@@ -34,8 +34,8 @@ def play_displacements(
     """
     _print(f"playing video with displacement vectors ({skip_frame=}, {vskip=})... ")
     video = video[::skip_frame]
-    vmax = np.max(video)
-    vmin = np.min(video)
+    vmax = np.nanmax(video)
+    vmin = np.nanmin(video)
     vectors = vectors[::skip_frame, ::vskip, ::vskip]
     vectors[..., 0] /= video.shape[1]
     vectors[..., 1] /= video.shape[2]
@@ -89,8 +89,8 @@ def play_displacements_points(
 
     _print(f"playing video with displacement vectors ({skip_frame=}, {vskip=}...")
     video = video[::skip_frame]
-    vmax = np.max(video)
-    vmin = np.min(video)
+    vmax = np.nanmax(video)
+    vmin = np.nanmin(video)
     vectors = vectors[::skip_frame, ::vskip, ::vskip]
     vectors[..., 0] /= video.shape[1]
     vectors[..., 1] /= video.shape[2]
