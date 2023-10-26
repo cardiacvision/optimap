@@ -29,26 +29,28 @@ except ImportError:
 # convert notebooks to python files for download
 def convert_notebooks():
     tutorials = Path(__file__).parent / "tutorials"
+    output_folder = tutorials / "converted"
+    output_folder.mkdir(exist_ok=True)
+
+    config = jupytext.config.JupytextConfiguration()
+    config.notebook_metadata_filter = "-all"
+    config.cell_metadata_filter = "-all"
+    
+    def remove_input(cell):
+        remove_cells_for_tags = ["remove-input"]
+        for tag in remove_cells_for_tags:
+            if tag in cell.metadata.get("tags", []):
+                return False
+        return True
+    def remove_markdown(cell):
+        return cell.cell_type != "markdown"
+    
     for path in tutorials.glob("*.ipynb"):
         nb = jupytext.read(path)
-
-        remove_cells_for_tags = ["remove-input"]
-
-        def f(cell):
-            for tag in remove_cells_for_tags:
-                if tag in cell.metadata.get("tags", []):
-                    return False
-            return True
-        nb['cells'] = list(filter(f, nb.cells))
-
-        config = jupytext.config.JupytextConfiguration()
-        config.notebook_metadata_filter = "-all"
-        config.cell_metadata_filter = "-all"
-
-        output_folder = path.parent / "converted"
-        output_folder.mkdir(exist_ok=True)
-        jupytext.write(nb, output_folder / f'{path.stem}.py', fmt="py:percent", config=config)
+        nb['cells'] = list(filter(remove_input, nb.cells))
         jupytext.write(nb, output_folder / f'{path.stem}.ipynb', fmt="ipynb", config=config)
+        nb['cells'] = list(filter(remove_markdown, nb.cells))
+        jupytext.write(nb, output_folder / f'{path.stem}.py', fmt="py:percent", config=config)
 convert_notebooks()
 
 # -- Project information -----------------------------------------------------
