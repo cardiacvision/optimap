@@ -33,6 +33,9 @@ class MultiRecorderImporter:
         Returns a 3D numpy array containing the loaded video.
         """
 
+        if self._Nt == 0:
+            raise ValueError("Recorded video file contains no frames.")
+        
         if frames is not None:
             nframes = frames
             if nframes > self._Nt - start_frame:
@@ -208,8 +211,6 @@ class MiCAM05_Importer:
 class MiCAM_ULTIMA_Importer:
     """
     Importer for SciMedia MiCAM ULTIMA recordings (.rsh / .rsm / .rsd files)
-
-    .. warning:: Tested only on a sample MiCAM ULTIMA camera recording. Might not work correctly.
     """
     _Nx, _Ny, _Nt = 0, 0, 0
     _lskp = 0  # left skip
