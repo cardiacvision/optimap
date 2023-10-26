@@ -60,6 +60,7 @@ setup(
         "tqdm",
         "pooch",
         "seasonal",
+        "static_ffmpeg",
         ],
     tests_require=["pytest"],
     ext_modules=[cpp_module],

@@ -1,9 +1,11 @@
 from pathlib import Path
-from typing import Union
+from typing import Union, Iterable
 
 import numpy as np
 from tqdm import tqdm
+import skvideo
 import skvideo.io
+import static_ffmpeg.run
 import matplotlib.pyplot as plt
 from scipy.special import comb
 from matplotlib.colors import Normalize
@@ -75,6 +77,26 @@ def set_ffmpeg_defaults(encoder: str, params: dict):
     FFMEG_DEFAULTS[encoder] = params
 
 
+class FFmpegWriter(skvideo.io.FFmpegWriter):
+    """
+    Wrapper around `skvideo.io.FFmpegWriter` which downloads static binaries if ffmpeg is not installed.
+    """
+    def __init__(self, *args, **kwargs):
+        if not skvideo._HAS_FFMPEG:
+            # ffmpeg not found, download static binary for it
+            ffmpeg, _  = static_ffmpeg.run.get_or_fetch_platform_executables_else_raise()
+            skvideo.setFFmpegPath(str(Path(ffmpeg).parent))
+            assert skvideo._HAS_FFMPEG
+
+            # fix global variables
+            skvideo.io.ffmpeg._HAS_FFMPEG = skvideo._HAS_FFMPEG
+            skvideo.io.ffmpeg._FFMPEG_PATH = skvideo._FFMPEG_PATH
+            skvideo.io.ffmpeg._FFMPEG_SUPPORTED_DECODERS = skvideo._FFMPEG_SUPPORTED_DECODERS
+            skvideo.io.ffmpeg._FFMPEG_SUPPORTED_ENCODERS = skvideo._FFMPEG_SUPPORTED_ENCODERS
+
+        super().__init__(*args, **kwargs)
+
+
 def export_video(
     video: np.ndarray,
     filename: Union[str, Path],
@@ -117,7 +139,7 @@ def export_video(
         cmap = plt.get_cmap(cmap)
     norm = Normalize(vmin=vmin, vmax=vmax, clip=True)
 
-    writer = skvideo.io.FFmpegWriter(
+    writer = FFmpegWriter(
         filename,
         inputdict={"-r": f"{fps}"},
         outputdict=_ffmpeg_defaults(ffmpeg_encoder),
@@ -315,7 +337,7 @@ def export_video_with_overlay(
     if ffmpeg_encoder is None:
         ffmpeg_encoder = DEFAULT_FFMPEG_ENCODER
 
-    writer = skvideo.io.FFmpegWriter(
+    writer = FFmpegWriter(
         filename,
         inputdict={"-r": f"{fps}"},
         outputdict=_ffmpeg_defaults(ffmpeg_encoder),
