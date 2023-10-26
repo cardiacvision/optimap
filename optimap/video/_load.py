@@ -1,5 +1,6 @@
 import re
 from pathlib import Path
+import warnings
 
 import numpy as np
 import skimage.io as sio
@@ -110,8 +111,7 @@ def load_MATLAB(filename, fieldname=None, start_frame=0, end_frame=None, step=1)
         if len(fields) == 0:
             raise ValueError(f"No fields found in file '{filename}'")
         elif len(fields) > 1:
-            print(f"WARNING: Multiple fields found in file '{filename}', loading first field '{fields[0]}'"
-            )
+            warnings.warn(f"Multiple fields found in file '{filename}', loading first field '{fields[0]}'", UserWarning)
         fieldname = fields[0]
     video = data[fieldname]
     return video[start_frame:end_frame:step]

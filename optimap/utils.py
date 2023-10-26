@@ -14,6 +14,7 @@ __all__ = [
 
 import functools
 import urllib.parse
+import warnings
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -168,7 +169,7 @@ def retrieve_example_data(name, directory="./example_data", silent=False):
     """
     known_hash = FILE_HASHES.get(name, None)
     if known_hash is None:
-        print(f"WARNING: Example file '{name}' is not known. Attempting to download it anyway.")
+        warnings.warn(f"WARNING: Example file '{name}' is not known. Attempting to download it anyway.", UserWarning)
     if silent:
         silent = pooch.get_logger().level
         pooch.get_logger().setLevel("WARNING")

@@ -1,4 +1,5 @@
 from typing import Union
+import warnings
 
 import cv2
 import numpy as np
@@ -129,7 +130,7 @@ class FlowEstimator:
         if isinstance(imgs, list):
             imgs = np.array(imgs)
         if imgs.min() < 0 or imgs.max() > 1:
-            print(
+            warnings.warn(
                 "WARNING: image values are not in range [0,1], which may lead to unexpected motion tracking"
             )
         return (imgs * 255).astype(np.uint8)

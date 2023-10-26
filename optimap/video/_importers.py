@@ -3,6 +3,7 @@ import struct
 from datetime import datetime
 from pathlib import Path
 from typing import BinaryIO
+import warnings
 
 import numpy as np
 
@@ -39,7 +40,7 @@ class MultiRecorderImporter:
         if frames is not None:
             nframes = frames
             if nframes > self._Nt - start_frame:
-                print(f"Warning: requested {nframes} frames, but only {self._Nt - start_frame} frames available. Loading all available frames.")
+                warnings.warn(f"requested {nframes} frames, but only {self._Nt - start_frame} frames available. Loading all available frames.", UserWarning)
                 nframes = self._Nt - start_frame
         else:
             nframes = self._Nt - start_frame
@@ -182,7 +183,7 @@ class MiCAM05_Importer:
         if frames is not None:
             end_frame = start_frame + frames
             if end_frame > self._Nt:
-                print(f"Warning: requested {frames} frames, but only {self._Nt - start_frame} frames available. Loading all available frames.")
+                warnings.warn(f"requested {frames} frames, but only {self._Nt - start_frame} frames available. Loading all available frames.", UserWarning)
                 end_frame = None
         else:
             end_frame = None
@@ -281,7 +282,7 @@ class MiCAM_ULTIMA_Importer:
         if frames is not None:
             end_frame = start_frame + frames
             if end_frame > self._Nt:
-                print(f"Warning: requested {frames} frames, but only {self._Nt - start_frame} frames available. Loading all available frames.")
+                warnings.warn(f"requested {frames} frames, but only {self._Nt - start_frame} frames available. Loading all available frames.", UserWarning)
                 end_frame = None
         else:
             end_frame = None
