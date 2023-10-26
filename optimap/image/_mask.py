@@ -101,7 +101,7 @@ def foreground_mask(image, threshold=None, show=True, return_threshold=False):
         return mask
 
 
-def show_mask(mask, image=None, ax=None):
+def show_mask(mask, image=None, title="", ax=None):
     """
     Show an mask overlayed on an image.
     If no image is given, only the mask is shown.
@@ -112,6 +112,8 @@ def show_mask(mask, image=None, ax=None):
         Mask to overlay.
     image : 2D ndarray
         Image to show.
+    title : str, optional
+        Title of the image, by default ""
     ax : `matplotlib.axes.Axes`, optional
         Axes to plot on. If None, a new figure and axes is created.
 
@@ -130,6 +132,8 @@ def show_mask(mask, image=None, ax=None):
     alpha = 0.5 if image is not None else 1
     ax.imshow(mask, cmap="jet", alpha=alpha, interpolation="none")
     ax.axis("off")
+    if title:
+        ax.set_title(title)
 
     if show:
         plt.show()
