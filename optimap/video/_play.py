@@ -178,7 +178,7 @@ def playn(videos, skip_frame=1, titles=None, cmaps="gray", vmins=None, vmaxs=Non
     imshows = []
     for i in range(n):
         imshows.append(
-            axs[i].imshow(videos[i][0], cmap=cmaps[i], vmin=vmins[i], vmax=vmaxs[i])
+            axs[i].imshow(videos[i][0], cmap=cmaps[i], interpolation='none', vmin=vmins[i], vmax=vmaxs[i])
         )
         axs[i].set_title(f"{titles[i]}")
         axs[i].axis("off")
