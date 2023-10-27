@@ -102,10 +102,11 @@ def export_video(
     filename: Union[str, Path],
     fps: int = 60,
     skip_frames: int = 1,
-    cmap="gray",
-    vmin=None,
-    vmax=None,
-    ffmpeg_encoder=None,
+    cmap = "gray",
+    vmin : float = None,
+    vmax : float = None,
+    ffmpeg_encoder : str = None,
+    progress_bar : bool = True,
 ):
     """
     Export a video numpy array to a video file (e.g. ``.mp4``) using `ffmpeg <https://www.ffmpeg.org>`_.
@@ -131,6 +132,8 @@ def export_video(
         The maximum value for the colormap, by default None
     ffmpeg_encoder : str, optional
         The ffmpeg encoder to use, by default ``'libx264'``. See :func:`set_default_ffmpeg_encoder` and :func:`set_ffmpeg_defaults` for more information.
+    progress_bar : bool, optional
+        Whether to show a progress bar, by default True
     """
     if ffmpeg_encoder is None:
         ffmpeg_encoder = DEFAULT_FFMPEG_ENCODER
@@ -148,7 +151,7 @@ def export_video(
         outputdict=_ffmpeg_defaults(ffmpeg_encoder),
     )
 
-    for frame in tqdm(video, desc="exporting video"):
+    for frame in tqdm(video, desc="exporting video", disable=not progress_bar):
         if frame.ndim == 2:
             frame = cmap(norm(frame))
 
@@ -300,6 +303,7 @@ def export_video_with_overlay(
     vmin_overlay=None,
     vmax_overlay=None,
     ffmpeg_encoder=None,
+    progress_bar : bool = True,
 ):
     """
     Blends two videos together using `alpha blending <https://en.wikipedia.org/wiki/Alpha_compositing>`_ and exports it to a video file (e.g. ``.mp4``).
@@ -337,6 +341,8 @@ def export_video_with_overlay(
         The maximum value for the overlay video, by default None
     ffmpeg_encoder : str, optional
         The ffmpeg encoder to use, by default ``'libx264'``. See :func:`set_default_ffmpeg_encoder` and :func:`set_ffmpeg_defaults` for more information.
+    progress_bar : bool, optional
+        Whether to show a progress bar, by default True
     """
     if ffmpeg_encoder is None:
         ffmpeg_encoder = DEFAULT_FFMPEG_ENCODER
@@ -362,6 +368,7 @@ def export_video_with_overlay(
         ),
         desc="exporting video",
         total=len(base[::skip_frames]),
+        disable=not progress_bar
     ):
         if frame.dtype != np.uint8:
             frame = (frame * 255).astype(np.uint8)
