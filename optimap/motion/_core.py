@@ -110,7 +110,7 @@ def motion_compensate(
     postsmooth=None,
     method=None,
 ):
-    """Typical motion compensation pipeline for a optical mapping video. See :py:func:`contrast_enhancement` and :py:func:`estimate_flows` for details.
+    """Typical motion compensation pipeline for a optical mapping video. See :py:func:`contrast_enhancement` and :py:func:`estimate_displacements` for details.
 
     First, the video is smoothed in space and time using a Gaussian kernel. Then, local contrast is enhanced to remove fluorescence signal. Finally, optical flow is estimated between every frame and a reference frame, and the video is warped to the reference frame using the estimated optical flow.
 
@@ -152,4 +152,59 @@ def motion_compensate(
     if postsmooth is not None:
         flows = smooth_displacements(flows, *postsmooth)
     video_warped = warp_video(original_video, flows)
+    return video_warped
+
+
+def reverse_motion_compensate(
+    video_tracking,
+    video_warping,
+    contrast_kernel=7,
+    ref_frame=0,
+    presmooth_temporal=0.8,
+    presmooth_spatial=0.8,
+    postsmooth=None,
+    method=None,
+):
+    """Typical motion tracking pipeline to transform a video back into motion. E.g. we first motion compensated a recording and extracted the fluoresence wave dynamics. We now want to transform the processed, motion-less, video back into motion and e.g. overlay it ontop the original video with :py:func:`video.play_with_overlay`.
+    
+    See :py:func:`motion_compensate` and :py:func:`estimate_reverse_displacements` for explenation of paramters and further details.
+
+    Parameters
+    ----------
+    video_tracking : np.ndarray
+        Video to estimate optical flow for (list of images or 3D array {t, x, y}). Can be any dtype because contrast enhancement will convert to float32.
+    video_warping : np.ndarray
+        Video to be warped based on the motion of the `video_tracking` data.
+    contrast_kernel : int, optional
+        Kernel size for local contrast enhancement (must be odd), by default 7
+        See :py:func:`contrast_enhancement` for details.
+    ref_frame : int, optional
+        Index of reference frame to estimate optical flow to, by default 0
+    presmooth_temporal : float, optional
+        Standard deviation of smoothing Gaussian kernel in time, by default 0.8
+        See :py:func:`optimap.video.smooth_spatiotemporal` for details.
+    presmooth_spatial : float, optional
+        Standard deviation of smoothing Gaussian kernel in space, by default 0.8
+        See :py:func:`optimap.video.smooth_spatiotemporal` for details.
+    postsmooth : tuple, optional
+        Tuple of (wx, wy, wt) for Gaussian smoothing kernel in space and time, by default None. If None, no smoothing is applied. See :py:func:`smooth_displacements` for details.
+    show_progress : bool, optional
+        Show progress bar, by default None
+    method : str, optional
+        Optical flow method to use (default: 'farneback' if GPU is available, 'farneback_cpu' otherwise), by default None
+
+    Returns
+    -------
+    np.ndarray
+        
+    """
+    if presmooth_temporal > 0 or presmooth_spatial > 0:
+        video_tracking = video_tracking.astype(np.float32)
+        video_tracking = smooth_spatiotemporal(video_tracking, presmooth_temporal, presmooth_spatial)
+    if contrast_kernel != 0:
+        video_tracking = contrast_enhancement(video_tracking, contrast_kernel)
+    flows = estimate_reverse_displacements(video_tracking, ref_frame, method=method)
+    if postsmooth is not None:
+        flows = smooth_displacements(flows, *postsmooth)
+    video_warped = warp_video(video_warping, flows)
     return video_warped

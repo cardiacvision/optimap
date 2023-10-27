@@ -10,6 +10,7 @@ See :footcite:t:`Christoph2018a` and :footcite:t:`Lebert2022` for details.
 
 __all__ = [
     "motion_compensate",
+    "reverse_motion_compensate",
     "estimate_displacements",
     "estimate_reverse_displacements",
     "warp_video",
@@ -23,5 +24,5 @@ __all__ = [
 
 from ._flowestimator import FlowEstimator
 from ._warping import warp_video, warp_image
-from ._core import contrast_enhancement, smooth_displacements, estimate_displacements, estimate_reverse_displacements, motion_compensate
+from ._core import contrast_enhancement, smooth_displacements, estimate_displacements, estimate_reverse_displacements, motion_compensate, reverse_motion_compensate
 from ._plot import play_displacements, play_displacements_points
