@@ -41,15 +41,17 @@ class ImageSegmenter:
 
         .. table:: **Keyboard Shortcuts**
 
-            ========================= ===========================
-            Key                       Action
-            ========================= ===========================
-            ``ctrl+z`` or ``cmd+z``   Undo
-            ``ctrl+y`` or ``cmd+y``   Redo
-            ``v``                     Toggle visibility of mask
-            ``e``                     Erase mode
-            ``d``                     Draw/Lasso mode
-            ========================= ===========================
+            ========================= =========================== 
+            Key                       Action                     
+            ========================= =========================== 
+            ``Scroll``                Zoom in/out
+            ``ctrl+z`` or ``cmd+z``   Undo                       
+            ``ctrl+y`` or ``cmd+y``   Redo                       
+            ``v``                     Toggle visibility of mask  
+            ``e``                     Erase mode            
+            ``d``                     Draw/Lasso mode     
+            ``q``                     Quit
+            ========================= =========================== 
 
         Parameters
         ----------
@@ -113,7 +115,6 @@ class ImageSegmenter:
             lasso_props = default_lasso_props
 
         useblit = False if "ipympl" in mpl.get_backend().lower() else True
-        print(f"{mpl.get_backend()=}, {useblit=}")
         button_dict = {"left": 1, "middle": 2, "right": 3}
         if isinstance(pan_mousebutton, str):
             pan_mousebutton = button_dict[pan_mousebutton.lower()]
