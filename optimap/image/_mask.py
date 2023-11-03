@@ -39,6 +39,11 @@ def interactive_mask(image, mask=None, cmap='gray', figsize=(7, 7)):
         Colormap of the image, by default "gray"
     figsize: tuple, optional
         Figure size, by default (7, 7)
+
+    Returns
+    -------
+    mask : 2D ndarray
+        Created mask.
     """
     fig, ax = plt.subplots(figsize=figsize)
     segmenter = ImageSegmenter(

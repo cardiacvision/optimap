@@ -136,12 +136,11 @@ def save_image(image, filename, **kwargs):
     """
     Export an image to a file. The file format is inferred from the filename extension.
 
-    Uses :func:`numpy.save` internally if the file extension is ``.npy``.
-    Uses :func:`cv2.imwrite` internally otherwise.
+    Uses :func:`numpy.save` internally if the file extension is ``.npy`` and :func:`cv2.imwrite` otherwise.
 
     Parameters
     ----------
-    image : {X, Y}, {X, Y, 3}, or {X, Y, 3} np.ndarray
+    image : np.ndarray
         Image to save
     filename : str or pathlib.Path
         Path to save image to
@@ -161,7 +160,7 @@ def smooth_gaussian(image, sigma, **kwargs):
     """
     Smooth an image or mask using a Gaussian filter.
     
-    Uses `scipy.ndimage.gaussian_filter` internally with ``mode='nearest'``.
+    Uses :func:`scipy.ndimage.gaussian_filter` internally with ``mode='nearest'``.
     
     Parameters
     ----------
