@@ -140,6 +140,8 @@ def pad(video, width, mode='constant' , **kwargs):
         Width of padding.
     mode : str, optional
         Padding mode, by default 'constant'. See :py:func:`numpy.pad` for details and additional keyword arguments.
+    **kwargs : dict, optional
+        Additional keyword arguments passed to :py:func:`numpy.pad`.
     
     Returns
     -------

@@ -66,18 +66,19 @@ def detect_background_threshold(image):
         Background threshold.
     """
     # TODO: fix histogram binning for float images properly
+        
     scale = 1
-    if img.dtype in [np.float32, np.float64]:
-        max_val = img.max()
+    if image.dtype in [np.float32, np.float64]:
+        max_val = image.max()
         if max_val < 5:
             scale = 4095
-            img = img * 4095
-    n, x = im2hist(img, zero_extents=True)
+            image = image * 4095
+    n, x = im2hist(image, zero_extents=True)
     threshold = GHT(n, x)[0]
     return threshold / scale
 
 
-def background_mask(image, threshold=None, show=True, return_threshold=False):
+def background_mask(image, threshold=None, show=True, return_threshold=False, **kwargs):
     """
     Create a background mask for an image using a threshold.
     If no threshold is given, the background threshold is detected using the GHT algorithm :cite:p:`Barron2020`.
@@ -92,6 +93,8 @@ def background_mask(image, threshold=None, show=True, return_threshold=False):
         Show the mask, by default True
     return_threshold : bool, optional
         If True, return the threshold as well, by default False
+    kwargs : dict, optional
+        Additional arguments passed to :func:`show_mask`.
 
     Returns
     -------
@@ -100,20 +103,21 @@ def background_mask(image, threshold=None, show=True, return_threshold=False):
     threshold : float or int
         Background threshold, only if ``return_threshold`` is True.
     """
+    
     if threshold is None:
         threshold = detect_background_threshold(image)
         print(f"Creating mask with detected threshold {threshold}")
 
     mask = image < threshold
     if show:
-        show_mask(mask, image)
+        show_mask(mask, image, **kwargs)
     if return_threshold:
         return mask, threshold
     else:
         return mask
 
 
-def foreground_mask(image, threshold=None, show=True, return_threshold=False):
+def foreground_mask(image, threshold=None, show=True, return_threshold=False, **kwargs):
     """
     Create a foreground mask for an image using thresholding.
     If no threshold is given, the background threshold is detected using the GHT algorithm :cite:p:`Barron2020`.
@@ -126,6 +130,8 @@ def foreground_mask(image, threshold=None, show=True, return_threshold=False):
         Background threshold, by default None
     show : bool, optional
         Show the mask, by default True
+    kwargs : dict, optional
+        Additional arguments passed to :func:`show_mask`.
 
     Returns
     -------
@@ -139,14 +145,14 @@ def foreground_mask(image, threshold=None, show=True, return_threshold=False):
 
     mask = image > threshold
     if show:
-        show_mask(mask, image)
+        show_mask(mask, image, **kwargs)
     if return_threshold:
         return mask, threshold
     else:
         return mask
 
 
-def show_mask(mask, image=None, title="", ax=None):
+def show_mask(mask, image=None, title="", alpha=0.5, color='red', cmap="gray", ax=None):
     """
     Show an mask overlayed on an image.
     If no image is given, only the mask is shown.
@@ -159,6 +165,12 @@ def show_mask(mask, image=None, title="", ax=None):
         Image to show.
     title : str, optional
         Title of the image, by default ""
+    alpha : float, optional
+        Alpha value of the mask, by default 0.5
+    color : str, optional
+        Color of the True values of the mask, by default 'red'
+    cmap : str, optional
+        Colormap of the image, by default "gray"
     ax : `matplotlib.axes.Axes`, optional
         Axes to plot on. If None, a new figure and axes is created.
 
@@ -166,6 +178,14 @@ def show_mask(mask, image=None, title="", ax=None):
     -------
     ax : `matplotlib.axes.Axes`
         Axes object with image and mask plotted."""
+    
+    if mask.ndim != 2:
+        raise ValueError(f"Mask must be an image, got shape {mask.shape}")
+    if image is not None and image.ndim != 2 and image.shape[-1] != 3:
+        raise ValueError(f"Image must be an image, got shape {image.shape}")
+    mask = mask.astype(bool)
+    cmap_mask = mpl.colors.ListedColormap(['none', color])
+
     if ax is None:
         fig, ax = plt.subplots()
         show = True
@@ -173,9 +193,11 @@ def show_mask(mask, image=None, title="", ax=None):
         show = False
 
     if image is not None:
-        ax.imshow(image, cmap="gray", interpolation="none")
-    alpha = 0.5 if image is not None else 1
-    ax.imshow(mask, cmap="jet", alpha=alpha, interpolation="none")
+        ax.imshow(image, cmap=cmap, interpolation="none")
+    else:
+        alpha = 1
+        
+    ax.imshow(mask, cmap=cmap_mask, vmin=0, vmax=1, alpha=alpha, interpolation="none")
     ax.axis("off")
     if title:
         ax.set_title(title)
@@ -251,7 +273,7 @@ def erode_mask(binary_mask, iterations=1, **kwargs):
     iterations : int, optional
         Number of iterations, by default 1
     **kwargs : dict, optional
-        Additional arguments passed to `scipy.ndimage.binary_erosion`.
+        Additional arguments passed to :func:`scipy.ndimage.binary_erosion`.
 
     Returns
     -------
@@ -272,7 +294,7 @@ def dilate_mask(binary_mask, iterations=1, **kwargs):
     iterations : int, optional
         Number of iterations, by default 1
     **kwargs : dict, optional
-        Additional arguments passed to `scipy.ndimage.binary_dilation`.
+        Additional arguments passed to :func:`scipy.ndimage.binary_dilation`.
 
     Returns
     -------
@@ -291,7 +313,7 @@ def fill_mask_holes(binary_mask, **kwargs):
     binary_mask : 2D ndarray
         Binary mask.
     **kwargs : dict, optional
-        Additional arguments passed to `scipy.ndimage.binary_fill_holes`.
+        Additional arguments passed to :func:`scipy.ndimage.binary_fill_holes`.
 
     Returns
     -------
@@ -312,7 +334,7 @@ def binary_opening(binary_mask, iterations=1, **kwargs):
     iterations : int, optional
         Number of iterations, by default 1
     **kwargs : dict, optional
-        Additional arguments passed to `scipy.ndimage.binary_opening`.
+        Additional arguments passed to :func:`scipy.ndimage.binary_opening`.
 
     Returns
     -------
@@ -333,7 +355,7 @@ def binary_closing(binary_mask, iterations=1, **kwargs):
     iterations : int, optional
         Number of iterations, by default 1
     **kwargs : dict, optional
-        Additional arguments passed to `scipy.ndimage.binary_closing`.
+        Additional arguments passed to :func:`scipy.ndimage.binary_closing`.
 
     Returns
     -------

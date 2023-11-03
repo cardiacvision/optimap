@@ -30,7 +30,8 @@ def show_image(image, title="", vmin=None, vmax=None, cmap="gray", show_colorbar
         Label of the colorbar, by default ""
     ax : `matplotlib.axes.Axes`, optional
         Axes to plot on. If None, a new figure and axes is created.
-    **kwargs : passed to :func:`matplotlib.pyplot.imshow`
+    **kwargs : dict, optional
+        passed to :func:`matplotlib.pyplot.imshow`
 
     Returns
     -------
@@ -72,7 +73,8 @@ def load_image(filename, as_gray=False, **kwargs):
         Filename of image file to load (e.g. PNG, TIFF, ...)
     as_gray : bool, optional
         If True, convert color images to gray-scale. By default False.
-    **kwargs : passed to :func:`cv2.imread` or :func:`numpy.load`
+    **kwargs : dict, optional
+        passed to :func:`cv2.imread` or :func:`numpy.load`
 
     Returns
     -------
@@ -113,7 +115,8 @@ def load_mask(filename, **kwargs):
     ----------
     filename : str
         Filename of image file to load (e.g. NPY, PNG, TIFF, ...)
-    **kwargs : passed to :func:`load_image`
+    **kwargs : dict, optional
+        passed to :func:`load_image`
     
     Returns
     -------
@@ -142,7 +145,8 @@ def save_image(image, filename, **kwargs):
         Image to save
     filename : str or pathlib.Path
         Path to save image to
-    **kwargs : passed to :func:`cv2.imwrite`
+    **kwargs : dict, optional
+        passed to :func:`cv2.imwrite`
     """
     _print(f"saving image to {Path(filename).absolute()}")
     fn = Path(filename)
@@ -165,8 +169,8 @@ def smooth_gaussian(image, sigma, **kwargs):
         Image or mask to smooth
     sigma : float
         Standard deviation of the Gaussian kernel
-    **kwargs : dict
-        passed to `scipy.ndimage.gaussian_filter`
+    **kwargs : dict, optional
+        passed to :func:`scipy.ndimage.gaussian_filter`
     """
     if 'mode' not in kwargs:
         kwargs['mode'] = 'nearest'

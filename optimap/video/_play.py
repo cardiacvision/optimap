@@ -39,6 +39,8 @@ def play(video, skip_frame=1, title="", vmin=None, vmax=None, cmap="gray", inter
     interval : int, optional
         Delay between frames in ms, by default 10.
         This is not the actual framerate, but the delay between frames.
+    **kwargs
+        Additional keyword arguments passed to :func:`matplotlib.pyplot.subplots`
 
     Returns
     -------
@@ -101,7 +103,7 @@ def play2(
     interval : int, optional
         Delay between frames in ms, by default 10. This is not the actual framerate, but the delay between frames.
     **kwargs
-        passed to :func:`matplotlib.pyplot.subplots`
+        Additional keyword arguments passed to :func:`matplotlib.pyplot.subplots`
 
     Returns
     -------
@@ -140,7 +142,7 @@ def playn(videos, skip_frame=1, titles=None, cmaps="gray", vmins=None, vmaxs=Non
     interval : int, optional
         Delay between frames in ms, by default 10. This is not the actual framerate, but the delay between frames.
     **kwargs
-        passed to :func:`matplotlib.pyplot.subplots`
+        Additional keyword arguments passed to :func:`matplotlib.pyplot.subplots`
 
     Returns
     -------
