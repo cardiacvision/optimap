@@ -23,6 +23,7 @@ from .image import (
     load_image,
     load_mask,
     save_image,
+    interactive_mask,
     background_mask,
     foreground_mask
 )
@@ -76,6 +77,7 @@ __all__ = [
 
     "motion_compensate",
 
+    "interactive_mask",
     "background_mask",
     "foreground_mask",
 

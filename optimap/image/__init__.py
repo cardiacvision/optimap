@@ -3,7 +3,7 @@ Functions for loading, saving, and displaying images, and for creating masks.
 """
 
 from ._core import show_image, load_image, load_mask, save_image, smooth_gaussian
-from ._mask import show_mask, detect_background_threshold, background_mask, foreground_mask, disc_mask, largest_mask_island, erode_mask, dilate_mask, binary_closing, binary_opening
+from ._mask import show_mask, interactive_mask, detect_background_threshold, background_mask, foreground_mask, disc_mask, largest_mask_island, erode_mask, dilate_mask, binary_closing, binary_opening
 
 __all__ = [
     "load_image",
@@ -14,6 +14,7 @@ __all__ = [
     "save_image",
     "smooth_gaussian",
 
+    "interactive_mask",
     "background_mask",
     "foreground_mask",
     "detect_background_threshold",

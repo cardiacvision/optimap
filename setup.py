@@ -26,14 +26,14 @@ if add_openmp_flags_if_available(cpp_module):
 setup(
     name="opticalmapping",
     url="https://github.com/cardiacvision/optimap",
-    author="Jan Lebert, Jan Christoph",
+    author="Jan Lebert",
     author_email="jan.lebert@ucsf.edu",
     license="MIT",
     description="A toolbox for analyzing optical mapping and fluorescence imaging data.",
     long_description=open("README.md", encoding="utf8").read(),
-    long_description_content_type='text/markdown',
+    long_description_content_type="text/markdown",
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "Intended Audience :: Education",
         "Intended Audience :: Science/Research",
@@ -45,11 +45,14 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
         "Topic :: Scientific/Engineering :: Image Processing",
-        "Topic :: Scientific/Engineering :: Physics"
-        ],
+        "Topic :: Scientific/Engineering :: Physics",
+        "Topic :: Scientific/Engineering :: Medical Science Apps."
+    ],
     python_requires=">=3.8",
     packages=find_packages(),
+    package_data={"optimap": ["assets/*.png"]},
     install_requires=[
         "numpy",
         "matplotlib",
@@ -61,7 +64,8 @@ setup(
         "pooch",
         "seasonal",
         "static_ffmpeg",
-        ],
+        "mpl-pan-zoom",
+    ],
     tests_require=["pytest"],
     ext_modules=[cpp_module],
     cmdclass={"build_ext": build_ext},
@@ -83,7 +87,7 @@ setup(
             "furo",
             "myst_nb",  # TODO: needs git version right now, but can't use "myst_nb @ git+https://github.com/executablebooks/MyST-NB.git" here as PyPi doesn't allow it. https://github.com/executablebooks/MyST-NB/issues/530
             "jupytext",
-            "jupyter-cache"
+            "jupyter-cache",
         ],
-    }
+    },
 )

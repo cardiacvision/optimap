@@ -1,12 +1,57 @@
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import skimage
 from scipy import ndimage
 
+from ..utils import interactive_backend
 from ._GHT import im2hist, GHT
+from ._segmenter import ImageSegmenter
 
 
-def detect_background_threshold(img):
+@interactive_backend
+def interactive_mask(image, mask=None, cmap='gray', figsize=(7, 7)):
+    """
+    Create a mask interactively by drawing on an image.
+
+    .. table:: **Keyboard Shortcuts**
+
+        ========================= =========================== 
+        Key                       Action                     
+        ========================= =========================== 
+        ``Scroll``                Zoom in/out
+        ``ctrl+z`` or ``cmd+z``   Undo                       
+        ``ctrl+y`` or ``cmd+y``   Redo                       
+        ``v``                     Toggle visibility of mask  
+        ``e``                     Erase mode            
+        ``d``                     Draw/Lasso mode     
+        ``q``                     Quit
+        ========================= =========================== 
+
+    
+    Parameters
+    ----------
+    image : 2D ndarray
+        Image to draw on.
+    mask : 2D ndarray, optional
+        Mask to start with, by default None
+    cmap : str, optional
+        Colormap of the image, by default "gray"
+    figsize: tuple, optional
+        Figure size, by default (7, 7)
+    """
+    fig, ax = plt.subplots(figsize=figsize)
+    segmenter = ImageSegmenter(
+        image,
+        mask=mask,
+        cmap=cmap,
+        ax=ax
+    )
+    plt.show(block=True)
+    return segmenter.mask
+
+
+def detect_background_threshold(image):
     """
     Detect the background threshold of an image using the GHT algorithm :cite:p:`Barron2020`.
 
