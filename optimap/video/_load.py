@@ -188,6 +188,11 @@ def load_video(path, start_frame=0, frames=None, step=1, use_mmap=False):
     use_mmap : bool, optional
         If True, uses memory mapping to load the video in read-only mode, defaults to False.
         Only supported for some file types.
+
+    Returns
+    -------
+    video : {t, x, y} ndarray
+        Video array
     """
     path = Path(path)
     suffix = path.suffix.lower()

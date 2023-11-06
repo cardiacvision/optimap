@@ -181,7 +181,7 @@ def show_mask(mask, image=None, title="", alpha=0.5, color='red', cmap="gray", a
 
     Returns
     -------
-    ax : `matplotlib.axes.Axes`
+    matplotlib.axes.Axes
         Axes object with image and mask plotted."""
     
     if mask.ndim != 2:

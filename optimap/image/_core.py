@@ -35,7 +35,7 @@ def show_image(image, title="", vmin=None, vmax=None, cmap="gray", show_colorbar
 
     Returns
     -------
-    ax : `matplotlib.axes.Axes`
+    matplotlib.axes.Axes
     """
     if ax is None:
         fig, ax = plt.subplots()

@@ -125,6 +125,10 @@ def show_positions(image, positions, ax=None):
         List of positions to overlay
     ax : matplotlib.axes.Axes, optional
         Axes to plot on
+    
+    Returns
+    -------
+    matplotlib.axes.Axes
     """
     if ax is None:
         fig, ax = plt.subplots()
