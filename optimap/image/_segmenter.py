@@ -15,7 +15,7 @@ UNDO_SYMBOL = ASSETS_DIR / "undo_symbol.png"
 REDO_SYMBOL = ASSETS_DIR / "redo_symbol.png"
 VISIBILITY_ON_SYMBOL = ASSETS_DIR / "visibility_on_symbol.png"
 VISIBILITY_OFF_SYMBOL = ASSETS_DIR / "visibility_off_symbol.png"
-
+INVERT_SYMBOL = ASSETS_DIR / "invert_symbol.png"
 
 class ImageSegmenter:
     """Manually segment an image with the lasso selector."""
@@ -41,17 +41,17 @@ class ImageSegmenter:
 
         .. table:: **Keyboard Shortcuts**
 
-            ========================= =========================== 
-            Key                       Action                     
-            ========================= =========================== 
+            ========================= ===========================
+            Key                       Action
+            ========================= ===========================
             ``Scroll``                Zoom in/out
-            ``ctrl+z`` or ``cmd+z``   Undo                       
-            ``ctrl+y`` or ``cmd+y``   Redo                       
-            ``v``                     Toggle visibility of mask  
-            ``e``                     Erase mode            
-            ``d``                     Draw/Lasso mode     
+            ``ctrl+z`` or ``cmd+z``   Undo
+            ``ctrl+y`` or ``cmd+y``   Redo
+            ``v``                     Toggle visibility of mask
+            ``e``                     Erase mode
+            ``d``                     Draw/Lasso mode
             ``q``                     Quit
-            ========================= =========================== 
+            ========================= ===========================
 
         Parameters
         ----------
@@ -153,17 +153,7 @@ class ImageSegmenter:
         BUTTON_WIDTH = 0.05
         BUTTON_SPACING = 0.025
         pos = [0.22, 0.92, BUTTON_WIDTH, BUTTON_WIDTH]
-
-        self.ax_draw = self.fig.add_axes(pos)
-        self.button_draw = Button(self.ax_draw, "", image=Image.open(DRAW_SYMBOL))
-        self.button_draw.on_clicked(self._disable_erasing)
-
-        pos[0] += BUTTON_WIDTH + BUTTON_SPACING
-        self.ax_erase = self.fig.add_axes(pos)
-        self.button_erase = Button(self.ax_erase, "", image=Image.open(ERASER_SYMBOL))
-        self.button_erase.on_clicked(self._enable_erasing)
-
-        pos[0] += BUTTON_WIDTH + BUTTON_SPACING
+        
         ax_undo = self.fig.add_axes(pos)
         self.button_undo = Button(ax_undo, "", image=Image.open(UNDO_SYMBOL))
         self.button_undo.on_clicked(self._undo)
@@ -174,11 +164,28 @@ class ImageSegmenter:
         self.button_redo.on_clicked(self._redo)
 
         pos[0] += BUTTON_WIDTH + BUTTON_SPACING
-        self.ax_visibility = self.fig.add_axes(pos)
+        self._ax_visibility = self.fig.add_axes(pos)
         self.button_viz = Button(
-            self.ax_visibility, "", image=Image.open(VISIBILITY_ON_SYMBOL)
+            self._ax_visibility, "", image=Image.open(VISIBILITY_ON_SYMBOL)
         )
         self.button_viz.on_clicked(self._toggle_visibility)
+
+        pos[0] += BUTTON_WIDTH + BUTTON_SPACING
+        ax_inverse = self.fig.add_axes(pos)
+        self.button_invert = Button(
+            ax_inverse, "", image=Image.open(INVERT_SYMBOL)
+        )
+        self.button_invert.on_clicked(self._inverse_mask)
+
+        pos[0] += BUTTON_WIDTH + BUTTON_SPACING
+        ax_draw = self.fig.add_axes(pos)
+        self.button_draw = Button(ax_draw, "", image=Image.open(DRAW_SYMBOL))
+        self.button_draw.on_clicked(self._disable_erasing)
+
+        pos[0] += BUTTON_WIDTH + BUTTON_SPACING
+        ax_erase = self.fig.add_axes(pos)
+        self.button_erase = Button(ax_erase, "", image=Image.open(ERASER_SYMBOL))
+        self.button_erase.on_clicked(self._enable_erasing)
 
     def _on_key_press(self, event):
         if event.key == "ctrl+z" or event.key == "cmd+z":
@@ -201,9 +208,9 @@ class ImageSegmenter:
     def _toggle_visibility(self, event=None) -> None:
         self._visible = not self._visible
         if self._visible:
-            self.ax_visibility.images[0].set_data(Image.open(VISIBILITY_ON_SYMBOL))
+            self._ax_visibility.images[0].set_data(Image.open(VISIBILITY_ON_SYMBOL))
         else:
-            self.ax_visibility.images[0].set_data(Image.open(VISIBILITY_OFF_SYMBOL))
+            self._ax_visibility.images[0].set_data(Image.open(VISIBILITY_OFF_SYMBOL))
         self._draw_mask()
 
     def _undo(self, event=None) -> None:
@@ -217,6 +224,12 @@ class ImageSegmenter:
             self._mask_history.append(self._mask.copy())
             self.mask = self._mask_future.pop()
             self._draw_mask()
+
+    def _inverse_mask(self, event=None) -> None:
+        self._mask_history.append(self._mask.copy())
+        self._mask_future.clear()
+        self.mask = np.logical_not(self.mask)
+        self._draw_mask()
 
     def _draw_mask(self) -> None:
         if self._visible:
