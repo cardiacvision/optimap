@@ -85,7 +85,7 @@ setup(
             "sphinx-copybutton",
             "sphinx-codeautolink",
             "furo",
-            "myst_nb",  # TODO: needs git version right now, but can't use "myst_nb @ git+https://github.com/executablebooks/MyST-NB.git" here as PyPi doesn't allow it. https://github.com/executablebooks/MyST-NB/issues/530
+            "myst_nb>=1.0.0",
             "jupytext",
             "jupyter-cache",
         ],
