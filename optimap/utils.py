@@ -1,15 +1,13 @@
-"""
-General utility functions
-"""
+"""General utility functions."""
 
 __all__ = [
-    'set_verbose',
-    'is_verbose',
-    'print_bar',
-    'print_properties',
-    'enable_interactive_backend_switching',
-    'disable_interactive_backend_switching',
-    'retrieve_example_data'
+    "set_verbose",
+    "is_verbose",
+    "print_bar",
+    "print_properties",
+    "enable_interactive_backend_switching",
+    "disable_interactive_backend_switching",
+    "retrieve_example_data",
 ]
 
 import functools
@@ -24,25 +22,30 @@ import pooch
 from ._version import __version__
 
 VERBOSE = False
-INTERACTIVE_BACKEND = 'QtAgg'
+INTERACTIVE_BACKEND = "QtAgg"
 INTERACTIVE_BACKEND_SWITCHING = True
 FILE_HASHES = {
-    'Example_01_Sinus_Rabbit_Basler.npy': "sha256:5c692cca0459c931b7f767c27162a42b31e3df90a6aeac53bb182affa2135678",
-    "Example_02_VF_Rabbit_Di-4-ANEPPS_Basler_acA720-520um.npy": "sha256:6252da91db434cad95758830fdf7c13a9db6793da30dd8e85e6878736e20787e",
-    "Example_03_Pacing_Rabbit_Di-4-ANEPPS_Basler_acA720-520um.npy": "sha256:50113334e6955f5abb3658b5027447f507fd9eef6bfef766a628c2365ff848be",
-    "Example_04_Pacing_Rabbit_Di-4-ANEPPS_Basler_acA720-520um.npy": "sha256:674603f64ccf754f73a264986e0bf1ee93d03ce3a9ea88f248620632046e3c40",
+    "Example_01_Sinus_Rabbit_Basler.npy":
+        "sha256:5c692cca0459c931b7f767c27162a42b31e3df90a6aeac53bb182affa2135678",
+    "Example_02_VF_Rabbit_Di-4-ANEPPS_Basler_acA720-520um.npy":
+        "sha256:6252da91db434cad95758830fdf7c13a9db6793da30dd8e85e6878736e20787e",
+    "Example_03_Pacing_Rabbit_Di-4-ANEPPS_Basler_acA720-520um.npy":
+        "sha256:50113334e6955f5abb3658b5027447f507fd9eef6bfef766a628c2365ff848be",
+    "Example_04_Pacing_Rabbit_Di-4-ANEPPS_Basler_acA720-520um.npy":
+        "sha256:674603f64ccf754f73a264986e0bf1ee93d03ce3a9ea88f248620632046e3c40",
     "Example_05_Ratiometry.npy":
-    "sha256:10a59863ee23abc689d8ee4cd27542ef1b7b8b8eb5668a7f2dc49572f18319f2",
+        "sha256:10a59863ee23abc689d8ee4cd27542ef1b7b8b8eb5668a7f2dc49572f18319f2",
+    # used in tests
     "optimap-test-download-file.npy":
-    "sha256:0d3cfca36d8e3ad935de4d0681ddd510c1590212a99dccb196353c8ce85b7491",
+        "sha256:0d3cfca36d8e3ad935de4d0681ddd510c1590212a99dccb196353c8ce85b7491",
+    # warped version of Example_02, used to speed up documentation build
     "Example_02_VF_Rabbit_Di-4-ANEPPS_Basler_acA720-520um_warped.npy":
-    "sha256:a1781582b669a69a9753b1c43d23e0acf26fb372426eeb6d880d2e66420b2107"  # warped version of Example_02, used to speed up documentation build
+        "sha256:a1781582b669a69a9753b1c43d23e0acf26fb372426eeb6d880d2e66420b2107"
 }
 
 
 def set_verbose(state=True):
-    """
-    Set verbosity of optimap.
+    """Set verbosity of optimap.
 
     Parameters
     ----------
@@ -53,14 +56,13 @@ def set_verbose(state=True):
     VERBOSE = state
     if VERBOSE:
         print(f"optimap - v{__version__}")
-        print(
-            "A free python-based framework for processing optical mapping and fluorescence imaging data."
-        )
+        print("A free python-based framework for processing optical mapping and fluorescence imaging data.")
         print_bar(force=True)
 
 
 def is_verbose():
-    """
+    """Returns whether optimap is verbose.
+
     Returns
     -------
     bool
@@ -75,6 +77,7 @@ def _print(string):
 
 
 def print_bar(force=False):
+    """Print a bar to separate sections of output."""
     if VERBOSE or force:
         print(
             "------------------------------------------------------------------------------------------"
@@ -82,6 +85,7 @@ def print_bar(force=False):
 
 
 def print_properties(array):
+    """Print properties of an array."""
     print_bar(force=True)
     print(f"array with dimensions: {array.shape}")
     print(f"datatype of array: {array.dtype}")
@@ -91,8 +95,7 @@ def print_properties(array):
 
 
 def enable_interactive_backend_switching():
-    """
-    Enable automatic switching of the matplotlib backend to Qt when necessary.
+    """Enable automatic switching of the matplotlib backend to Qt when necessary.
 
     See also :py:func:`disable_interactive_backend_switching`.
     """
@@ -100,8 +103,7 @@ def enable_interactive_backend_switching():
     INTERACTIVE_BACKEND_SWITCHING = True
 
 def disable_interactive_backend_switching():
-    """
-    Disable automatic switching of the matplotlib backend to Qt when necessary.
+    """Disable automatic switching of the matplotlib backend to Qt when necessary.
 
     See also :py:func:`enable_interactive_backend_switching`.
     """
@@ -110,8 +112,7 @@ def disable_interactive_backend_switching():
 
 
 def interactive_backend(func):
-    """
-    Function decorator to change backend temporarily in Ipython session.
+    """Function decorator to change backend temporarily in Ipython session.
 
     Switches to QtAgg backend if in Ipython session and back to inline afterwards.
     """
@@ -135,7 +136,8 @@ def interactive_backend(func):
             _print(f"Switching matplotlib backend from {current_backend} to backend to {INTERACTIVE_BACKEND}")
             plt.switch_backend(INTERACTIVE_BACKEND)
         except Exception as e:
-            print(f"ERROR: Failed to switch matplotlib backend to '{INTERACTIVE_BACKEND}': {e}. Automatic backend switching has been disabled.")
+            print(f"ERROR: Failed to switch matplotlib backend to '{INTERACTIVE_BACKEND}': {e}. "
+                  "Automatic backend switching has been disabled.")
             disable_interactive_backend_switching()
 
         result = func(*args, **kwargs)
@@ -150,8 +152,7 @@ def interactive_backend(func):
     return wrapper
 
 def retrieve_example_data(name, directory="./example_data", silent=False):
-    """
-    Download example data if not already present.
+    """Download example data if not already present.
 
     Parameters
     ----------
@@ -176,7 +177,7 @@ def retrieve_example_data(name, directory="./example_data", silent=False):
 
     # The CMS server only allows files with a certain extensions to be uploaded.
     # We use .webm as dummy extension to upload the files, and rename them after download.
-    remote_path = urllib.parse.quote(f'{name}', safe='')
+    remote_path = urllib.parse.quote(f"{name}", safe="")
     url = f"https://cardiacvision.ucsf.edu/sites/g/files/tkssra6821/f/{remote_path}_.webm"
 
     path = pooch.retrieve(

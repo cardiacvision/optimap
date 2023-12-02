@@ -6,9 +6,12 @@ import tifffile
 from scipy.io import savemat
 
 
-def save_image_sequence(video: np.ndarray, filepattern: str = 'frame_{:03d}', directory: str = None, suffix='.png', **kwargs):
-    """
-    Save a video as a sequence of images.
+def save_image_sequence(video: np.ndarray,
+                        filepattern: str = "frame_{:03d}",
+                        directory: str = None,
+                        suffix=".png",
+                        **kwargs):
+    """Save a video as a sequence of images.
 
     Parameters
     ----------
@@ -23,20 +26,18 @@ def save_image_sequence(video: np.ndarray, filepattern: str = 'frame_{:03d}', di
     **kwargs : dict
         Additional arguments to pass to :func:`skimage.io.imsave` or :func:`tifffile.imwrite` (for ``.tiff`` files)
     """
-
     for i, frame in enumerate(video):
         fn = filepattern.format(i) + suffix
         if directory is not None:
             fn = Path(directory) / fn
-        if suffix.lower() in ['.tif', '.tiff']:
+        if suffix.lower() in [".tif", ".tiff"]:
             save_tiff(frame, fn, **kwargs)
         else:
             sio.imsave(fn, frame, **kwargs)
 
 
-def save_tiff(video, filename, photometric='minisblack', **kwargs):
-    """
-    Save a video as a monochromatic TIFF stack.
+def save_tiff(video, filename, photometric="minisblack", **kwargs):
+    """Save a video as a monochromatic TIFF stack.
 
     Parameters
     ----------
@@ -50,19 +51,18 @@ def save_tiff(video, filename, photometric='minisblack', **kwargs):
         Additional arguments to pass to :func:`tifffile.imwrite`
     """
     filename = Path(filename)
-    if filename.suffix.lower() not in ['.tif, .tiff']:
-        filename = filename.with_suffix('.tiff')
+    if filename.suffix.lower() not in [".tif, .tiff"]:
+        filename = filename.with_suffix(".tiff")
     print(f"saving video to tiff stack {filename}")
     tifffile.imwrite(filename, video, photometric=photometric, **kwargs)
 
 
 def save_tiff_folder(video, filepattern, directory=None):
-    save_image_sequence(video, filepattern, directory=directory, suffix='.tiff')
+    save_image_sequence(video, filepattern, directory=directory, suffix=".tiff")
 
 
-def save_matlab(array, filename, fieldname='video', appendmat=True):
-    """
-    Save an array to a MATLAB ``.mat`` file.
+def save_matlab(array, filename, fieldname="video", appendmat=True):
+    """Save an array to a MATLAB ``.mat`` file.
 
     Parameters
     ----------
@@ -79,8 +79,7 @@ def save_matlab(array, filename, fieldname='video', appendmat=True):
 
 
 def save_video(video, filename, **kwargs):
-    """
-    Save a video to a file. Supported file formats are ``.npy``, ``.tif``/``.tiff``, and ``.mat``.
+    """Save a video to a file. Supported file formats are ``.npy``, ``.tif``/``.tiff``, and ``.mat``.
 
     See :func:`save_tiff_folder` for saving a video as a folder of ``.tiff`` images.
 
@@ -98,14 +97,16 @@ def save_video(video, filename, **kwargs):
     filename = Path(filename)
     suffix = filename.suffix.lower()
     if not suffix:
-        raise RuntimeError(f"File '{filename}' has no file extension, unable to save video")
+        msg = f"File '{filename}' has no file extension, unable to save video"
+        raise RuntimeError(msg)
 
-    if suffix in ['.tif', '.tiff']:
+    if suffix in [".tif", ".tiff"]:
         save_tiff(video, filename)
-    elif suffix in ['.npy']:
+    elif suffix in [".npy"]:
         np.save(filename, video, **kwargs)
-        print(f'saved video as numpy file to {filename}')
-    elif suffix in ['.mat']:
+        print(f"saved video as numpy file to {filename}")
+    elif suffix in [".mat"]:
         save_matlab(video, filename, **kwargs)
     else:
-        raise RuntimeError(f"Unrecognized file extension {suffix} (for file '{filename}')")
+        msg = f"Unrecognized file extension {suffix} (for file '{filename}')"
+        raise RuntimeError(msg)

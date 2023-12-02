@@ -1,7 +1,7 @@
-"""
-A fast numpy reference implementation of GHT, as per
+"""A fast numpy reference implementation of GHT.
+
 "A Generalization of Otsu's Method and Minimum Error Thresholding"
-Jonathan T. Barron, ECCV, 2020 https://arxiv.org/abs/2007.07350
+Jonathan T. Barron, ECCV, 2020 https://arxiv.org/abs/2007.07350.
 """
 import numpy as np
 
@@ -83,25 +83,10 @@ def GHT(n, x=None, nu=0, tau=0, kappa=0, omega=0.5):
 def im2hist(im, zero_extents=False):
     # Convert an image to grayscale, bin it, and optionally zero out the first and last bins.
     if im.dtype in [np.float32, np.float64]:
-        max_val = 4095 # TODO: fix histogram binning for float images properly
-    else:
-        max_val = np.iinfo(im.dtype).max
-    x = np.arange(max_val + 1)
-    e = np.arange(-0.5, max_val + 1.5)
-    assert len(im.shape) in [2, 3]
-    im_bw = np.amax(im[..., :3], -1) if len(im.shape) == 3 else im
-    n = np.histogram(im_bw, e)[0]
-    if zero_extents:
-        n[0] = 0
-        n[-1] = 0
-    return n, x
-
-def im2hist(im, zero_extents=False):
-    # Convert an image to grayscale, bin it, and optionally zero out the first and last bins.
-    if im.dtype in [np.float32, np.float64]:
-        max_val = im.max()
+        max_val = im.max()  # TODO: fix histogram binning for float images properly
         if max_val < 5:
-            raise NotImplementedError("TODO: fix histogram binning for float images")
+            msg = "TODO: fix histogram binning for float images"
+            raise NotImplementedError(msg)
     else:
         max_val = np.iinfo(im.dtype).max
     x = np.arange(max_val + 1)

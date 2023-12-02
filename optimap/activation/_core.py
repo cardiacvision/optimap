@@ -4,17 +4,23 @@ from ..image import show_image
 from ..utils import _print, print_bar
 
 
-def compute_activation_map(video, threshold=0.5, inverted=False, fps=None, set_nan_for_inactive=True, show=True, cmap='jet'):
-    """
-    Computes an activation map (or isochrone map) from a given video based on pixel intensity thresholding.
+def compute_activation_map(video,
+                           threshold=0.5,
+                           inverted=False,
+                           fps=None,
+                           set_nan_for_inactive=True,
+                           show=True,
+                           cmap="jet"):
+    """Computes an activation map (or isochrone map) from a given video based on pixel intensity thresholding.
 
-    For each pixel in the video, the function determines the time (or frame index) at which the pixel's intensity first surpasses (or falls below, if inverted is set to True) the specified threshold.
+    For each pixel in the video, the function determines the time (or frame index) at which the pixel's intensity
+    first surpasses (or falls below, if inverted is set to True) the specified threshold.
 
     If `fps` is specified, time is giving in milliseconds, otherwise, it is given in frames.
 
     Parameters
     ----------
-    video : ndarray
+    video : np.ndarray
         A 3D array representing the video, with dimensions {t (time or frames), x (width), y (height)}.
     threshold : float, optional
         Intensity threshold at which a pixel is considered activated. Defaults to 0.5.
@@ -36,9 +42,10 @@ def compute_activation_map(video, threshold=0.5, inverted=False, fps=None, set_n
     activation_map : ndarray
         2D image
     """
-    _print(f'computing activation map with {threshold=}')
+    _print(f"computing activation map with {threshold=}")
     if video.ndim != 3:
-        raise ValueError('video must be 3-dimensional')
+        msg = "video must be 3-dimensional"
+        raise ValueError(msg)
 
     if inverted:
         amap = np.nanargmax(video < threshold, axis=0)
@@ -60,12 +67,12 @@ def compute_activation_map(video, threshold=0.5, inverted=False, fps=None, set_n
     # set masked pixels to NaN
     amap[np.isnan(video[0])] = np.nan
 
-    _print(f'minimum of activation_map: {np.nanmin(amap)}')
-    _print(f'maximum of activation_map: {np.nanmax(amap)}')
+    _print(f"minimum of activation_map: {np.nanmin(amap)}")
+    _print(f"maximum of activation_map: {np.nanmax(amap)}")
     print_bar()
 
     if show:
-        cbar_label = 'Activation Time [ms]' if fps is not None else 'Activation Time [frames]'
-        show_image(amap, cmap=cmap, show_colorbar=True, title='Activation Map', colorbar_title=cbar_label)
+        cbar_label = "Activation Time [ms]" if fps is not None else "Activation Time [frames]"
+        show_image(amap, cmap=cmap, show_colorbar=True, title="Activation Map", colorbar_title=cbar_label)
 
     return amap

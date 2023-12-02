@@ -5,8 +5,7 @@ from ..utils import _print, print_bar
 
 
 def random_positions(shape_or_mask, N=1):
-    """
-    Returns N randomly distributed positions within image shape or mask
+    """Returns N randomly distributed positions within image shape or mask.
 
     Parameters
     ----------
@@ -20,15 +19,14 @@ def random_positions(shape_or_mask, N=1):
     list of tuples
         TODO: (x, y) or (y, x) ???
     """
-
     mask = None
     if isinstance(shape_or_mask, np.ndarray):
         mask = shape_or_mask
         Nx, Ny = mask.shape
-        _print(f'creating {N} random (2D) positions within mask')
+        _print(f"creating {N} random (2D) positions within mask")
     else:
         Nx, Ny = shape_or_mask
-        _print(f'creating {N} random (2D) positions within (0,0) and ({Nx}, {Ny})')
+        _print(f"creating {N} random (2D) positions within (0,0) and ({Nx}, {Ny})")
 
     points = []
     while len(points) < N:
@@ -52,8 +50,7 @@ def line_positions(start, end):
     return skimage.draw.line(start[0], start[1], end[0], end[1]) #TODO (y, x)?
 
 def positions_from_A_to_B(N, A, B):
-    """
-    Creates N positions along straight line from A to B (2D coordinates)
+    """Creates N positions along straight line from A to B (2D coordinates).
 
     Parameters
     ----------
@@ -69,4 +66,5 @@ def positions_from_A_to_B(N, A, B):
     list of tuples
         TODO: (x, y) or (y, x) ???
     """
-    raise NotImplementedError('nothing implemented yet')
+    msg = "nothing implemented yet"
+    raise NotImplementedError(msg)

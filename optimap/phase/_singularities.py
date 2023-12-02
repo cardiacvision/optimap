@@ -2,9 +2,7 @@ import numpy as np
 
 
 def _normalize(p):
-    """
-    Normalize/wrap the phase differences `p` to values between -pi and pi.
-    """
+    """Normalize/wrap the phase differences `p` to values between -pi and pi."""
     m = abs(p) > np.pi
     s = np.sign(p[m])
     p[m] = -2 * s * np.pi + p[m]
@@ -12,8 +10,7 @@ def _normalize(p):
 
 
 def detect_phase_singularities(phase: np.ndarray, separate_by_charge=False):
-    """
-    Detect phase singularities in a phase map video using :cite:p:`Iyer2001` method.
+    """Detect phase singularities in a phase map video using :cite:p:`Iyer2001` method.
     Unlike :cite:p:`Iyer2001`, the phase integral used here is only over four pixels.
 
     TODO: verify if positions are (x, y) or (y, x)
@@ -33,9 +30,9 @@ def detect_phase_singularities(phase: np.ndarray, separate_by_charge=False):
     (list of tuples, list of tuples)
         (positive_ps_list, negative_ps_list) (if separate_by_charge is True)
     """
-
     if phase.ndim != 3:
-        raise ValueError("phase must be three dimensional, shaped (t, x, y)")
+        msg = "phase must be three dimensional, shaped (t, x, y)"
+        raise ValueError(msg)
 
     phase_singularities = []
     if separate_by_charge:

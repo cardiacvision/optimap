@@ -1,6 +1,4 @@
-"""
-Functions for loading, saving, and displaying images, and for creating masks.
-"""
+"""Functions for loading, saving, and displaying images, and for creating masks."""
 
 from ._core import load_image, load_mask, save_image, show_image, smooth_gaussian
 from ._mask import (

@@ -10,9 +10,8 @@ from ._segmenter import ImageSegmenter
 
 
 @interactive_backend
-def interactive_mask(image, mask=None, cmap='gray', figsize=(7, 7)):
-    """
-    Create a mask interactively by drawing on an image.
+def interactive_mask(image, mask=None, cmap="gray", figsize=(7, 7)):
+    """Create a mask interactively by drawing on an image.
 
     .. table:: **Keyboard Shortcuts**
 
@@ -57,12 +56,11 @@ def interactive_mask(image, mask=None, cmap='gray', figsize=(7, 7)):
 
 
 def detect_background_threshold(image):
-    """
-    Detect the background threshold of an image using the GHT algorithm :cite:p:`Barron2020`.
+    """Detect the background threshold of an image using the GHT algorithm :cite:p:`Barron2020`.
 
     Parameters
     ----------
-    img : np.ndarray
+    image : np.ndarray
         Image to detect background threshold for.
 
     Returns
@@ -84,8 +82,8 @@ def detect_background_threshold(image):
 
 
 def background_mask(image, threshold=None, show=True, return_threshold=False, **kwargs):
-    """
-    Create a background mask for an image using a threshold.
+    """Create a background mask for an image using a threshold.
+
     If no threshold is given, the background threshold is detected using the GHT algorithm :cite:p:`Barron2020`.
 
     Parameters
@@ -108,7 +106,6 @@ def background_mask(image, threshold=None, show=True, return_threshold=False, **
     threshold : float or int
         Background threshold, only if ``return_threshold`` is True.
     """
-
     if threshold is None:
         threshold = detect_background_threshold(image)
         print(f"Creating mask with detected threshold {threshold}")
@@ -123,8 +120,8 @@ def background_mask(image, threshold=None, show=True, return_threshold=False, **
 
 
 def foreground_mask(image, threshold=None, show=True, return_threshold=False, **kwargs):
-    """
-    Create a foreground mask for an image using thresholding.
+    """Create a foreground mask for an image using thresholding.
+
     If no threshold is given, the background threshold is detected using the GHT algorithm :cite:p:`Barron2020`.
 
     Parameters
@@ -135,6 +132,8 @@ def foreground_mask(image, threshold=None, show=True, return_threshold=False, **
         Background threshold, by default None
     show : bool, optional
         Show the mask, by default True
+    return_threshold : bool, optional
+        If True, return the threshold as well, by default False
     kwargs : dict, optional
         Additional arguments passed to :func:`show_mask`.
 
@@ -142,8 +141,9 @@ def foreground_mask(image, threshold=None, show=True, return_threshold=False, **
     -------
     mask : 2D ndarray
         Foreground mask.
+    threshold : float or int
+        Background threshold, only if ``return_threshold`` is True.
     """
-
     if threshold is None:
         threshold = detect_background_threshold(image)
         print(f"Creating mask with detected threshold {threshold}")
@@ -157,9 +157,8 @@ def foreground_mask(image, threshold=None, show=True, return_threshold=False, **
         return mask
 
 
-def show_mask(mask, image=None, title="", alpha=0.5, color='red', cmap="gray", ax=None):
-    """
-    Show an mask overlayed on an image.
+def show_mask(mask, image=None, title="", alpha=0.5, color="red", cmap="gray", ax=None):
+    """Show an mask overlayed on an image.
     If no image is given, only the mask is shown.
 
     Parameters
@@ -182,14 +181,16 @@ def show_mask(mask, image=None, title="", alpha=0.5, color='red', cmap="gray", a
     Returns
     -------
     matplotlib.axes.Axes
-        Axes object with image and mask plotted."""
-
+        Axes object with image and mask plotted.
+    """
     if mask.ndim != 2:
-        raise ValueError(f"Mask must be an image, got shape {mask.shape}")
+        msg = f"Mask must be an image, got shape {mask.shape}"
+        raise ValueError(msg)
     if image is not None and image.ndim != 2 and image.shape[-1] != 3:
-        raise ValueError(f"Image must be an image, got shape {image.shape}")
+        msg = f"Image must be an image, got shape {image.shape}"
+        raise ValueError(msg)
     mask = mask.astype(bool)
-    cmap_mask = mpl.colors.ListedColormap(['none', color])
+    cmap_mask = mpl.colors.ListedColormap(["none", color])
 
     if ax is None:
         fig, ax = plt.subplots()
@@ -213,8 +214,7 @@ def show_mask(mask, image=None, title="", alpha=0.5, color='red', cmap="gray", a
 
 
 def disc_mask(shape, center, radius):
-    """
-    Create a circular/disk shaped mask.
+    """Create a circular/disk shaped mask.
 
     Parameters
     ----------
@@ -232,22 +232,23 @@ def disc_mask(shape, center, radius):
     """
     x, y = np.ogrid[: shape[0], : shape[1]]
     cx, cy = center
-    mask = (x - cx) ** 2 + (y - cy) ** 2 <= radius**2
-    return mask
+    return (x - cx) ** 2 + (y - cy) ** 2 <= radius**2
 
 
 def largest_mask_island(mask: np.ndarray, invert: bool = False):
-    """
-    Identify and return the largest connected component (island) in a given binary mask.
+    """Identify and return the largest connected component (island) in a given binary mask.
 
-    This function labels distinct regions (or islands) in a binary mask and returns the largest one in terms of pixel count. Optionally, the mask can be inverted before processing and then inverted back before returning the result.
+    This function labels distinct regions (or islands) in a binary mask and returns the largest one in
+    terms of pixel count. Optionally, the mask can be inverted before processing and then inverted back
+    before returning the result.
 
     Parameters
     ----------
     mask : 2D ndarray
         Binary mask.
     invert : bool, optional
-        If set to True, the mask is inverted before processing and then inverted back before returning the result. This can be useful if the area of interest is represented by False in the original mask. Default is False.
+        If set to True, the mask is inverted before processing and then inverted back before returning the result.
+        This can be useful if the area of interest is represented by False in the original mask. Default is False.
 
     Returns
     -------
@@ -268,8 +269,7 @@ def largest_mask_island(mask: np.ndarray, invert: bool = False):
 
 
 def erode_mask(binary_mask, iterations=1, **kwargs):
-    """
-    Erode a binary mask.
+    """Erode a binary mask.
 
     Parameters
     ----------
@@ -289,8 +289,7 @@ def erode_mask(binary_mask, iterations=1, **kwargs):
 
 
 def dilate_mask(binary_mask, iterations=1, **kwargs):
-    """
-    Dilate a binary mask.
+    """Dilate a binary mask.
 
     Parameters
     ----------
@@ -310,8 +309,7 @@ def dilate_mask(binary_mask, iterations=1, **kwargs):
 
 
 def fill_mask_holes(binary_mask, **kwargs):
-    """
-    Fill holes in a binary mask.
+    """Fill holes in a binary mask.
 
     Parameters
     ----------
@@ -329,8 +327,7 @@ def fill_mask_holes(binary_mask, **kwargs):
 
 
 def binary_opening(binary_mask, iterations=1, **kwargs):
-    """
-    Perform binary opening on a binary mask. Consists of an erosion followed by a dilation. See https://en.wikipedia.org/wiki/Opening_(morphology).
+    """Perform binary opening on a binary mask. Consists of an erosion followed by a dilation. See https://en.wikipedia.org/wiki/Opening_(morphology).
 
     Parameters
     ----------
@@ -350,8 +347,7 @@ def binary_opening(binary_mask, iterations=1, **kwargs):
 
 
 def binary_closing(binary_mask, iterations=1, **kwargs):
-    """
-    Perform binary closing on a binary mask. Consists of a dilation followed by an erosion. See https://en.wikipedia.org/wiki/Closing_(morphology).
+    """Perform binary closing on a binary mask. Consists of a dilation followed by an erosion. See https://en.wikipedia.org/wiki/Closing_(morphology).
 
     Parameters
     ----------

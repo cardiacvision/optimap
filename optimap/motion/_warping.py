@@ -11,8 +11,7 @@ def warp_video(
     borderMode=cv2.BORDER_REFLECT101,
     borderValue=0.0,
 ):
-    """
-    Warps a video according to the given optical flow. Uses GPU if available.
+    """Warps a video according to the given optical flow. Uses GPU if available.
 
     Parameters
     ----------
@@ -34,7 +33,6 @@ def warp_video(
     np.ndarray
         {t, x, y} ndarray
     """
-
     f = warp_video_gpu if cv2.cuda.getCudaEnabledDeviceCount() > 0 else warp_video_cpu
     return f(video, displacements, interpolation, borderMode, borderValue, show_progress)
 
@@ -46,8 +44,7 @@ def warp_image(
     borderMode=cv2.BORDER_REFLECT101,
     borderValue=0.0,
 ):
-    """
-    Warps an image according to the given optical flow. Uses GPU if available.
+    """Warps an image according to the given optical flow. Uses GPU if available.
 
     Parameters
     ----------
@@ -69,7 +66,6 @@ def warp_image(
     np.ndarray
         {x, y} ndarray
     """
-
     f = warp_image_gpu if cv2.cuda.getCudaEnabledDeviceCount() > 0 else warp_image_cpu
     return f(img, displacement, interpolation, borderMode, borderValue)
 
@@ -140,7 +136,7 @@ def warp_image_gpu(
 
     flow0.upload(flow[:, :, 0])
     flow1.upload(flow[:, :, 1])
-    warped = cv2.cuda.remap(
+    return cv2.cuda.remap(
         img_gpu,
         flow0,
         flow1,
@@ -148,7 +144,6 @@ def warp_image_gpu(
         borderMode=borderMode,
         borderValue=borderValue,
     ).download()
-    return warped
 
 
 def warp_video_cpu(
@@ -209,7 +204,6 @@ def warp_image_cpu(
 
     flow0 = flow[:, :, 0].copy()
     flow1 = flow[:, :, 1].copy()
-    warped = cv2.remap(
+    return cv2.remap(
         img, flow0, flow1, interpolation, borderMode=borderMode, borderValue=borderValue
     )
-    return warped

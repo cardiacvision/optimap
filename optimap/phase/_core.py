@@ -9,8 +9,7 @@ from ..video import play
 
 
 def compute_phase(video, offset=-0.5):
-    """
-    Computes phase using Hilbert transformation, takes a normalized video or time-series as input.
+    """Computes phase using Hilbert transformation, takes a normalized video or time-series as input.
 
     Parameters
     ----------
@@ -24,19 +23,17 @@ def compute_phase(video, offset=-0.5):
     {t, x, y} ndarray
         phase in range [-pi, pi]
     """
-
-    _print('computing phase video (using hilbert transform and assuming normalized video with values [0,1]) ... ')
+    _print("computing phase video (using hilbert transform and assuming normalized video with values [0,1]) ... ")
     analytic_signal = hilbert(video + offset, axis=0)
     phase = np.angle(analytic_signal).astype(np.float32)
-    _print('minimum of phase: ' + str(np.nanmin(phase)))
-    _print('maximum of phase: ' + str(np.nanmax(phase)))
+    _print("minimum of phase: " + str(np.nanmin(phase)))
+    _print("maximum of phase: " + str(np.nanmax(phase)))
     print_bar()
     return phase
 
 def phasefilter_angle_threshold(phase: np.ndarray, wx: int, wy: int, wt: int, tr_angle: float,
                                 mask: Optional[np.ndarray] = None):
-    """
-    Remove outliers in a phase video by comparing them against their neighbors in space and time.
+    """Remove outliers in a phase video by comparing them against their neighbors in space and time.
 
     Parameters
     ----------
@@ -74,8 +71,7 @@ def phasefilter_disc(phase: np.ndarray, wx: int, wy: int, wt: int, mask: Optiona
 
 def phasefilter_fillsmooth(phase: np.ndarray, wx: int, wy: int, wt: int, threshold: float,
                            mask: Optional[np.ndarray] = None):
-    """
-    Fills holes in phase video by smoothing over space and time.
+    """Fills holes in phase video by smoothing over space and time.
 
     Parameters
     ----------
@@ -104,7 +100,5 @@ def phasefilter_fillsmooth(phase: np.ndarray, wx: int, wy: int, wt: int, thresho
 
 
 def play_phase(video, skip_frame = 1, title="phase"):
-    """
-    Play a phase video using matplotlib.
-    """
-    return play(video, skip_frame, title, vmin=-np.pi, vmax=np.pi, cmap='hsv')
+    """Play a phase video using matplotlib."""
+    return play(video, skip_frame, title, vmin=-np.pi, vmax=np.pi, cmap="hsv")

@@ -113,27 +113,29 @@ def test_alpha_blending():
     assert out.shape == base.shape + (4,)
     assert np.allclose(out[..., :3], 0)
 
-    out = om.video.alpha_blend_videos(base, overlay, alpha=overlay, vmin_base=0, vmax_base=1, vmin_overlay=0, vmax_overlay=1, cmap_overlay='gray')
+    out = om.video.alpha_blend_videos(base, overlay, alpha=overlay,
+                                      vmin_base=0, vmax_base=1, vmin_overlay=0, vmax_overlay=1,
+                                      cmap_overlay="gray")
     assert np.allclose(out[..., :3], 1)
 
     overlay = np.full((10, 128, 128, 4), 1, dtype=np.float32)
-    out = om.video.alpha_blend_videos(base, overlay, cmap_overlay='gray')
+    out = om.video.alpha_blend_videos(base, overlay, cmap_overlay="gray")
     assert np.allclose(out[..., :3], 1)
 
     out = om.video.alpha_blend_videos(base, overlay, alpha=overlay)
     assert np.allclose(out[..., :3], 1)
 
-    out = om.video.alpha_blend_videos(base, overlay, alpha=overlay[0, :, :, 0], cmap_overlay='gray')
+    out = om.video.alpha_blend_videos(base, overlay, alpha=overlay[0, :, :, 0], cmap_overlay="gray")
     assert np.allclose(out[..., :3], 1)
 
 
 def test_ffmpeg_defaults():
-    pytest.raises(ValueError, om.video.set_default_ffmpeg_encoder, 'doesnotexist')
-    om.video.set_default_ffmpeg_encoder('h264_nvenc')
-    assert om.video.get_default_ffmpeg_encoder() == 'h264_nvenc'
+    pytest.raises(ValueError, om.video.set_default_ffmpeg_encoder, "doesnotexist")
+    om.video.set_default_ffmpeg_encoder("h264_nvenc")
+    assert om.video.get_default_ffmpeg_encoder() == "h264_nvenc"
 
-    om.video.set_ffmpeg_defaults('h264_nvenc', {'-preset': 'slow'})
-    om.video.set_default_ffmpeg_encoder('libx264')
+    om.video.set_ffmpeg_defaults("h264_nvenc", {"-preset": "slow"})
+    om.video.set_default_ffmpeg_encoder("libx264")
 
 
 @pytest.mark.skipif(skvideo._HAS_FFMPEG == 0, reason="ffmpeg not installed")

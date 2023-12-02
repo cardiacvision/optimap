@@ -9,7 +9,8 @@ import numpy as np
 
 
 class MultiRecorderImporter:
-    """Importer for MultiRecorder (MPI-DS) recordings (.dat files)"""
+    """Importer for MultiRecorder (MPI-DS) recordings (.dat files)."""
+
     _Nx, _Ny, _Nt = 0, 0, 0
     _header_size = 1024
     _skip_per_frame = 0
@@ -20,29 +21,28 @@ class MultiRecorderImporter:
     def __init__(self, filepath, is_8bit=False):
         self.filepath = Path(filepath)
         if not self.filepath.exists():
-            raise FileNotFoundError(f"File {self.filepath} not found")
+            msg = f"File {self.filepath} not found"
+            raise FileNotFoundError(msg)
 
         self.is_8bit = is_8bit
         with open(self.filepath, "rb") as f:
             self._read_header(f)
 
     def get_metadata(self):
-        """Returns the metadata dictionary"""
+        """Returns the metadata dictionary."""
         return self._meta
 
     def load_video(self, start_frame=0, frames=None, step=1, use_mmap=False):
-        """
-        Returns a 3D numpy array containing the loaded video.
-        """
-
+        """Returns a 3D numpy array containing the loaded video."""
         if self._Nt == 0:
-            raise ValueError("Recorded video file contains no frames.")
+            msg = "Recorded video file contains no frames."
+            raise ValueError(msg)
 
         if frames is not None:
             nframes = frames
             if nframes > self._Nt - start_frame:
-                msg = f"requested {nframes} frames, but only {self._Nt - start_frame} frames available. Loading all available frames."
-                warnings.warn(msg, UserWarning)
+                warnings.warn(f"Requested {nframes} frames, but only {self._Nt - start_frame} frames available. "
+                              "Loading all available frames.", UserWarning)
                 nframes = self._Nt - start_frame
         else:
             nframes = self._Nt - start_frame
@@ -84,9 +84,7 @@ class MultiRecorderImporter:
         return arr
 
     def _read_header(self, f: BinaryIO):
-        """
-        Read the header
-        """
+        """Read the header."""
         self.version = f.read(1).decode("utf-8")
         if self.version == "d":
             date = f.read(17)
@@ -124,27 +122,25 @@ class MultiRecorderImporter:
             except ValueError:
                 try:
                     dtime2 = ":".join(dtime.split(":")[:-1])
-                    self._meta["starttime"] = datetime.strptime(
-                        dtime2, "%Y-%m-%d %H:%M:%S"
-                    )
+                    self._meta["starttime"] = datetime.strptime(dtime2, "%Y-%m-%d %H:%M:%S")
                 except ValueError:
                     self._meta["starttime"] = datetime.fromtimestamp(0)
-                    print(
-                        "Could not determine video starttime from string: " + str(dtime)
-                    )
+                    msg = f"Could not determine video starttime from string: '{dtime}' in file '{self.filepath}'"
+                    warnings.warn(msg, UserWarning)
             locale.setlocale(locale.LC_TIME, cl)
 
             self._meta["comment"] = f.read(971).rstrip(b"\x00").decode("utf-8")
         else:
-            raise ValueError(f"Unknown MultiRecorder file version: {self.version}")
+            msg = f"Unknown MultiRecorder file version: {self.version}"
+            raise ValueError(msg)
 
 
 class MiCAM05_Importer:
-    """
-    Importer for SciMedia MiCAM05 CMOS camera recordings (.gsh / .gsd files)
+    """Importer for SciMedia MiCAM05 CMOS camera recordings (.gsh / .gsd files).
 
     .. warning:: Tested only on sample MiCAM05-N256 camera files with 256x256 pixels resolution.
     """
+
     _Nx, _Ny, _Nt = 0, 0, 0
     _dtype = np.uint16
     _gsd_header_size = 970
@@ -155,9 +151,11 @@ class MiCAM05_Importer:
         self.gsd = filepath.with_suffix(".gsd")
         self.gsh = filepath.with_suffix(".gsh")
         if not self.gsd.exists():
-            raise FileNotFoundError(f"File {self.gsd} not found")
+            msg = f"File {self.gsd} not found"
+            raise FileNotFoundError(msg)
         if not self.gsh.exists():
-            raise FileNotFoundError(f"File {self.gsh} not found")
+            msg = f"File {self.gsh} not found"
+            raise FileNotFoundError(msg)
         self._read_header()
 
     def _read_header(self):
@@ -173,17 +171,18 @@ class MiCAM05_Importer:
         self._Nt = int(self._meta["Number of frames"])
         self._Nx = int(self._meta["Image width"])
         self._Ny = int(self._meta["Image height"])
-        self._meta['framerate'] = float(self._meta["Frame rate (Hz)"])
+        self._meta["framerate"] = float(self._meta["Frame rate (Hz)"])
         try:
-            self._meta['date'] = datetime.strptime(self._meta["Date created"], '%d/%m/%Y %H:%M:%S')
+            self._meta["date"] = datetime.strptime(self._meta["Date created"], "%d/%m/%Y %H:%M:%S")
         except ValueError:
-            self._meta['date'] = self._meta["Date created"]
+            self._meta["date"] = self._meta["Date created"]
 
     def load_video(self, start_frame=0, frames=None, step=1):
         if frames is not None:
             end_frame = start_frame + frames
             if end_frame > self._Nt:
-                warnings.warn(f"requested {frames} frames, but only {self._Nt - start_frame} frames available. Loading all available frames.", UserWarning)
+                warnings.warn(f"Requested {frames} frames, but only {self._Nt - start_frame} frames available. "
+                              "Loading all available frames.", UserWarning)
                 end_frame = None
         else:
             end_frame = None
@@ -200,19 +199,17 @@ class MiCAM05_Importer:
                               dtype=self._dtype,
                               offset=self._gsd_header_size + background_image.nbytes,
                               shape=(self._Nt, self._Nx, self._Ny),
-                              mode='r')
+                              mode="r")
         CMOS_data = CMOS_data[start_frame:end_frame:step].copy()
-        video = CMOS_data + background_image[np.newaxis, :, :]
-        return video
+        return CMOS_data + background_image[np.newaxis, :, :]
 
     def get_metadata(self):
-        """Returns the metadata dictionary"""
+        """Returns the metadata dictionary."""
         return self._meta
 
 class MiCAM_ULTIMA_Importer:
-    """
-    Importer for SciMedia MiCAM ULTIMA recordings (.rsh / .rsm / .rsd files)
-    """
+    """Importer for SciMedia MiCAM ULTIMA recordings (.rsh / .rsm / .rsd files)."""
+
     _Nx, _Ny, _Nt = 0, 0, 0
     _lskp = 0  # left skip
     _rskp = 0  # right skip
@@ -226,7 +223,8 @@ class MiCAM_ULTIMA_Importer:
         self.rsm = filepath.with_suffix(".rsm")
         self.rsd_list = []
         if not self.rsh.exists():
-            raise FileNotFoundError(f"File {self.rsh} not found")
+            msg = f"File {self.rsh} not found"
+            raise FileNotFoundError(msg)
         self._read_header()
 
     def _read_header(self):
@@ -235,54 +233,53 @@ class MiCAM_ULTIMA_Importer:
         header = header.split("\n")
 
         self._parse_topheader(header[1:3])
-        idx = header.index('Data-File-List')
+        idx = header.index("Data-File-List")
         self._parse_metadata(header[3:idx])
         self._parse_filelist(header[idx+1:])
 
     def _parse_topheader(self, header):
         data = {}
-        for s in ''.join(header).split('/'):
-            if '=' in s:
-                key, value = s.split('=', 1)
+        for s in "".join(header).split("/"):
+            if "=" in s:
+                key, value = s.split("=", 1)
                 data[key] = value
-        self._Ny = int(data['x'])
-        self._Nx = int(data['y'])
-        self._lskp = int(data['lskp'])
-        self._rskp = -int(data['rskp'])
+        self._Ny = int(data["x"])
+        self._Nx = int(data["y"])
+        self._lskp = int(data["lskp"])
+        self._rskp = -int(data["rskp"])
         if self._rskp == 0:
             self._rskp = None
-        self._blk = int(data['blk'])
+        self._blk = int(data["blk"])
 
     def _parse_metadata(self, header):
         for line in header:
-            if '=' in line:
-                key, value = line.split('=', 1)
+            if "=" in line:
+                key, value = line.split("=", 1)
                 self._meta[key] = value
-        if 'page_frames' in self._meta:
-            self._Nt = int(self._meta['page_frames'])
-        if 'acquisition_date' in self._meta:
+        if "page_frames" in self._meta:
+            self._Nt = int(self._meta["page_frames"])
+        if "acquisition_date" in self._meta:
             try:
-                self._meta['date'] = datetime.strptime(self._meta['acquisition_date'], '%Y/%m/%d %H:%M:%S')
+                self._meta["date"] = datetime.strptime(self._meta["acquisition_date"], "%Y/%m/%d %H:%M:%S")
             except ValueError:
-                self._meta['date'] = self._meta['acquisition_date']
+                self._meta["date"] = self._meta["acquisition_date"]
 
     def _parse_filelist(self, header):
         base = self.rsh.parent
         for line in header:
             file = base / line.strip()
-            if file.suffix == '.rsm':
+            if file.suffix == ".rsm":
                 self.rsm = file
-            elif file.suffix == '.rsd':
+            elif file.suffix == ".rsd":
                 self.rsd_list.append(file)
 
     def load_video(self, start_frame=0, frames=None, step=1):
-        """
-        Returns a 3D numpy array containing the loaded video.
-        """
+        """Returns a 3D numpy array containing the loaded video."""
         if frames is not None:
             end_frame = start_frame + frames
             if end_frame > self._Nt:
-                warnings.warn(f"requested {frames} frames, but only {self._Nt - start_frame} frames available. Loading all available frames.", UserWarning)
+                warnings.warn(f"Requested {frames} frames, but only {self._Nt - start_frame} frames available. "
+                              "Loading all available frames.", UserWarning)
                 end_frame = None
         else:
             end_frame = None
@@ -292,7 +289,7 @@ class MiCAM_ULTIMA_Importer:
 
         imgs = None
         for file in self.rsd_list:
-            img = np.fromfile(file, dtype='<i2')
+            img = np.fromfile(file, dtype="<i2")
             img = img.reshape(self._blk, self._Nx, self._Ny)[..., self._lskp:self._rskp]
             img = background + img
             img = img.astype(np.uint16)
@@ -303,5 +300,5 @@ class MiCAM_ULTIMA_Importer:
         return imgs[start_frame:end_frame:step]
 
     def get_metadata(self):
-        """Returns the metadata dictionary"""
+        """Returns the metadata dictionary."""
         return self._meta

@@ -7,8 +7,7 @@ TRACE_TYPE = "rect"
 
 
 def set_default_trace_window(window):
-    """
-    Set the default trace window type.
+    """Set the default trace window type.
 
     Parameters
     ----------
@@ -17,15 +16,15 @@ def set_default_trace_window(window):
         See :py:func:`extract_trace` for more information.
     """
     if window not in ["rect", "disc", "pixel"]:
-        raise ValueError(f"Unknown trace type {window}")
+        msg = f"Unknown trace type {window}"
+        raise ValueError(msg)
 
     global TRACE_TYPE
     TRACE_TYPE = window
 
 
 def get_default_trace_window():
-    """
-    Get the default trace window.
+    """Get the default trace window.
 
     Returns
     -------
@@ -36,8 +35,7 @@ def get_default_trace_window():
 
 
 def extract_traces(video, coords, size=5, show=False, window=None, **kwargs):
-    """
-    Extract trace or traces from a video at specified coordinates.
+    """Extract trace or traces from a video at specified coordinates.
 
     Multiple coordinates can be provided, and the averaging method for trace extraction can be selected.
 
@@ -60,7 +58,7 @@ def extract_traces(video, coords, size=5, show=False, window=None, **kwargs):
         If 0, only the pixel trace is returned.
     show : bool, optional
         Whether to show the traces using :py:func:`show_traces`, by default False
-    type : str, optional
+    window : str, optional
         Type of trace, by default 'rect'
         'rect' - rectangle around the coordinates
         'disc' - disc around the coordinates
@@ -72,7 +70,7 @@ def extract_traces(video, coords, size=5, show=False, window=None, **kwargs):
     -------
     ndarray
         2D array containing the extracted traces.
-    """
+    """  # noqa: E501
     single_coord = False
     if len(coords) == 0:
         return
@@ -85,7 +83,8 @@ def extract_traces(video, coords, size=5, show=False, window=None, **kwargs):
 
     for (y, x) in coords:
         if x < 0 or x >= video.shape[1] or y < 0 or y >= video.shape[2]:
-            raise ValueError(f"Coordinates ({x}, {y}) out of bounds")
+            msg = f"Coordinates ({x}, {y}) out of bounds"
+            raise ValueError(msg)
 
     def rect_mask(video, x, y):
         xs, xe = max(0, x - size // 2), min(video.shape[1], x + size // 2 + size % 2)
@@ -103,24 +102,25 @@ def extract_traces(video, coords, size=5, show=False, window=None, **kwargs):
             for (y, x) in coords
         ]
     else:
-        raise ValueError(f"Unknown trace window type '{window}'")
+        msg = f"Unknown trace window type '{window}'"
+        raise ValueError(msg)
     traces = np.array(traces).T
 
     if single_coord:
         traces = traces[..., 0]
 
-    if show or 'ax' in kwargs:
+    if show or "ax" in kwargs:
         show_traces(traces, **kwargs)
     return traces
 
 
 def show_positions(image, positions, ax=None):
-    """
-    Overlay positions on an image.
+    """Overlay positions on an image.
 
     Parameters
     ----------
     image : 2D array
+        Image to overlay positions on
     positions : list of tuples
         List of positions to overlay
     ax : matplotlib.axes.Axes, optional
@@ -137,7 +137,7 @@ def show_positions(image, positions, ax=None):
         show = False
 
     ax.imshow(image, cmap="gray", interpolation="none")
-    ax.axis('off')
+    ax.axis("off")
     for pos in positions:
         ax.scatter(pos[0], pos[1])
     if show:
@@ -146,8 +146,7 @@ def show_positions(image, positions, ax=None):
 
 
 def show_traces(traces, x=None, fps=None, colors=None, labels=None, ax=None, **kwargs):
-    """
-    Plot one or more traces.
+    """Plot one or more traces.
 
     Parameters
     ----------
@@ -188,7 +187,8 @@ def show_traces(traces, x=None, fps=None, colors=None, labels=None, ax=None, **k
     colors = colors or [None] * traces.shape[1]
 
     if x is not None and fps is not None:
-        raise ValueError("`x` and `fps` parameters cannot be passed at the same time")
+        msg = "`x` and `fps` parameters cannot be passed at the same time"
+        raise ValueError(msg)
 
     if fps is not None:
         x = np.arange(traces.shape[0]) / fps
@@ -212,7 +212,5 @@ def show_traces(traces, x=None, fps=None, colors=None, labels=None, ax=None, **k
     return ax
 
 def show_trace(*args, **kwargs):
-    """
-    Alias for :py:func:`show_traces`.
-    """
+    """Alias for :py:func:`show_traces`."""
     return show_traces(*args, **kwargs)

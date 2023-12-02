@@ -5,8 +5,7 @@ from ..utils import _print, print_bar
 
 
 def resize(video, newx, newy, interpolation=cv2.INTER_CUBIC):
-    """
-    Resize Video.
+    """Resize Video.
 
     Parameters
     ----------
@@ -24,7 +23,7 @@ def resize(video, newx, newy, interpolation=cv2.INTER_CUBIC):
     {t, newx, newy} np.ndarray
         Resized video.
     """
-    _print(f'resizing video to [{newx}, {newy}]')
+    _print(f"resizing video to [{newx}, {newy}]")
     nt = video.shape[0]
     video_new = np.zeros((nt,newx,newy), dtype=video.dtype)
     for t in range(nt):
@@ -34,8 +33,7 @@ def resize(video, newx, newy, interpolation=cv2.INTER_CUBIC):
 
 
 def rotate_left(video, k=1):
-    """
-    Rotate video by 90° counter-clockwise (left).
+    """Rotate video by 90° counter-clockwise (left).
 
     Parameters
     ----------
@@ -49,14 +47,13 @@ def rotate_left(video, k=1):
     {t, y, x} ndarray
         Rotated video.
     """
-    _print('rotating video 90 degree to the left (counter-clockwise)')
+    _print("rotating video 90 degree to the left (counter-clockwise)")
     video = np.rot90(video, k=k, axes=(1, 2))
     print_bar()
     return video
 
 def rotate_right(video, k=1):
-    """
-    Rotate video by 90° clockwise (right).
+    """Rotate video by 90° clockwise (right).
 
     Parameters
     ----------
@@ -70,14 +67,13 @@ def rotate_right(video, k=1):
     {t, y, x} ndarray
         Rotated video.
     """
-    _print('rotating video 90 degree to the right (clockwise)')
+    _print("rotating video 90 degree to the right (clockwise)")
     video = np.rot90(video, k=-k, axes=(1, 2))
     print_bar()
     return video
 
 def flip_up_down(video):
-    """
-    Flip Video up-down.
+    """Flip Video up-down.
 
     Parameters
     ----------
@@ -89,12 +85,10 @@ def flip_up_down(video):
     {t, x, y} ndarray
         Flipped video.
     """
-    video = video[:, ::-1, :]
-    return video
+    return video[:, ::-1, :]
 
 def flip_left_right(video):
-    """
-    Flip Video left-right.
+    """Flip Video left-right.
 
     Parameters
     ----------
@@ -106,12 +100,10 @@ def flip_left_right(video):
     {t, x, y} ndarray
         Flipped video.
     """
-    video = video[:, :, ::-1]
-    return video
+    return video[:, :, ::-1]
 
 def crop(video, width):
-    """
-    Crop Video by *width* pixels on each side.
+    """Crop Video by *width* pixels on each side.
 
     Parameters
     ----------
@@ -124,14 +116,13 @@ def crop(video, width):
     -------
     {t, x-2*width, y-2*width} ndarray
     """
-    _print('cropping array ...')
+    _print("cropping array ...")
     video = video[:, width:-width, width:-width]
     print_bar()
     return video
 
-def pad(video, width, mode='constant' , **kwargs):
-    """
-    Pad Video by *width* pixels on each side.
+def pad(video, width, mode="constant" , **kwargs):
+    """Pad Video by *width* pixels on each side.
 
     Parameters
     ----------
@@ -148,7 +139,7 @@ def pad(video, width, mode='constant' , **kwargs):
     -------
     {t, x+2*width, y+2*width} ndarray
     """
-    _print('padding array ...')
+    _print("padding array ...")
     video = np.pad(video, ((0,0), (width,width), (width,width)), mode=mode, **kwargs)
     print_bar()
     return video

@@ -38,7 +38,7 @@ def test_extract_trace_idx_outside():
 def test_extract_trace_pixel():
     video = np.random.random((100, 100, 100))
     trace = om.extract_traces(video, [25, 50], size=0)
-    trace2 = om.extract_traces(video, [25, 50], size=5, window='pixel')
+    trace2 = om.extract_traces(video, [25, 50], size=5, window="pixel")
     trace3 = video[:, 50, 25]
     assert np.allclose(trace, trace2)
     assert np.allclose(trace, trace3)
@@ -46,7 +46,7 @@ def test_extract_trace_pixel():
 def test_disc():
     video = np.zeros((100, 100, 100))
     video[:, 50:, :50] = 1
-    trace = om.extract_traces(video, [20, 60], size=5, window='disc')
+    trace = om.extract_traces(video, [20, 60], size=5, window="disc")
     assert np.allclose(trace, 1)
-    trace2 = om.extract_traces(video, [20, 60], size=5, window='rect')
+    trace2 = om.extract_traces(video, [20, 60], size=5, window="rect")
     assert np.allclose(trace, trace2)

@@ -10,12 +10,12 @@ def play_displacements(
     video, vectors, skip_frame=1, vskip=5, vcolor="red", vscale=1.0, title="video"
 ):
     # TODO: fix dead vectors when displaying cropped videos / vector fields
-    """
-    Simple video player with displacement vectors displayed as arrows.
+    """Simple video player with displacement vectors displayed as arrows.
 
     Parameters
     ----------
     video : {t, x, y} ndarray
+        video to play
     vectors : {t, x, y, 2} ndarray
         Optical flow / displacement vectors.
     skip_frame : int
@@ -61,14 +61,14 @@ def play_displacements(
 def play_displacements_points(
     video, vectors, skip_frame=1, vskip=10, vcolor="black", psize=5, title=""
 ):
-    """
-    Simple video player with displacement vectors displayed as points.
+    """Simple video player with displacement vectors displayed as points.
 
     Parameters
     ----------
     video : {t, x, y} ndarray
+        video to play
     vectors : {t, x, y, 2} ndarray
-        Optical flow / displacement vectors.
+        optical flow / displacement vectors.
     skip_frame : int
         only show every n-th frame
     vskip : int
@@ -86,7 +86,8 @@ def play_displacements_points(
     """
     # TO DO!!! fix bug with vskip, now works only with 5, 10
     if video.shape[1] % vskip != 0 or video.shape[2] % vskip != 0:
-        raise ValueError("image size must be divisible by vskip!")
+        msg = "image size must be divisible by vskip!"
+        raise ValueError(msg)
 
     _print(f"playing video with displacement vectors ({skip_frame=}, {vskip=}...")
     video = video[::skip_frame]

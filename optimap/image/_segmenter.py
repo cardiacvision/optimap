@@ -36,8 +36,7 @@ class ImageSegmenter:
         figsize=(7, 7),
         **kwargs,
     ):
-        """
-        Manually segment an image.
+        """Manually segment an image.
 
         .. table:: **Keyboard Shortcuts**
 
@@ -55,8 +54,8 @@ class ImageSegmenter:
 
         Parameters
         ----------
-        imgs : array_like
-            A single image, or a stack of images shape (N, Y, X)
+        image : array_like
+            A single image to segment
         mask : arraylike, optional
             If you want to pre-seed the mask
         mask_color : None, color, or array of colors, optional
@@ -65,7 +64,7 @@ class ImageSegmenter:
         mask_alpha : float, default .75
             The alpha values to use for selected regions. This will always override
             the alpha values in mask_colors if any were passed
-        props : dict, default: None
+        lasso_props : dict, default: None
             props passed to LassoSelector. If None the default values are:
             {"color": "black", "linewidth": 1, "alpha": 0.8}
         lasso_mousebutton : str, or int, default: "left"
@@ -80,9 +79,9 @@ class ImageSegmenter:
         **kwargs : dict
             All other kwargs will passed to the imshow command for the image
         """
-
         if image.ndim != 2 and image.shape[-1] != 3:
-            raise ValueError("Image must be an image, got shape {image.shape}")
+            msg = "Image must be an image, got shape {image.shape}"
+            raise ValueError(msg)
 
         self._img = image
         self._erasing = False
@@ -257,5 +256,6 @@ class ImageSegmenter:
     @mask.setter
     def mask(self, val: np.ndarray) -> None:
         if val.shape != self._img.shape[:2]:
-            raise ValueError("Mask must have the same shape as the image")
+            msg = "Mask must have the same shape as the image"
+            raise ValueError(msg)
         self._mask = val

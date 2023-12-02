@@ -24,3 +24,18 @@ test-command = "pytest {project}/tests"
 # https://cibuildwheel.readthedocs.io/en/stable/faq/#apple-silicon
 archs = ["x86_64", "universal2"]
 test-skip = ["*_arm64", "*_universal2:arm64"]
+
+[tool.ruff]
+exclude = [
+  "docs",
+]
+select = ['E', 'F', 'W', 'A', 'PLC', 'PLE', 'PLW', 'I', 'D', 'Q']
+target-version = "py39"
+line-length = 120
+ignore = [
+    "PLW2901",
+    "PLW0603",
+    "D401",
+    "D205",
+    
+]

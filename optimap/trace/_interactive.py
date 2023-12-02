@@ -7,13 +7,13 @@ from ._point_clicker import PointClicker
 
 @interactive_backend
 def select_positions(image, as_integers=True):
-    """
-    Interactive selection of positions on an image.
+    """Interactive selection of positions on an image.
     Click on the image to select a position. Right click to remove a position. Close the window to finish.
 
     Parameters
     ----------
     image : 2D array
+        Image to select positions from
     as_integers : bool, optional
         Return pixel coordinates if True, by default True
 
@@ -35,13 +35,11 @@ def select_positions(image, as_integers=True):
     klicker = PointClicker(ax, as_integer=as_integers)
     plt.show(block=True)
 
-    coords = klicker.get_positions()
-    return coords
+    return klicker.get_positions()
 
 @interactive_backend
 def select_traces(video, size=5, ref_frame=0, x=None, fps=None):
-    """
-    Interactive selection/plotting of traces from a video. Click on the image to select a position.
+    """Interactive selection/plotting of traces from a video. Click on the image to select a position.
     Right click to remove a position. Close the window to finish.
 
     Parameters

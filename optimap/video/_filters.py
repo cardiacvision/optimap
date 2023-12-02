@@ -8,12 +8,13 @@ from ..utils import _print
 
 
 def normalize(video: np.ndarray, ymin=0, ymax=1, vmin=None, vmax=None, clip=True):
-    """
-    Normalizes video to interval [``ymin``, ``ymax``]. If ``vmin`` or ``vmax`` are specified, the normalization is done using these values and the resulting video will be clipped.
+    """Normalizes video to interval [``ymin``, ``ymax``]. If ``vmin`` or ``vmax`` are specified,
+    the normalization is done using these values and the resulting video will be clipped.
 
     Parameters
     ----------
     video : {t, x, y} ndarray
+        The input video to be normalized.
     ymin : float, optional
         Minimum value of the resulting video, by default 0
     ymax : float, optional
@@ -50,12 +51,12 @@ def normalize(video: np.ndarray, ymin=0, ymax=1, vmin=None, vmax=None, clip=True
 
 
 def normalize_pixelwise(video: np.ndarray, ymin=0, ymax=1):
-    """
-    Normalizes video pixel-wise to interval [ymin, ymax]
+    """Normalizes video pixel-wise to interval [ymin, ymax].
 
     Parameters
     ----------
     video : {t, x, y} ndarray
+        The input video to be normalized.
     ymin : float, optional
         Minimum value, by default 0
     ymax : float, optional
@@ -73,19 +74,19 @@ def normalize_pixelwise(video: np.ndarray, ymin=0, ymax=1):
         min_ = np.nanmin(video, axis=0)
         max_ = np.nanmax(video, axis=0)
     eps = np.finfo(np.float32).eps
-    video = (video - min_) / (max_ - min_ + eps) * (ymax - ymin) + ymin
-    return video
+    return (video - min_) / (max_ - min_ + eps) * (ymax - ymin) + ymin
 
 
 def normalize_pixelwise_slidingwindow(video: np.ndarray, window_size: int, ymin=0, ymax=1):
-    """
-    Normalizes video pixel-wise using a temporal sliding window.
+    """Normalizes video pixel-wise using a temporal sliding window.
 
-    For each frame t in the video, this function normalizes its pixels based on the pixel values within a window
-    spanning from [t - window_size//2, t + window_size//2]. The normalization maps pixel values to the interval [ymin, ymax].
+    For each frame ``t`` in the video, this function normalizes its pixels based on the pixel values within a window
+    spanning from ``[t - window_size//2, t + window_size//2]``. The normalization maps pixel values to the interval
+    ``[ymin, ymax]``.
 
     .. note::
-        If `window_size` if even, the window size will be increased by 1 to make it odd. This is to ensure that the window is symmetric around the current frame t.
+        If `window_size` if even, the window size will be increased by 1 to make it odd.
+        This is to ensure that the window is symmetric around the current frame ``t``.
 
         The window shrinks at the beginning and end of the video, where there are not enough frames to fill the window.
 
@@ -94,7 +95,7 @@ def normalize_pixelwise_slidingwindow(video: np.ndarray, window_size: int, ymin=
     video : {t, x, y} ndarray
         The input video to be normalized.
     window_size : int
-        The size of the sliding window. The actual window around a frame t will be of size window_size//2 on either side of t.
+        The size of the sliding window.
     ymin : float, optional
         The minimum value of the normalization interval. Default is 0.
     ymax : float, optional
@@ -107,17 +108,18 @@ def normalize_pixelwise_slidingwindow(video: np.ndarray, window_size: int, ymin=
     """
     _print(f"normalizing video pixel-wise using sliding window of size {2*(window_size//2)+1} ...")
     if video.ndim != 3:
-        raise ValueError("ERROR: video has to be 3 dimensional")
+        msg = "ERROR: video has to be 3 dimensional"
+        raise ValueError(msg)
     return _cpp.normalize_pixelwise_slidingwindow(video, window_size // 2, ymin, ymax)
 
 
 def smooth_spatiotemporal(video: np.ndarray, sigma_temporal, sigma_spatial):
-    """
-    Smooth video using a Gaussian filter in space and time.
+    """Smooth video using a Gaussian filter in space and time.
 
     Parameters
     ----------
     video : {t, x, y} ndarray
+        video to smooth
     sigma_temporal : float
         Standard deviation for Gaussian kernel in time.
     sigma_spatial : float
@@ -129,19 +131,20 @@ def smooth_spatiotemporal(video: np.ndarray, sigma_temporal, sigma_spatial):
         Filtered video.
     """
     if video.ndim != 3:
-        raise ValueError("ERROR: video has to be 3 dimensional")
+        msg = "ERROR: video has to be 3 dimensional"
+        raise ValueError(msg)
     return ndimage.gaussian_filter(
         video, sigma=(sigma_temporal, sigma_spatial, sigma_spatial), order=0
     )
 
 
 def temporal_difference(video: np.ndarray, n: int):
-    """
-    Temporal difference filter. Computes difference between frames using an offset of `n` frames.
+    """Temporal difference filter. Computes difference between frames using an offset of `n` frames.
 
     Parameters
     ----------
     video : {t, x, y} ndarray
+        Video to filter.
     n : int
         Offset
 
@@ -158,12 +161,12 @@ def temporal_difference(video: np.ndarray, n: int):
 
 
 def evolve_jitter_filter(video, framerate=500.0, threshold=0.004):
-    """
-    Jitter removal filter for Photometrics Evolve 128 camera.
+    """Jitter removal filter for Photometrics Evolve 128 camera.
 
     Parameters
     ----------
     video : {t, x, y} ndarray
+        Video to filter.
     framerate : float
         Framerate in Hz.
     threshold : float

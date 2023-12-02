@@ -1,19 +1,18 @@
+# ruff: noqa: I001
 import os
 import site
 import sys
 
 from setuptools import find_packages, setup
-
-PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
+# Available at setup time due to pyproject.toml (use pip install .)
+import numpy
+from extension_helpers import add_openmp_flags_if_available
+from pybind11.setup_helpers import Pybind11Extension, build_ext
 
 # pip bug workaround https://github.com/pypa/pip/issues/7953
 site.ENABLE_USER_SITE = "--user" in sys.argv[1:]
 
-import numpy
-from extension_helpers import add_openmp_flags_if_available
-
-# Available at setup time due to pyproject.toml (use pip install .)
-from pybind11.setup_helpers import Pybind11Extension, build_ext
+PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 # universal stable ABI is not supported for PyBind11 :-(
 cpp_module = Pybind11Extension("optimap._cpp", ["optimap/_cpp/lib.cpp"], cxx_std=17)

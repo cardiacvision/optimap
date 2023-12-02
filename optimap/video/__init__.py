@@ -1,6 +1,4 @@
-"""
-Functions for loading, viewing, filtering, saving and exporting videos.
-"""
+"""Functions for loading, viewing, filtering, saving and exporting videos."""
 
 from ._edit import (
     crop,

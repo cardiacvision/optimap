@@ -8,8 +8,8 @@ from ._point_clicker import PointClicker
 
 @interactive_backend
 def _compare_traces_interactive(videos, labels=None, size=5, ref_frame=0, colors=None, x=None, x_label=None):
-    """
-    Compare traces of multiple videos interactively. Click on the image to select a position. Close the window to finish.
+    """Compare traces of multiple videos interactively. Click on the image to select a position.
+    Close the window to finish.
     """
     image = videos[0][ref_frame]
 
@@ -41,9 +41,7 @@ def _compare_traces_interactive(videos, labels=None, size=5, ref_frame=0, colors
     plt.show(block=True)
 
 def _compare_traces_plot(videos, coords, size=5, labels=None, colors=None, x=None, x_label=None):
-    """
-    Plot traces from multiple videos at given coordinates.
-    """
+    """Plot traces from multiple videos at given coordinates."""
     if len(coords) == 0:
         print("No coordinates given")
         return
@@ -68,13 +66,16 @@ def _compare_traces_plot(videos, coords, size=5, labels=None, colors=None, x=Non
         # ax[i].set_ylabel("Intensity")
     ax[-1].set_xlabel(x_label)
     if labels:
-        fig.legend(labels, loc='outside upper center', ncols=len(labels))
+        fig.legend(labels, loc="outside upper center", ncols=len(labels))
     plt.xlim(x[0], x[-1])
     plt.show()
 
 def compare_traces(videos, coords=None, labels=None, colors=None, size=5, ref_frame=0, fps=None, x=None):
-    """
-    Compare traces of multiple videos. If ``coords`` is given, traces are plotted at the given coordinates. Otherwise, an interactive window is opened to select coordinates by clicking on the image. Close the window to finish.
+    """Compare traces of multiple videos.
+
+    If ``coords`` is given, traces are plotted at the given coordinates.
+    Otherwise, an interactive window is opened to select coordinates by clicking on the image.
+    Close the interactive window to finish.
 
     Parameters
     ----------
@@ -100,7 +101,8 @@ def compare_traces(videos, coords=None, labels=None, colors=None, size=5, ref_fr
     """
     colors = colors or [None] * len(videos)
     if x is not None and fps is not None:
-        raise ValueError("`x` and `fps` parameters cannot be passed at the same time")
+        msg = "`x` and `fps` parameters cannot be passed at the same time"
+        raise ValueError(msg)
 
     if fps is not None:
         x = np.arange(videos[0].shape[0]) / fps
@@ -112,6 +114,18 @@ def compare_traces(videos, coords=None, labels=None, colors=None, size=5, ref_fr
         x_label = "Frame"
 
     if coords is None:
-        return _compare_traces_interactive(videos, labels=labels, size=size, ref_frame=ref_frame, colors=colors, x=x, x_label=x_label)
+        return _compare_traces_interactive(videos,
+                                           labels=labels,
+                                           size=size,
+                                           ref_frame=ref_frame,
+                                           colors=colors,
+                                           x=x,
+                                           x_label=x_label)
     else:
-        return _compare_traces_plot(videos, coords, size=size, labels=labels, colors=colors, x=x, x_label=x_label)
+        return _compare_traces_plot(videos,
+                                    coords,
+                                    size=size,
+                                    labels=labels,
+                                    colors=colors,
+                                    x=x,
+                                    x_label=x_label)

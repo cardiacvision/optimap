@@ -1,6 +1,6 @@
-import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib import animation
 from matplotlib.colors import Colormap
 
 from ..utils import interactive_backend
@@ -9,10 +9,10 @@ from ._player import Player
 
 
 def play(video, skip_frame=1, title="", vmin=None, vmax=None, cmap="gray", interval=10, **kwargs):
-    """
-    Simple video player based on matplotlib's animate function.
+    """Simple video player based on matplotlib's animate function.
 
-    See :py:func:`optimap.video.play2` for a player for two videos side-by-side, and :py:func:`optimap.video.playn` for a player for `n` videos side-by-side.
+    See :py:func:`optimap.video.play2` for a player for two videos side-by-side, and :py:func:`optimap.video.playn`
+    for a player for `n` videos side-by-side.
 
     .. note::
         Using Monochrome is an alternative to this function, which allows for more control over the video player.
@@ -73,8 +73,7 @@ def play2(
     vmax2=None,
     **kwargs,
 ):
-    """
-    Video player for two videos side-by-side based on matplotlib's animate function.
+    """Video player for two videos side-by-side based on matplotlib's animate function.
 
     Parameters
     ----------
@@ -117,13 +116,19 @@ def play2(
         vmaxs = None
     else:
         vmaxs = [vmax1, vmax2]
-    return playn([video1, video2], skip_frame=skip_frame, titles=[title1, title2], cmaps=[cmap1, cmap2], vmins=vmins, vmaxs=vmaxs, interval=interval, **kwargs)
+    return playn([video1, video2],
+                 skip_frame=skip_frame,
+                 titles=[title1, title2],
+                 cmaps=[cmap1, cmap2],
+                 vmins=vmins,
+                 vmaxs=vmaxs,
+                 interval=interval,
+                 **kwargs)
 
 
 @interactive_backend
 def playn(videos, skip_frame=1, titles=None, cmaps="gray", vmins=None, vmaxs=None, interval=10, **kwargs):
-    """
-    Video player for `n` side-by-side videos based on matplotlib's animate function.
+    """Video player for `n` side-by-side videos based on matplotlib's animate function.
 
     Parameters
     ----------
@@ -148,17 +153,17 @@ def playn(videos, skip_frame=1, titles=None, cmaps="gray", vmins=None, vmaxs=Non
     -------
     matplotlib.animation.FuncAnimation
     """
-
     n = len(videos)
     nt = videos[0].shape[0]
     for i in range(n):
         if videos[i].shape[0] < nt:
-            raise ValueError("videos have to be same length!")
+            msg = "videos have to be same length!"
+            raise ValueError(msg)
         videos[i] = videos[i]
 
     if titles is None:
         titles = [f"Video {i}" for i in range(n)]
-    if isinstance(cmaps, str) or isinstance(cmaps, Colormap):
+    if isinstance(cmaps, (Colormap, str)):
         cmaps = [cmaps for i in range(n)]
 
     if vmins is None:
@@ -180,7 +185,7 @@ def playn(videos, skip_frame=1, titles=None, cmaps="gray", vmins=None, vmaxs=Non
     imshows = []
     for i in range(n):
         imshows.append(
-            axs[i].imshow(videos[i][0], cmap=cmaps[i], interpolation='none', vmin=vmins[i], vmax=vmaxs[i])
+            axs[i].imshow(videos[i][0], cmap=cmaps[i], interpolation="none", vmin=vmins[i], vmax=vmaxs[i])
         )
         axs[i].set_title(f"{titles[i]}")
         axs[i].axis("off")
@@ -198,7 +203,7 @@ def playn(videos, skip_frame=1, titles=None, cmaps="gray", vmins=None, vmaxs=Non
         interval=interval,
         mini=0,
         maxi=videos[0].shape[0]-1,
-        step=skip_frame
+        step=skip_frame,
     )
     plt.show(block=True)
     return ani

@@ -1,7 +1,7 @@
-"""
-Motion estimation and compensation functions for optical mapping data.
+"""Motion estimation and compensation functions for optical mapping data.
 
-The function :py:func:`motion_compensate` is main top-level function which combines all the steps of the motion compensation pipeline.
+The function :py:func:`motion_compensate` is main top-level function which combines all steps
+of the motion compensation pipeline for optical mapping data.
 
 See :footcite:t:`Christoph2018a` and :footcite:t:`Lebert2022` for details.
 

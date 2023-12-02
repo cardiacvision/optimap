@@ -7,10 +7,11 @@ from tqdm import tqdm
 
 
 class FlowEstimator:
-    """
-    Optical flow estimator class which wraps OpenCV's optical flow methods. Supports CPU and GPU methods (if CUDA is available). See :ref:`opencv` for how to install OpenCV with CUDA support.
+    """Optical flow estimator class which wraps OpenCV's optical flow methods.
+    Supports CPU and GPU methods (if CUDA is available). See :ref:`opencv` for how to install OpenCV with CUDA support.
 
-    See :cite:p:`Lebert2022` for a comparison and discussion of the different optical flow methods for optical mapping data. We recommend and default to the Farnebäck method.
+    See :cite:p:`Lebert2022` for a comparison and discussion of the different optical flow methods for optical mapping
+    data. We recommend and default to the Farnebäck method.
 
     List of supported optical flow methods:
 
@@ -21,10 +22,11 @@ class FlowEstimator:
     * ``'nvidia'``: NVIDIA Optical Flow SDK 1.0 (GPU)
     * ``'nvidia2'``: NVIDIA Optical Flow SDK 2.0 (GPU)
 
-    The functions :py:func:`estimate_displacements` and :py:func:`estimate_reverse_displacements` functions are wrappers around this class for convenience.
+    The functions :py:func:`estimate_displacements` and :py:func:`estimate_reverse_displacements` functions are wrappers
+    around this class for convenience.
 
     .. warning:: This class expects images with values in the range [0,1]. Except for the ``'brox'`` method, all images are internally converted to uint8 before calculating the optical flow. This is because the OpenCV CUDA optical flow methods only support uint8 images. This may lead to unexpected results if the images are not in the range [0,1].
-    """
+    """  # noqa: E501
 
     #: parameters for Farneback optical flow
     farneback_params = {}
@@ -57,9 +59,8 @@ class FlowEstimator:
             return cv2.cuda_BroxOpticalFlow.create(**self.brox_params)
         elif method == "nvidia":
             if img_shape is None:
-                raise ValueError(
-                    "shape must be specified for nvidia optical flow method"
-                )
+                msg = "shape must be specified for nvidia optical flow method"
+                raise ValueError(msg)
             return cv2.cuda_NvidiaOpticalFlow_1_0.create(
                 img_shape,
                 cv2.cuda.NVIDIA_OPTICAL_FLOW_1_0_NV_OF_PERF_LEVEL_SLOW,
@@ -70,9 +71,8 @@ class FlowEstimator:
             )
         elif method == "nvidia2":
             if img_shape is None:
-                raise ValueError(
-                    "shape must be specified for nvidia optical flow method"
-                )
+                msg = "shape must be specified for nvidia optical flow method"
+                raise ValueError(msg)
             return cv2.cuda_NvidiaOpticalFlow_2_0.create(
                 img_shape,
                 cv2.cuda.NVIDIA_OPTICAL_FLOW_2_0_NV_OF_PERF_LEVEL_SLOW,
@@ -82,9 +82,8 @@ class FlowEstimator:
                 gpuId=0,
             )
         else:
-            raise NotImplementedError(
-                f"Unknown optical flow method specified: {method}"
-            )
+            msg = f"Unknown optical flow method specified: {method}"
+            raise NotImplementedError(msg)
 
     @staticmethod
     def _upscale_imgs(imgs: Union[np.ndarray, list]):
@@ -147,13 +146,11 @@ class FlowEstimator:
             method = self.default_method
 
         if len(vid1) != len(vid2):
-            raise ValueError(
-                f"Error: arrays have unequal length: {len(vid1)=} != {len(vid2)=}"
-            )
+            msg = f"Error: arrays have unequal length: {len(vid1)=} != {len(vid2)=}"
+            raise ValueError(msg)
         if vid1[0].shape != vid2[0].shape:
-            raise ValueError(
-                f"Error: images have different dimensions {vid1[0].shape=} != {vid2[0].shape=}"
-            )
+            msg = f"Error: images have different dimensions {vid1[0].shape=} != {vid2[0].shape=}"
+            raise ValueError(msg)
 
         Nt = len(vid1)
         img_shape = vid1[0].shape
@@ -167,7 +164,8 @@ class FlowEstimator:
             description += " (CPU)"
 
         if method.startswith("nvidia") and img_shape[0] * img_shape[1] < 160 * 160:
-            # NVDIA optical flow SDK has an undocumented minimum image size (approx 160x160 px), so we need to upscale the images and downscale the results if necessary
+            # NVDIA optical flow SDK has an undocumented minimum image size (approx 160x160 px),
+            # so we need to upscale the images and downscale the results if necessary
             upscale_imgs = True
 
         if upscale_imgs:
@@ -234,9 +232,8 @@ class FlowEstimator:
         method: str = None,
         show_progress: bool = True,
     ):
-        """
-        Estimate optical flow between every frame of a video and a reference frame.
-        The returned optical flow is an array of 2D flow fields which can be used to warp the video to the reference frame (motion compensation).
+        """Estimate optical flow between every frame of a video and a reference frame. The returned optical flow
+        is an array of 2D flow fields which can be used to warp the video to the reference frame (motion compensation).
 
         Parameters
         ----------
@@ -245,7 +242,8 @@ class FlowEstimator:
         ref_img : np.ndarray
             Reference image to estimate optical flow to (grayscale image {x, y})
         method : str, optional
-            optical flow method to use (default: 'farneback' if GPU is available, 'farneback_cpu' otherwise), by default None
+            Optical flow method to use, by default ``None`` which means ``'farneback'`` if a CUDA GPU is
+            available, or ``'farneback_cpu'`` otherwise
         show_progress : bool, optional
             show progress bar, by default True
 
@@ -265,9 +263,8 @@ class FlowEstimator:
         method: str = None,
         show_progress: bool = True,
     ):
-        """
-        Estimate optical flow between a reference frame and every frame of a video.
-        The returned optical flow is an array of 2D flow fields which can be used to warp the video to the reference frame (motion compensation).
+        """Estimate optical flow between a reference frame and every frame of a video. The returned optical flow
+        is an array of 2D flow fields which can be used to warp the video to the reference frame (motion compensation).
 
         Parameters
         ----------
@@ -276,7 +273,8 @@ class FlowEstimator:
         ref_img : np.ndarray
             Reference image to estimate optical flow to (grayscale image {x, y})
         method : str, optional
-            optical flow method to use (default: 'farneback' if GPU is available, 'farneback_cpu' otherwise), by default None
+            Optical flow method to use, by default ``None`` which means ``'farneback'`` if a CUDA GPU is
+            available, or ``'farneback_cpu'`` otherwise
         show_progress : bool, optional
             show progress bar, by default True
 
@@ -292,14 +290,14 @@ class FlowEstimator:
     def estimate_imgpairs(
         self, img_pairs, method: str = None, show_progress: bool = True
     ):
-        """
-        Estimate optical flow between list of two images.
+        """Estimate optical flow between list of two images.
 
         Parameters
         ----------
         img_pairs : list of tuples of np.ndarray
             List of grayscale image pairs to estimate optical flow for
         method : str, optional
+            Optical flow method to use, by default None
         show_progress : bool, optional
             show progress bar, by default True
 

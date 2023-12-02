@@ -16,7 +16,7 @@ class Player(FuncAnimation):
         maxi=100,
         pos=(0.125, 0.92),
         step=1,
-        **kwargs
+        **kwargs,
     ):
         self.i = 0
         self.min = mini
@@ -41,7 +41,7 @@ class Player(FuncAnimation):
             save_count=save_count,
             cache_frame_data=False,
             repeat=False,
-            **kwargs
+            **kwargs,
         )
 
     def play(self):
@@ -116,7 +116,7 @@ class Player(FuncAnimation):
         self.button_stop = matplotlib.widgets.Button(self.ax_player, label="■")
         self.button_stop.on_clicked(self.toggle_play)
         self.slider = matplotlib.widgets.Slider(
-            self.ax_slider, "", self.min, self.max, valinit=self.i
+            self.ax_slider, "", self.min, self.max, valinit=self.i,
         )
         self.slider.on_changed(self.set_pos)
 

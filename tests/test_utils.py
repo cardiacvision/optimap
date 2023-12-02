@@ -6,10 +6,10 @@ import optimap as om
 
 
 def test_retrieve_sample():
-    filename = om.utils.retrieve_example_data('optimap-test-download-file.npy')
+    filename = om.utils.retrieve_example_data("optimap-test-download-file.npy")
     assert Path(filename).exists()
     assert Path(filename).is_file()
-    assert Path(filename).suffix == '.npy'
+    assert Path(filename).suffix == ".npy"
 
     video = om.load_video(filename)
     assert video.shape == (2, 4, 6)

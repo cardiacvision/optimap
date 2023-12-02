@@ -32,55 +32,56 @@ DEFAULT_FFMPEG_ENCODER = "libx264"
 
 def _ffmpeg_defaults(encoder: str = "libx264"):
     if encoder not in FFMEG_DEFAULTS:
-        raise ValueError(f"ffmpeg encoder {encoder} not supported")
+        msg = f"ffmpeg encoder {encoder} not supported"
+        raise ValueError(msg)
     else:
         return FFMEG_DEFAULTS[encoder]
 
 
 def set_default_ffmpeg_encoder(encoder: str):
-    """
-    Set the default ffmpeg encoder to use for exporting videos.
+    """Set the default ffmpeg encoder to use for exporting videos.
 
     Parameters
     ----------
     encoder : str
-        The ffmpeg encoder to use. E.g. 'libx264' or 'h264_nvenc'."""
+        The ffmpeg encoder to use. E.g. 'libx264' or 'h264_nvenc'.
+    """
     global DEFAULT_FFMPEG_ENCODER
     if encoder not in FFMEG_DEFAULTS:
+        msg = f"Encoder {encoder} unknown, add it first using set_ffmpeg_defaults()"
         raise ValueError(
-            f"Encoder {encoder} unknown, add it first using set_ffmpeg_defaults()"
+            msg
         )
     DEFAULT_FFMPEG_ENCODER = encoder
 
 
 def get_default_ffmpeg_encoder():
-    """
-    Get the default ffmpeg encoder to use for exporting videos.
+    """Get the default ffmpeg encoder to use for exporting videos.
 
     Returns
     -------
     str
-        The ffmpeg encoder to use. E.g. 'libx264' or 'h264_nvenc'."""
+        The ffmpeg encoder to use. E.g. 'libx264' or 'h264_nvenc'.
+    """
     return DEFAULT_FFMPEG_ENCODER
 
 
 def set_ffmpeg_defaults(encoder: str, params: dict):
-    """
-    Set the default ffmpeg parameters to use for exporting videos.
+    """Set the default ffmpeg parameters to use for exporting videos.
 
     Parameters
     ----------
     encoder : str
         The ffmpeg encoder for which the parameters apply. E.g. 'libx264' or 'h264_nvenc'.
     params : dict
-        The ffmpeg parameters to use. E.g. {'-c:v': 'libx264', '-crf': '15', '-preset': 'slower'}."""
+        The ffmpeg parameters to use. E.g. {'-c:v': 'libx264', '-crf': '15', '-preset': 'slower'}.
+    """
     FFMEG_DEFAULTS[encoder] = params
 
 
 class FFmpegWriter(skvideo.io.FFmpegWriter):
-    """
-    Wrapper around `skvideo.io.FFmpegWriter` which downloads static binaries if ffmpeg is not installed.
-    """
+    """Wrapper around `skvideo.io.FFmpegWriter` which downloads static binaries if ffmpeg is not installed."""
+
     def __init__(self, *args, **kwargs):
         if not skvideo._HAS_FFMPEG:
             # ffmpeg not found, download static binary for it
@@ -108,8 +109,7 @@ def export_video(
     ffmpeg_encoder : str = None,
     progress_bar : bool = True,
 ):
-    """
-    Export a video numpy array to a video file (e.g. ``.mp4``) using `ffmpeg <https://www.ffmpeg.org>`_.
+    """Export a video numpy array to a video file (e.g. ``.mp4``) using `ffmpeg <https://www.ffmpeg.org>`_.
 
     Downloads pre-built ffmpeg automatically if ffmpeg is not installed.
 
@@ -117,7 +117,8 @@ def export_video(
     ----------
     video : np.ndarray or Iterable[np.ndarray]
         The video to export. Should be of shape (frames, height, width, channels) or (frames, height, width).
-        If the video is grayscale, the colormap will be applied. If it's an RGB video, its values should range [0, 1] or [0, 255] (np.uint8).
+        If the video is grayscale, the colormap will be applied. If it's an RGB video, its values should range
+        [0, 1] or [0, 255] (np.uint8).
     filename : str or Path
         Video file path for writing.
     fps : int, optional
@@ -131,7 +132,8 @@ def export_video(
     vmax : float, optional
         The maximum value for the colormap, by default None
     ffmpeg_encoder : str, optional
-        The ffmpeg encoder to use, by default ``'libx264'``. See :func:`set_default_ffmpeg_encoder` and :func:`set_ffmpeg_defaults` for more information.
+        The ffmpeg encoder to use, by default ``'libx264'``. See :func:`set_default_ffmpeg_encoder` and
+        :func:`set_ffmpeg_defaults` for more information.
     progress_bar : bool, optional
         Whether to show a progress bar, by default True
     """
@@ -163,8 +165,8 @@ def export_video(
 
 
 def smoothstep(x, vmin=0, vmax=1, N=2):
-    """
-    Smoothly clamps the input array to the range [0, 1] using the `smoothstep function <https://en.wikipedia.org/wiki/Smoothstep>`_. Useful for e.g. creating alpha channels.
+    """Smoothly clamps the input array to the range [0, 1] using the `smoothstep function <https://en.wikipedia.org/wiki/Smoothstep>`_.
+    Useful for e.g. creating alpha channels.
 
     Parameters
     ----------
@@ -202,10 +204,13 @@ def iter_alpha_blend_videos(
     vmin_overlay=None,
     vmax_overlay=None,
 ):
-    """
-    Blends two videos together using `alpha blending <https://en.wikipedia.org/wiki/Alpha_compositing>`_. Yields the blended video frame by frame.
+    """Blends two videos together using `alpha blending <https://en.wikipedia.org/wiki/Alpha_compositing>`_. Yields the
+    blended video frame by frame.
 
-    The base video is blended with the overlay video using an alpha channel. If no alpha channel is provided, the overlay array is used as alpha channel (if it is grayscale) or the alpha channel of the overlay video is used (if it is RGBA). The alpha channel is expected to be in the range [0, 1], a value of 0 means that the base video is used, a value of 1 means that the overlay video is used.
+    The base video is blended with the overlay video using an alpha channel. If no alpha channel is provided, the
+    overlay array is used as alpha channel (if it is grayscale) or the alpha channel of the overlay video is used
+    (if it is RGBA). The alpha channel is expected to be in the range [0, 1], a value of 0 means that the base video
+    is used, a value of 1 means that the overlay video is used.
 
     Parameters
     ----------
@@ -216,8 +221,11 @@ def iter_alpha_blend_videos(
         The overlay video. Should be of shape (frames, height, width) or(frames, height, width, channels).
         Either uint8 or float32 (expected to be in the range [0, 1]).
     alpha : np.ndarray, optional
-        The alpha channel to use for blending, by default None
-        If None, the overlay array is used as alpha channel (if it is grayscale) or the alpha channel of the overlay video is used (if it is RGBA).
+        The alpha channel to use for blending, by default ``None``. Expected to be in range [0, 1], and of shape
+        (T, X, Y) or (X, Y). If ``None``, the overlay array is used (if grayscale) or the alpha channel of the
+        overlay video is used (if RGBA).
+    skip_frames : int, optional
+        Only export every ``skip_frames`` frames, by default 1
     cmap_base : str or matplotlib.colors.Colormap, optional
         The colormap to use for the base video, by default ``'gray'``
     cmap_overlay : str or matplotlib.colors.Colormap, optional
@@ -231,14 +239,14 @@ def iter_alpha_blend_videos(
     vmax_overlay : float, optional
         The maximum value for the overlay video, by default None
     ffmpeg_encoder : str, optional
-        The ffmpeg encoder to use, by default ``'libx264'``. See :func:`set_default_ffmpeg_encoder` and :func:`set_ffmpeg_defaults` for more information.
+        The ffmpeg encoder to use, by default ``'libx264'``. See :func:`set_default_ffmpeg_encoder`
+        and :func:`set_ffmpeg_defaults` for more information.
 
     Yields
     ------
     np.ndarray {height, width, 4}
         The blended video frame.
     """
-
     # Create alpha channel with shape (frames, height, width, 1)
     if alpha is None:
         if overlay.ndim == 4:
@@ -305,10 +313,13 @@ def export_video_with_overlay(
     ffmpeg_encoder=None,
     progress_bar : bool = True,
 ):
-    """
-    Blends two videos together using `alpha blending <https://en.wikipedia.org/wiki/Alpha_compositing>`_ and exports it to a video file (e.g. ``.mp4``).
+    """Blends two videos together using `alpha blending <https://en.wikipedia.org/wiki/Alpha_compositing>`_ and
+    exports it to a video file (e.g. ``.mp4``).
 
-    The base video is blended with the overlay video using an alpha channel. If no alpha channel is provided, the overlay array is used as alpha channel (if it is grayscale) or the alpha channel of the overlay video is used (if it is RGBA). The alpha channel is expected to be in the range [0, 1], a value of 0 means that the base video is used, a value of 1 means that the overlay video is used.
+    The base video is blended with the overlay video using an alpha channel. If no alpha channel is provided, the
+    overlay array is used as alpha channel (if it is grayscale) or the alpha channel of the overlay video is used
+    (if it is RGBA). The alpha channel is expected to be in the range [0, 1], a value of 0 means that the base video
+    is used, a value of 1 means that the overlay video is used.
 
     Parameters
     ----------
@@ -321,8 +332,9 @@ def export_video_with_overlay(
     filename : str or Path
         Video file path for writing.
     alpha : np.ndarray, optional
-        The alpha channel to use for blending, by default None
-        If None, the overlay array is used as alpha channel (if it is grayscale) or the alpha channel of the overlay video is used (if it is RGBA).
+        The alpha channel to use for blending, by default ``None``. Expected to be in range [0, 1], and of shape
+        (T, X, Y) or (X, Y). If ``None``, the overlay array is used (if grayscale) or the alpha channel of the
+        overlay video is used (if RGBA).
     fps : int, optional
         The framerate of the output video, by default 60
     skip_frames : int, optional
@@ -340,7 +352,8 @@ def export_video_with_overlay(
     vmax_overlay : float, optional
         The maximum value for the overlay video, by default None
     ffmpeg_encoder : str, optional
-        The ffmpeg encoder to use, by default ``'libx264'``. See :func:`set_default_ffmpeg_encoder` and :func:`set_ffmpeg_defaults` for more information.
+        The ffmpeg encoder to use, by default ``'libx264'``.
+        See :func:`set_default_ffmpeg_encoder` and :func:`set_ffmpeg_defaults` for more information.
     progress_bar : bool, optional
         Whether to show a progress bar, by default True
     """
@@ -378,8 +391,7 @@ def export_video_with_overlay(
 
 
 def alpha_blend_videos(*args, **kwargs):
-    """
-    Blends two videos together using `alpha blending <https://en.wikipedia.org/wiki/Alpha_compositing>`_.
+    """Blends two videos together using `alpha blending <https://en.wikipedia.org/wiki/Alpha_compositing>`_.
 
     Wrapper around :func:`iter_alpha_blend_videos` that returns the blended video as a numpy array.
 
