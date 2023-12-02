@@ -1,6 +1,6 @@
+import matplotlib.widgets
 from matplotlib.animation import FuncAnimation
 from mpl_toolkits.axes_grid1.axes_divider import make_axes_locatable
-import matplotlib.widgets
 
 
 class Player(FuncAnimation):
@@ -27,7 +27,7 @@ class Player(FuncAnimation):
         self.fig = fig
         self.func = func
         self.saving = False
-        self.suptitle = fig.suptitle(f"  ", font="monospace")
+        self.suptitle = fig.suptitle("  ", font="monospace")
         fig.canvas.mpl_connect("key_press_event", self.on_key_press)
 
         self.setup(pos)
@@ -127,7 +127,7 @@ class Player(FuncAnimation):
         self.ax_player.set_visible(False)
         self.ax_slider.set_visible(False)
         super().save(*args, **kwargs)
-        
+
         self.saving = False
         # self.save_count = None
         self.ax_player.set_visible(True)

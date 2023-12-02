@@ -1,8 +1,9 @@
+import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import numpy as np
-import matplotlib.animation as animation
 
 from ..utils import _print, interactive_backend
+
 
 @interactive_backend
 def play_displacements(
@@ -27,7 +28,7 @@ def play_displacements(
         scales the displayed vectors
     title : str
         title of the plot
-    
+
     Returns
     -------
     matplotlib.animation.FuncAnimation
@@ -78,7 +79,7 @@ def play_displacements_points(
         size of the points, default: 5
     title : str
         title of the plot
-    
+
     Returns
     -------
     matplotlib.animation.FuncAnimation

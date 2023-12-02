@@ -2,6 +2,7 @@ import numpy as np
 
 import optimap as om
 
+
 def test_compute_phase():
     video = np.random.random((100, 10, 10)).astype(np.float32)
     phase = om.phase.compute_phase(video)

@@ -1,14 +1,15 @@
 import re
-from pathlib import Path
 import warnings
+from pathlib import Path
 
 import numpy as np
 import skimage.io as sio
-from tifffile import imread as tifffile_imread, memmap as tifffile_memmap
 from scipy.io import loadmat
+from tifffile import imread as tifffile_imread
+from tifffile import memmap as tifffile_memmap
 
 from ..utils import _print
-from ._importers import MultiRecorderImporter, MiCAM05_Importer, MiCAM_ULTIMA_Importer
+from ._importers import MiCAM05_Importer, MiCAM_ULTIMA_Importer, MultiRecorderImporter
 
 
 def _natural_sort_path_key(path: Path, _nsre=re.compile("([0-9]+)")):
@@ -124,7 +125,7 @@ def load_MultiRecorder(filepath, start_frame=0, frames=None, step=1, use_mmap=Fa
 
 def load_MultiRecorder_metadata(filepath):
     dat = MultiRecorderImporter(filepath)
-    return dat.get_metadata() 
+    return dat.get_metadata()
 
 def load_SciMedia_MiCAM05(filename, start_frame=0, frames=None, step=1):
     _print(f"loading video: {filename} ...")
@@ -168,7 +169,7 @@ def load_video(path, start_frame=0, frames=None, step=1, use_mmap=False):
 
     - .tif, .tiff images
     - .png images
-    
+
     For some file types read-only memory mapping is used when ``use_mmap=True``. This is useful for large videos, as it does not load the entire video into memory, only loading the frames when they are accessed. However, it is not supported for all file types, and it is not possible to write to the video array. Supported file types for memory mapping:
 
     - .tif, .tiff (TIFF stack)
@@ -204,7 +205,7 @@ def load_video(path, start_frame=0, frames=None, step=1, use_mmap=False):
         end_frame = start_frame + frames
     else:
         end_frame = None
-    
+
     if not path.exists():
         raise ValueError(f"File or folder '{path}' does not exist")
     elif path.is_dir():
@@ -235,12 +236,12 @@ def load_metadata(filename):
     - .gsd, .gsh (SciMedia MiCAM 05)
     - .rsh, .rsm, .rsd (SciMedia MiCAM ULTIMA)
     - .dat (MultiRecorder)
-    
+
     Parameters
     ----------
     filename : str or pathlib.Path
         Path to video file
-    
+
     Returns
     -------
     dict

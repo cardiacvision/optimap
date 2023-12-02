@@ -40,7 +40,7 @@ def normalize(video: np.ndarray, ymin=0, ymax=1, vmin=None, vmax=None, clip=True
         vmin = np.nanmin(video)
     if vmax is None:
         vmax = np.nanmax(video)
-    
+
     eps = np.finfo(np.float32).eps
     video = (video - vmin) / (vmax - vmin + eps) * (ymax - ymin) + ymin
 
@@ -80,7 +80,7 @@ def normalize_pixelwise(video: np.ndarray, ymin=0, ymax=1):
 def normalize_pixelwise_slidingwindow(video: np.ndarray, window_size: int, ymin=0, ymax=1):
     """
     Normalizes video pixel-wise using a temporal sliding window.
-    
+
     For each frame t in the video, this function normalizes its pixels based on the pixel values within a window
     spanning from [t - window_size//2, t + window_size//2]. The normalization maps pixel values to the interval [ymin, ymax].
 

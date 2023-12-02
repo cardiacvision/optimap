@@ -1,16 +1,15 @@
 from pathlib import Path
 
 import numpy as np
-import tifffile
-
 import skimage.io as sio
+import tifffile
 from scipy.io import savemat
 
 
 def save_image_sequence(video: np.ndarray, filepattern: str = 'frame_{:03d}', directory: str = None, suffix='.png', **kwargs):
     """
     Save a video as a sequence of images.
-    
+
     Parameters
     ----------
     video : np.ndarray
@@ -82,7 +81,7 @@ def save_matlab(array, filename, fieldname='video', appendmat=True):
 def save_video(video, filename, **kwargs):
     """
     Save a video to a file. Supported file formats are ``.npy``, ``.tif``/``.tiff``, and ``.mat``.
-    
+
     See :func:`save_tiff_folder` for saving a video as a folder of ``.tiff`` images.
 
     See :func:`export_video` for exporting a video to a movie file (e.g. ``.mp4``).

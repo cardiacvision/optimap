@@ -53,7 +53,7 @@ def warp_image(
     ----------
     img : {x, y} ndarray
         image to warp
-    displacement : {x, y, 2} ndarray 
+    displacement : {x, y, 2} ndarray
         optical flow field
     show_progress : bool, optional
         show progress bar

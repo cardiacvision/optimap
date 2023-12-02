@@ -1,14 +1,14 @@
 from pathlib import Path
-from typing import Union, Iterable
+from typing import Iterable, Union
 
+import matplotlib.pyplot as plt
 import numpy as np
-from tqdm import tqdm
 import skvideo
 import skvideo.io
 import static_ffmpeg.run
-import matplotlib.pyplot as plt
-from scipy.special import comb
 from matplotlib.colors import Normalize
+from scipy.special import comb
+from tqdm import tqdm
 
 FFMEG_DEFAULTS = {
     "libx264": {
@@ -31,7 +31,7 @@ DEFAULT_FFMPEG_ENCODER = "libx264"
 
 
 def _ffmpeg_defaults(encoder: str = "libx264"):
-    if not encoder in FFMEG_DEFAULTS:
+    if encoder not in FFMEG_DEFAULTS:
         raise ValueError(f"ffmpeg encoder {encoder} not supported")
     else:
         return FFMEG_DEFAULTS[encoder]
@@ -46,7 +46,7 @@ def set_default_ffmpeg_encoder(encoder: str):
     encoder : str
         The ffmpeg encoder to use. E.g. 'libx264' or 'h264_nvenc'."""
     global DEFAULT_FFMPEG_ENCODER
-    if not encoder in FFMEG_DEFAULTS:
+    if encoder not in FFMEG_DEFAULTS:
         raise ValueError(
             f"Encoder {encoder} unknown, add it first using set_ffmpeg_defaults()"
         )
@@ -251,7 +251,7 @@ def iter_alpha_blend_videos(
             alpha = np.repeat(alpha, overlay.shape[0], axis=0)
         elif alpha.ndim == 3:
             alpha = alpha[..., np.newaxis]
-    
+
     if overlay.ndim == 4:
         alpha[np.isnan(overlay[..., 3])] = 0
     else:

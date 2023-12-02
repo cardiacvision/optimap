@@ -1,11 +1,12 @@
 import locale
 import struct
+import warnings
 from datetime import datetime
 from pathlib import Path
 from typing import BinaryIO
-import warnings
 
 import numpy as np
+
 
 class MultiRecorderImporter:
     """Importer for MultiRecorder (MPI-DS) recordings (.dat files)"""
@@ -20,7 +21,7 @@ class MultiRecorderImporter:
         self.filepath = Path(filepath)
         if not self.filepath.exists():
             raise FileNotFoundError(f"File {self.filepath} not found")
-        
+
         self.is_8bit = is_8bit
         with open(self.filepath, "rb") as f:
             self._read_header(f)
@@ -28,7 +29,7 @@ class MultiRecorderImporter:
     def get_metadata(self):
         """Returns the metadata dictionary"""
         return self._meta
-    
+
     def load_video(self, start_frame=0, frames=None, step=1, use_mmap=False):
         """
         Returns a 3D numpy array containing the loaded video.
@@ -36,15 +37,16 @@ class MultiRecorderImporter:
 
         if self._Nt == 0:
             raise ValueError("Recorded video file contains no frames.")
-        
+
         if frames is not None:
             nframes = frames
             if nframes > self._Nt - start_frame:
-                warnings.warn(f"requested {nframes} frames, but only {self._Nt - start_frame} frames available. Loading all available frames.", UserWarning)
+                msg = f"requested {nframes} frames, but only {self._Nt - start_frame} frames available. Loading all available frames."
+                warnings.warn(msg, UserWarning)
                 nframes = self._Nt - start_frame
         else:
             nframes = self._Nt - start_frame
-        
+
         if self.is_8bit:
             dt = np.dtype(f"{self._endian}B")
             bs = 1
@@ -86,12 +88,10 @@ class MultiRecorderImporter:
         Read the header
         """
         self.version = f.read(1).decode("utf-8")
-        sum = 1
         if self.version == "d":
             date = f.read(17)
             if date[-3:-2] != ":":
                 date += f.read(7)
-                sum += 7
             self._meta["date"] = date
 
             self._Nt = struct.unpack(f"{self._endian}i", f.read(4))[0]
@@ -187,7 +187,7 @@ class MiCAM05_Importer:
                 end_frame = None
         else:
             end_frame = None
-        
+
         background_image = np.fromfile(
                 self.gsd,
                 dtype=self._dtype,
@@ -204,7 +204,7 @@ class MiCAM05_Importer:
         CMOS_data = CMOS_data[start_frame:end_frame:step].copy()
         video = CMOS_data + background_image[np.newaxis, :, :]
         return video
-    
+
     def get_metadata(self):
         """Returns the metadata dictionary"""
         return self._meta
@@ -238,7 +238,7 @@ class MiCAM_ULTIMA_Importer:
         idx = header.index('Data-File-List')
         self._parse_metadata(header[3:idx])
         self._parse_filelist(header[idx+1:])
-    
+
     def _parse_topheader(self, header):
         data = {}
         for s in ''.join(header).split('/'):
@@ -274,7 +274,7 @@ class MiCAM_ULTIMA_Importer:
                 self.rsm = file
             elif file.suffix == '.rsd':
                 self.rsd_list.append(file)
-    
+
     def load_video(self, start_frame=0, frames=None, step=1):
         """
         Returns a 3D numpy array containing the loaded video.
@@ -301,7 +301,7 @@ class MiCAM_ULTIMA_Importer:
             else:
                 imgs = np.concatenate([imgs, img])
         return imgs[start_frame:end_frame:step]
-    
+
     def get_metadata(self):
         """Returns the metadata dictionary"""
         return self._meta

@@ -5,7 +5,7 @@ import skimage
 from scipy import ndimage
 
 from ..utils import interactive_backend
-from ._GHT import im2hist, GHT
+from ._GHT import GHT, im2hist
 from ._segmenter import ImageSegmenter
 
 
@@ -16,19 +16,19 @@ def interactive_mask(image, mask=None, cmap='gray', figsize=(7, 7)):
 
     .. table:: **Keyboard Shortcuts**
 
-        ========================= =========================== 
-        Key                       Action                     
-        ========================= =========================== 
+        ========================= ===========================
+        Key                       Action
+        ========================= ===========================
         ``Scroll``                Zoom in/out
-        ``ctrl+z`` or ``cmd+z``   Undo                       
-        ``ctrl+y`` or ``cmd+y``   Redo                       
-        ``v``                     Toggle visibility of mask  
-        ``e``                     Erase mode            
-        ``d``                     Draw/Lasso mode     
+        ``ctrl+z`` or ``cmd+z``   Undo
+        ``ctrl+y`` or ``cmd+y``   Redo
+        ``v``                     Toggle visibility of mask
+        ``e``                     Erase mode
+        ``d``                     Draw/Lasso mode
         ``q``                     Quit
-        ========================= =========================== 
+        ========================= ===========================
 
-    
+
     Parameters
     ----------
     image : 2D ndarray
@@ -71,7 +71,7 @@ def detect_background_threshold(image):
         Background threshold.
     """
     # TODO: fix histogram binning for float images properly
-        
+
     scale = 1
     if image.dtype in [np.float32, np.float64]:
         max_val = image.max()
@@ -108,7 +108,7 @@ def background_mask(image, threshold=None, show=True, return_threshold=False, **
     threshold : float or int
         Background threshold, only if ``return_threshold`` is True.
     """
-    
+
     if threshold is None:
         threshold = detect_background_threshold(image)
         print(f"Creating mask with detected threshold {threshold}")
@@ -183,7 +183,7 @@ def show_mask(mask, image=None, title="", alpha=0.5, color='red', cmap="gray", a
     -------
     matplotlib.axes.Axes
         Axes object with image and mask plotted."""
-    
+
     if mask.ndim != 2:
         raise ValueError(f"Mask must be an image, got shape {mask.shape}")
     if image is not None and image.ndim != 2 and image.shape[-1] != 3:
@@ -201,7 +201,7 @@ def show_mask(mask, image=None, title="", alpha=0.5, color='red', cmap="gray", a
         ax.imshow(image, cmap=cmap, interpolation="none")
     else:
         alpha = 1
-        
+
     ax.imshow(mask, cmap=cmap_mask, vmin=0, vmax=1, alpha=alpha, interpolation="none")
     ax.axis("off")
     if title:

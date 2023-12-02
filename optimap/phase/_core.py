@@ -4,8 +4,9 @@ import numpy as np
 from scipy.signal import hilbert
 
 from .. import _cpp
-from ..utils import print_bar, _print
+from ..utils import _print, print_bar
 from ..video import play
+
 
 def compute_phase(video, offset=-0.5):
     """
@@ -17,7 +18,7 @@ def compute_phase(video, offset=-0.5):
         normalized video
     offset : float
         offset to add to video before computing phase, default is -0.5
-    
+
     Returns
     -------
     {t, x, y} ndarray
@@ -36,7 +37,7 @@ def phasefilter_angle_threshold(phase: np.ndarray, wx: int, wy: int, wt: int, tr
                                 mask: Optional[np.ndarray] = None):
     """
     Remove outliers in a phase video by comparing them against their neighbors in space and time.
-    
+
     Parameters
     ----------
     phase : {t, x, y} ndarray
@@ -51,7 +52,7 @@ def phasefilter_angle_threshold(phase: np.ndarray, wx: int, wy: int, wt: int, tr
         threshold angle in radians
     mask : {x, y} ndarray, optional
         only consider pixels where mask is True
-    
+
     Returns
     -------
     {t, x, y} ndarray
@@ -75,7 +76,7 @@ def phasefilter_fillsmooth(phase: np.ndarray, wx: int, wy: int, wt: int, thresho
                            mask: Optional[np.ndarray] = None):
     """
     Fills holes in phase video by smoothing over space and time.
-    
+
     Parameters
     ----------
     phase : {t, x, y} ndarray
@@ -90,7 +91,7 @@ def phasefilter_fillsmooth(phase: np.ndarray, wx: int, wy: int, wt: int, thresho
         threshold for filling holes TODO??
     mask : {x, y} ndarray, optional
         only consider pixels where mask is True
-    
+
     Returns
     -------
     {t, x, y} ndarray

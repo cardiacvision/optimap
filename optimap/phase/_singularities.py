@@ -13,7 +13,8 @@ def _normalize(p):
 
 def detect_phase_singularities(phase: np.ndarray, separate_by_charge=False):
     """
-    Detect phase singularities in a phase map video using :cite:p:`Iyer2001` method. Unlike :cite:p:`Iyer2001`, the phase integral used here is only over four pixels.
+    Detect phase singularities in a phase map video using :cite:p:`Iyer2001` method.
+    Unlike :cite:p:`Iyer2001`, the phase integral used here is only over four pixels.
 
     TODO: verify if positions are (x, y) or (y, x)
 
@@ -24,7 +25,7 @@ def detect_phase_singularities(phase: np.ndarray, separate_by_charge=False):
     separate_by_charge : bool, optional
         Whether to separate phase singularities by charge, by default False
         See return value for details.
-    
+
     Returns
     -------
     list of tuples
@@ -35,7 +36,7 @@ def detect_phase_singularities(phase: np.ndarray, separate_by_charge=False):
 
     if phase.ndim != 3:
         raise ValueError("phase must be three dimensional, shaped (t, x, y)")
-    
+
     phase_singularities = []
     if separate_by_charge:
         phase_singularities = [[], []] # positive, negative

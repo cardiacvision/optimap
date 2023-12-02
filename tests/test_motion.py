@@ -2,6 +2,7 @@ import numpy as np
 
 import optimap as om
 
+
 def test_contrast_enhancement():
     img = np.ones((64, 32), dtype=np.uint16)
     vid = np.ones((10, 32, 32), dtype=np.float32)

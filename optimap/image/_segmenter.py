@@ -1,9 +1,9 @@
 import pathlib
 from collections import deque
 
-import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.widgets import Button, LassoSelector
 from mpl_pan_zoom import PanManager, zoom_factory
 from PIL import Image
@@ -153,7 +153,7 @@ class ImageSegmenter:
         BUTTON_WIDTH = 0.05
         BUTTON_SPACING = 0.025
         pos = [0.22, 0.92, BUTTON_WIDTH, BUTTON_WIDTH]
-        
+
         ax_undo = self.fig.add_axes(pos)
         self.button_undo = Button(ax_undo, "", image=Image.open(UNDO_SYMBOL))
         self.button_undo.on_clicked(self._undo)

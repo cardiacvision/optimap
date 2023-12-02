@@ -1,6 +1,7 @@
 import numpy as np
 import seasonal
 
+
 def detrend_timeseries(data, kind="spline", period=None, ptimes=2, retain_baseline=True, return_trend_data=False):
     """Detrends a time series using the `seasonal` package.
 

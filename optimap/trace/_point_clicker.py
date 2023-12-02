@@ -5,9 +5,10 @@
 # Distributed under the terms of the Modified BSD License.
 
 import numpy as np
-from matplotlib.pyplot import cm
 from matplotlib.backend_bases import MouseButton
 from matplotlib.cbook import CallbackRegistry
+from matplotlib.pyplot import cm
+
 
 class PointClicker:
     def __init__(self, ax, as_integer=False, single_point=False):
@@ -92,12 +93,12 @@ class PointClicker:
         while len(colors) < len(pos):
             colors += colors
         colors = colors[:len(pos)]
-        
+
         try:
             self._scat.remove()
         except ValueError:  # raises an error when scatter empty
             pass
-    
+
         if len(pos) == 0:
             self._scat = self.ax.scatter([], [])
         else:

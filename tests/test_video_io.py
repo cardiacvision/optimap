@@ -1,10 +1,11 @@
-from pathlib import Path
 import mimetypes
+from pathlib import Path
 
-import pytest
 import numpy as np
-import optimap as om
+import pytest
 import skvideo
+
+import optimap as om
 
 
 def test_npy_video(tmpdir):
@@ -33,7 +34,7 @@ def test_npy_video(tmpdir):
 
     video = om.load_video(filename, use_mmap=True)
     assert np.all(video == vid)
-    assert video.flags["WRITEABLE"] == False
+    assert video.flags["WRITEABLE"] is False
 
 
 def test_tiff_folder(tmpdir):
@@ -84,7 +85,7 @@ def test_tiff_stack(tmpdir):
     video = om.load_video(filename, start_frame=1, frames=3, step=2, use_mmap=True)
     assert video.shape == (3, 4, 6)
     assert np.all(video == vid[1:6:2])
-    assert video.flags["WRITEABLE"] == False
+    assert video.flags["WRITEABLE"] is False
 
 
 def test_matlab(tmpdir):

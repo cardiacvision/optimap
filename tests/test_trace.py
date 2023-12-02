@@ -1,7 +1,8 @@
-import optimap as om
-
 import numpy as np
 import pytest
+
+import optimap as om
+
 
 def test_extract_trace_rect():
     video = np.random.random((100, 100, 100))

@@ -1,10 +1,9 @@
-import numpy as np
 import matplotlib.pyplot as plt
 
+from ..utils import _print, interactive_backend
 from ._core import extract_traces, show_traces
 from ._point_clicker import PointClicker
 
-from ..utils import _print, interactive_backend
 
 @interactive_backend
 def select_positions(image, as_integers=True):
@@ -24,7 +23,7 @@ def select_positions(image, as_integers=True):
         List of selected positions
     """
     _print(
-        f"Click positions on the image, close the window to finish. Right click a point to remove it."
+        "Click positions on the image, close the window to finish. Right click a point to remove it."
     )
 
     if image.ndim == 3:
@@ -42,7 +41,8 @@ def select_positions(image, as_integers=True):
 @interactive_backend
 def select_traces(video, size=5, ref_frame=0, x=None, fps=None):
     """
-    Interactive selection/plotting of traces from a video. Click on the image to select a position. Right click to remove a position. Close the window to finish.
+    Interactive selection/plotting of traces from a video. Click on the image to select a position.
+    Right click to remove a position. Close the window to finish.
 
     Parameters
     ----------
@@ -65,7 +65,7 @@ def select_traces(video, size=5, ref_frame=0, x=None, fps=None):
         List of selected positions
     """
     _print(
-        f"Click positions on the image, close the window to finish. Right click a point to remove it."
+        "Click positions on the image, close the window to finish. Right click a point to remove it."
     )
 
     image = video[ref_frame]

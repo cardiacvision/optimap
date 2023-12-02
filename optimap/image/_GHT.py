@@ -5,10 +5,15 @@ Jonathan T. Barron, ECCV, 2020 https://arxiv.org/abs/2007.07350
 """
 import numpy as np
 
-csum = lambda z: np.cumsum(z)[:-1]
-dsum = lambda z: np.cumsum(z[::-1])[-2::-1]
-argmax = lambda x, f: np.mean(x[:-1][f == np.max(f)])  # Use the mean for ties.
-clip = lambda z: np.maximum(1e-30, z)
+
+def csum(z):
+    return np.cumsum(z)[:-1]
+def dsum(z):
+    return np.cumsum(z[::-1])[-2::-1]
+def argmax(x, f):
+    return np.mean(x[:-1][f == np.max(f)])  # Use the mean for ties.
+def clip(z):
+    return np.maximum(1e-30, z)
 
 
 def preliminaries(n, x):

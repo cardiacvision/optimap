@@ -14,7 +14,7 @@ def random_positions(shape_or_mask, N=1):
         either image shape (e.g. (128, 128)) or a image mask
     N : int
         number of positions, by default 1
-    
+
     Returns
     -------
     list of tuples
@@ -54,7 +54,7 @@ def line_positions(start, end):
 def positions_from_A_to_B(N, A, B):
     """
     Creates N positions along straight line from A to B (2D coordinates)
-    
+
     Parameters
     ----------
     N : int
@@ -63,7 +63,7 @@ def positions_from_A_to_B(N, A, B):
         starting point (x, y)
     B : tuple
         end point (x, y)
-    
+
     Returns
     -------
     list of tuples

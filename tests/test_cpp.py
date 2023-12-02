@@ -1,12 +1,12 @@
-import pytest
 import numpy as np
+import pytest
 
 import optimap._cpp as cpp
 
 
 def test_package():
     val = cpp.is_openmp_enabled()
-    assert type(val) == type(True)
+    assert isinstance(val, bool)
 
 def test_filterPhaseAngleThreshold():
     phase = np.ones((100, 100, 100))

@@ -1,7 +1,8 @@
-import numpy as np
 import cv2
+import numpy as np
 
 from ..utils import _print, print_bar
+
 
 def resize(video, newx, newy, interpolation=cv2.INTER_CUBIC):
     """
@@ -17,7 +18,7 @@ def resize(video, newx, newy, interpolation=cv2.INTER_CUBIC):
         New size in y-direction.
     interpolation : int, optional
         Interpolation method to use, by default cv2.INTER_CUBIC
-    
+
     Returns
     -------
     {t, newx, newy} np.ndarray
@@ -35,14 +36,14 @@ def resize(video, newx, newy, interpolation=cv2.INTER_CUBIC):
 def rotate_left(video, k=1):
     """
     Rotate video by 90° counter-clockwise (left).
-    
+
     Parameters
     ----------
     video : {t, x, y} ndarray
         Video to rotate.
     k : int, optional
         Number of times to rotate by 90°, by default 1
-    
+
     Returns
     -------
     {t, y, x} ndarray
@@ -63,7 +64,7 @@ def rotate_right(video, k=1):
         Video to rotate.
     k : int, optional
         Number of times to rotate by 90°, by default 1
-    
+
     Returns
     -------
     {t, y, x} ndarray
@@ -77,12 +78,12 @@ def rotate_right(video, k=1):
 def flip_up_down(video):
     """
     Flip Video up-down.
-    
+
     Parameters
     ----------
     video : {t, x, y} ndarray
         Video to flip.
-    
+
     Returns
     -------
     {t, x, y} ndarray
@@ -94,12 +95,12 @@ def flip_up_down(video):
 def flip_left_right(video):
     """
     Flip Video left-right.
-    
+
     Parameters
     ----------
     video : {t, x, y} ndarray
         Video to flip.
-    
+
     Returns
     -------
     {t, x, y} ndarray
@@ -111,14 +112,14 @@ def flip_left_right(video):
 def crop(video, width):
     """
     Crop Video by *width* pixels on each side.
-    
+
     Parameters
     ----------
     video : {t, x, y} ndarray
         Video to crop.
     width : int
         Width of crop.
-    
+
     Returns
     -------
     {t, x-2*width, y-2*width} ndarray
@@ -131,7 +132,7 @@ def crop(video, width):
 def pad(video, width, mode='constant' , **kwargs):
     """
     Pad Video by *width* pixels on each side.
-    
+
     Parameters
     ----------
     video : {t, x, y} ndarray
@@ -142,7 +143,7 @@ def pad(video, width, mode='constant' , **kwargs):
         Padding mode, by default 'constant'. See :py:func:`numpy.pad` for details and additional keyword arguments.
     **kwargs : dict, optional
         Additional keyword arguments passed to :py:func:`numpy.pad`.
-    
+
     Returns
     -------
     {t, x+2*width, y+2*width} ndarray

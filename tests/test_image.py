@@ -1,6 +1,9 @@
-import optimap as om
-import numpy as np
 from pathlib import Path
+
+import numpy as np
+
+import optimap as om
+
 
 def test_image_export(tmpdir):
     img = np.random.rand(100, 100).astype(np.float32)

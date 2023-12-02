@@ -2,8 +2,8 @@ import numpy as np
 
 from .. import _cpp
 from ..video import smooth_spatiotemporal
-from ._warping import warp_video
 from ._flowestimator import FlowEstimator
+from ._warping import warp_video
 
 
 def contrast_enhancement(video_or_img: np.ndarray, kernel_size: int):
@@ -165,14 +165,18 @@ def reverse_motion_compensate(
     postsmooth=None,
     method=None,
 ):
-    """Typical motion tracking pipeline to transform a video back into motion. E.g. we first motion compensated a recording and extracted the fluoresence wave dynamics. We now want to transform the processed, motion-less, video back into motion and e.g. overlay it ontop the original video with :py:func:`video.play_with_overlay`.
-    
-    See :py:func:`motion_compensate` and :py:func:`estimate_reverse_displacements` for explenation of paramters and further details.
+    """Typical motion tracking pipeline to transform a video back into motion.
+    E.g. we first motion compensated a recording and extracted the fluorescence wave dynamics.
+    We now want to transform the processed, motion-less, video back into motion and e.g.
+    overlay it on-top the original video with :py:func:`video.play_with_overlay`.
+
+    See :py:func:`motion_compensate` and :py:func:`estimate_reverse_displacements` for explanation
+    of parameters and further details.
 
     Parameters
     ----------
     video_tracking : np.ndarray
-        Video to estimate optical flow for (list of images or 3D array {t, x, y}). Can be any dtype because contrast enhancement will convert to float32.
+        Video to estimate optical flow for (list of images or 3D array {t, x, y}). Can be any dtype.
     video_warping : np.ndarray
         Video to be warped based on the motion of the `video_tracking` data.
     contrast_kernel : int, optional
@@ -196,7 +200,7 @@ def reverse_motion_compensate(
     Returns
     -------
     np.ndarray
-        
+
     """
     if presmooth_temporal > 0 or presmooth_spatial > 0:
         video_tracking = video_tracking.astype(np.float32)

@@ -142,7 +142,7 @@ def interactive_backend(func):
 
         # Switch back
         if ipython is not None and "inline" in current_backend:
-            _print(f"Switching matplotlib backend to inline")
+            _print("Switching matplotlib backend to inline")
             plt.switch_backend(current_backend)
             ipython.run_line_magic("matplotlib", "inline")
         return result

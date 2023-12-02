@@ -1,10 +1,10 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
+from ..utils import interactive_backend
 from ._core import extract_traces
 from ._point_clicker import PointClicker
 
-from ..utils import interactive_backend
 
 @interactive_backend
 def _compare_traces_interactive(videos, labels=None, size=5, ref_frame=0, colors=None, x=None, x_label=None):
@@ -57,7 +57,7 @@ def _compare_traces_plot(videos, coords, size=5, labels=None, colors=None, x=Non
             traces.append(extract_traces(video, coord, size))
         traces = np.array(traces).T
         all_traces.append(traces)
-    
+
     fig, ax = plt.subplots(nrows=len(coords), ncols=1, sharex=True, figsize=(5, 2.5*len(coords)))
     if len(coords) == 1:
         ax = [ax]
@@ -101,7 +101,7 @@ def compare_traces(videos, coords=None, labels=None, colors=None, size=5, ref_fr
     colors = colors or [None] * len(videos)
     if x is not None and fps is not None:
         raise ValueError("`x` and `fps` parameters cannot be passed at the same time")
-    
+
     if fps is not None:
         x = np.arange(videos[0].shape[0]) / fps
         x_label = "Time [s]"

@@ -1,7 +1,7 @@
-import pytest
 import numpy as np
 
 import optimap as om
+
 
 def test_normalize():
     vid = (np.random.random((10, 128, 128)) * 8000).astype(np.uint16)

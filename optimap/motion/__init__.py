@@ -22,7 +22,14 @@ __all__ = [
     "FlowEstimator",
 ]
 
+from ._core import (
+    contrast_enhancement,
+    estimate_displacements,
+    estimate_reverse_displacements,
+    motion_compensate,
+    reverse_motion_compensate,
+    smooth_displacements,
+)
 from ._flowestimator import FlowEstimator
-from ._warping import warp_video, warp_image
-from ._core import contrast_enhancement, smooth_displacements, estimate_displacements, estimate_reverse_displacements, motion_compensate, reverse_motion_compensate
 from ._plot import play_displacements, play_displacements_points
+from ._warping import warp_image, warp_video

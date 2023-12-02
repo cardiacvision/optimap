@@ -1,12 +1,13 @@
 from pathlib import Path
 
-import numpy as np
 import cv2
 import matplotlib.pyplot as plt
+import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy import ndimage
 
 from ..utils import _print
+
 
 def show_image(image, title="", vmin=None, vmax=None, cmap="gray", show_colorbar=False, colorbar_title="", ax=None, **kwargs):
     """
@@ -43,11 +44,11 @@ def show_image(image, title="", vmin=None, vmax=None, cmap="gray", show_colorbar
     else:
         fig = ax.figure
         show = False
-    
+
     if show_colorbar:
         divider = make_axes_locatable(ax)
         cax = divider.append_axes('right', size='5%', pad=0.05)
-    
+
     im = ax.imshow(image, cmap=cmap, vmin=vmin, vmax=vmax, **kwargs)
     ax.set_title(title)
     ax.axis("off")
@@ -63,7 +64,7 @@ def show_image(image, title="", vmin=None, vmax=None, cmap="gray", show_colorbar
 def load_image(filename, as_gray=False, **kwargs):
     """
     Load an image from a file. Eg. PNG, TIFF, NPY, ...
-    
+
     Uses :func:`numpy.load` internally if the file extension is ``.npy``.
     Uses :func:`cv2.imread` internally otherwise.
 
@@ -99,7 +100,7 @@ def load_image(filename, as_gray=False, **kwargs):
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         elif image.ndim == 3 and image.shape[2] == 4:
             image = cv2.cvtColor(image, cv2.COLOR_BGRA2RGBA)
-        
+
     _print(f'Image shape: {image.shape[0]}x{image.shape[1]} pixels')
     return image
 
@@ -117,7 +118,7 @@ def load_mask(filename, **kwargs):
         Filename of image file to load (e.g. NPY, PNG, TIFF, ...)
     **kwargs : dict, optional
         passed to :func:`load_image`
-    
+
     Returns
     -------
     np.ndarray of bool
@@ -159,9 +160,9 @@ def save_image(image, filename, **kwargs):
 def smooth_gaussian(image, sigma, **kwargs):
     """
     Smooth an image or mask using a Gaussian filter.
-    
+
     Uses :func:`scipy.ndimage.gaussian_filter` internally with ``mode='nearest'``.
-    
+
     Parameters
     ----------
     image : {X, Y} np.ndarray
@@ -173,5 +174,5 @@ def smooth_gaussian(image, sigma, **kwargs):
     """
     if 'mode' not in kwargs:
         kwargs['mode'] = 'nearest'
-    
+
     return ndimage.gaussian_filter(image, sigma=sigma, **kwargs)

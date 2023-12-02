@@ -1,6 +1,6 @@
+import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import numpy as np
-import matplotlib.animation as animation
 from matplotlib.colors import Colormap
 
 from ..utils import interactive_backend
@@ -174,8 +174,8 @@ def playn(videos, skip_frame=1, titles=None, cmaps="gray", vmins=None, vmaxs=Non
     if n == 1:
         axs = [axs]
 
-    # TODO: this is needed here to set the correct spacing between GUI elements for Player
-    suptitle = fig.suptitle(f"  ", font="monospace")
+    # needed to set the correct spacing between GUI elements for Player
+    fig.suptitle("  ", font="monospace")
 
     imshows = []
     for i in range(n):

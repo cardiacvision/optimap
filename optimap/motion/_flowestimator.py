@@ -1,5 +1,5 @@
-from typing import Union
 import warnings
+from typing import Union
 
 import cv2
 import numpy as np
@@ -248,7 +248,7 @@ class FlowEstimator:
             optical flow method to use (default: 'farneback' if GPU is available, 'farneback_cpu' otherwise), by default None
         show_progress : bool, optional
             show progress bar, by default True
-        
+
         Returns
         -------
         np.ndarray
@@ -279,7 +279,7 @@ class FlowEstimator:
             optical flow method to use (default: 'farneback' if GPU is available, 'farneback_cpu' otherwise), by default None
         show_progress : bool, optional
             show progress bar, by default True
-        
+
         Returns
         -------
         np.ndarray
@@ -302,7 +302,7 @@ class FlowEstimator:
         method : str, optional
         show_progress : bool, optional
             show progress bar, by default True
-        
+
         Returns
         -------
         np.ndarray

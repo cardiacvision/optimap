@@ -1,5 +1,5 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 from ..image import disc_mask
 
@@ -38,7 +38,7 @@ def get_default_trace_window():
 def extract_traces(video, coords, size=5, show=False, window=None, **kwargs):
     """
     Extract trace or traces from a video at specified coordinates.
-    
+
     Multiple coordinates can be provided, and the averaging method for trace extraction can be selected.
 
     .. warning:: Coordinates are given as (y, x) tuples, not (x, y) tuples to be consistent with matplotlib convention (origin of image in the top left corner). E.g. the coordinate (5, 10) is equivalent to ``img[10, 5]`` in numpy.
@@ -87,7 +87,7 @@ def extract_traces(video, coords, size=5, show=False, window=None, **kwargs):
         if x < 0 or x >= video.shape[1] or y < 0 or y >= video.shape[2]:
             raise ValueError(f"Coordinates ({x}, {y}) out of bounds")
 
-    def slice(video, x, y):
+    def rect_mask(video, x, y):
         xs, xe = max(0, x - size // 2), min(video.shape[1], x + size // 2 + size % 2)
         ys, ye = max(0, y - size // 2), min(video.shape[2], y + size // 2 + size % 2)
 
@@ -96,7 +96,7 @@ def extract_traces(video, coords, size=5, show=False, window=None, **kwargs):
     if size == 0 or size == 1 or window == "pixel":
         traces = [video[:, x, y] for (y, x) in coords]
     elif window == "rect":
-        traces = [slice(video, x, y).mean(axis=(1, 2)) for (y, x) in coords]
+        traces = [rect_mask(video, x, y).mean(axis=(1, 2)) for (y, x) in coords]
     elif window == "disc":
         traces = [
             video[:, disc_mask(video.shape[1:], (x, y), size / 2)].mean(axis=(1,))
@@ -125,7 +125,7 @@ def show_positions(image, positions, ax=None):
         List of positions to overlay
     ax : matplotlib.axes.Axes, optional
         Axes to plot on
-    
+
     Returns
     -------
     matplotlib.axes.Axes
@@ -189,7 +189,7 @@ def show_traces(traces, x=None, fps=None, colors=None, labels=None, ax=None, **k
 
     if x is not None and fps is not None:
         raise ValueError("`x` and `fps` parameters cannot be passed at the same time")
-    
+
     if fps is not None:
         x = np.arange(traces.shape[0]) / fps
         x_label = "Time [s]"
@@ -198,7 +198,7 @@ def show_traces(traces, x=None, fps=None, colors=None, labels=None, ax=None, **k
     else:
         x = np.arange(traces.shape[0])
         x_label = "Frame"
-    
+
     for i in range(traces.shape[1]):
         ax.plot(x, traces[:, i], color=colors[i], label=labels[i], **kwargs)
     ax.set_xlim(x[0], x[-1])

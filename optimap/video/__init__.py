@@ -3,49 +3,48 @@ Functions for loading, viewing, filtering, saving and exporting videos.
 """
 
 from ._edit import (
+    crop,
+    flip_left_right,
+    flip_up_down,
+    pad,
+    resize,
     rotate_left,
     rotate_right,
-    flip_up_down,
-    flip_left_right,
-    resize,
-    crop,
-    pad,
 )
-
+from ._export import (
+    alpha_blend_videos,
+    export_video,
+    export_video_with_overlay,
+    get_default_ffmpeg_encoder,
+    iter_alpha_blend_videos,
+    set_default_ffmpeg_encoder,
+    set_ffmpeg_defaults,
+    smoothstep,
+)
 from ._filters import (
+    evolve_jitter_filter,
     normalize,
     normalize_pixelwise,
     normalize_pixelwise_slidingwindow,
     smooth_spatiotemporal,
-    evolve_jitter_filter,
     temporal_difference,
 )
-from ._play import play, play2, playn, play_with_overlay
-from ._export import (
-    export_video,
-    export_video_with_overlay,
-    iter_alpha_blend_videos,
-    alpha_blend_videos,
-    smoothstep,
-    set_ffmpeg_defaults,
-    set_default_ffmpeg_encoder,
-    get_default_ffmpeg_encoder,
-)
-from ._load import (
-    load_video,
-    load_metadata,
-)
 from ._importers import (
-    MultiRecorderImporter,
     MiCAM05_Importer,
     MiCAM_ULTIMA_Importer,
+    MultiRecorderImporter,
 )
+from ._load import (
+    load_metadata,
+    load_video,
+)
+from ._play import play, play2, play_with_overlay, playn
 from ._save import (
+    save_image_sequence,
     save_matlab,
     save_tiff,
     save_tiff_folder,
     save_video,
-    save_image_sequence,
 )
 
 __all__ = [

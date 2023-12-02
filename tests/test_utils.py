@@ -1,7 +1,9 @@
 from pathlib import Path
 
-import optimap as om
 import numpy as np
+
+import optimap as om
+
 
 def test_retrieve_sample():
     filename = om.utils.retrieve_example_data('optimap-test-download-file.npy')
