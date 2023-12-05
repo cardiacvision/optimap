@@ -46,9 +46,9 @@ class ImageSegmenter:
             ``Scroll``                Zoom in/out
             ``ctrl+z`` or ``cmd+z``   Undo
             ``ctrl+y`` or ``cmd+y``   Redo
-            ``v``                     Toggle visibility of mask
             ``e``                     Erase mode
             ``d``                     Draw/Lasso mode
+            ``v``                     Toggle mask visibility
             ``q``                     Quit
             ========================= ===========================
 
@@ -66,7 +66,7 @@ class ImageSegmenter:
             the alpha values in mask_colors if any were passed
         lasso_props : dict, default: None
             props passed to LassoSelector. If None the default values are:
-            {"color": "black", "linewidth": 1, "alpha": 0.8}
+            {"color": mask_color, "linewidth": 1, "alpha": 0.8}
         lasso_mousebutton : str, or int, default: "left"
             The mouse button to use for drawing the selecting lasso.
         pan_mousebutton : str, or int, default: "middle"

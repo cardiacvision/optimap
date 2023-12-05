@@ -84,13 +84,17 @@ def print_bar(force=False):
         )
 
 
-def print_properties(array):
+def print_properties(array: np.ndarray):
     """Print properties of an array."""
+    if not isinstance(array, np.ndarray):
+        raise TypeError("array must be a numpy array")
     print_bar(force=True)
     print(f"array with dimensions: {array.shape}")
     print(f"datatype of array: {array.dtype}")
     print(f"minimum value in entire array: {np.nanmin(array)}")
     print(f"maximum value in entire array: {np.nanmax(array)}")
+    if nans := np.sum(np.isnan(array)) > 0:
+        print(f"number of NaNs in array: {nans}")
     print_bar(force=True)
 
 

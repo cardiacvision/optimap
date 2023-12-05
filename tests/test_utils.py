@@ -15,3 +15,5 @@ def test_retrieve_sample():
     assert video.shape == (2, 4, 6)
     assert video.dtype == np.uint8
     assert np.all(video[1] == 1)
+
+    om.print_properties(video)
