@@ -40,7 +40,9 @@ FILE_HASHES = {
         "sha256:0d3cfca36d8e3ad935de4d0681ddd510c1590212a99dccb196353c8ce85b7491",
     # warped version of Example_02, used to speed up documentation build
     "Example_02_VF_Rabbit_Di-4-ANEPPS_Basler_acA720-520um_warped.npy":
-        "sha256:a1781582b669a69a9753b1c43d23e0acf26fb372426eeb6d880d2e66420b2107"
+        "sha256:a1781582b669a69a9753b1c43d23e0acf26fb372426eeb6d880d2e66420b2107",
+    "Example_02_VF_Rabbit_Di-4-ANEPPS_Basler_acA720-520um_warped_mask.npy":
+        "sha256:3f5d8402c8251f3cb8e8d235b459264ff7e7e2cf2b81f08129f0897baa262db6"
 }
 
 
