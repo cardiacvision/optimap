@@ -18,13 +18,13 @@ from ._mask import (
 )
 
 __all__ = [
-    "load_image",
-    "load_mask",
-
     "show_image",
     "show_mask",
     "save_image",
     "save_mask",
+    "load_image",
+    "load_mask",
+    
     "smooth_gaussian",
 
     "interactive_mask",
