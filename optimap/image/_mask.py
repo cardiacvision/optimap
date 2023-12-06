@@ -157,7 +157,7 @@ def foreground_mask(image, threshold=None, show=True, return_threshold=False, **
         return mask
 
 
-def show_mask(mask, image=None, title="", alpha=0.5, color="red", cmap="gray", ax=None):
+def show_mask(mask, image=None, title="", alpha=0.3, color="red", cmap="gray", ax=None):
     """Show an mask overlayed on an image.
     If no image is given, only the mask is shown.
 

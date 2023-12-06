@@ -61,7 +61,7 @@ class ImageSegmenter:
         mask_color : None, color, or array of colors, optional
             the colors to use for each class. Unselected regions will always be
             totally transparent
-        mask_alpha : float, default .75
+        mask_alpha : float, default .3
             The alpha values to use for selected regions. This will always override
             the alpha values in mask_colors if any were passed
         lasso_props : dict, default: None
