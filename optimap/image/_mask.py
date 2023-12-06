@@ -204,7 +204,12 @@ def show_mask(mask, image=None, title="", alpha=0.5, color="red", cmap="gray", a
         alpha = 1
 
     ax.imshow(mask, cmap=cmap_mask, vmin=0, vmax=1, alpha=alpha, interpolation="none")
-    ax.axis("off")
+
+    if image is not None:
+        ax.axis("off")
+    else:  # show border around image
+        ax.tick_params(left = False, bottom = False, labelleft = False, labelbottom = False)
+
     if title:
         ax.set_title(title)
 

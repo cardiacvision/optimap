@@ -24,7 +24,7 @@ __all__ = [
     "save_mask",
     "load_image",
     "load_mask",
-    
+
     "smooth_gaussian",
 
     "interactive_mask",
