@@ -1,3 +1,4 @@
+import warnings
 from pathlib import Path
 
 import cv2
@@ -113,11 +114,14 @@ def load_image(filename, as_gray=False, **kwargs):
 def load_mask(filename, **kwargs):
     """Load a mask from an image file.
 
+    Supports NPY, PNG, TIFF, ... files.
+
     If the image is grayscale or RGB, half of the maximum value is used as a threshold. Values below
     the threshold are set to ``False``, values above to ``True``.
 
-    If the image has 4 channels, the alpha channel is used as mask, with values below 0.5 set to False,
-    and values above to True.
+    If the image is RGBA, then the alpha channel is used as mask using the same threshold.
+
+    See :func:`save_mask` to save a mask to a file.
 
     Parameters
     ----------
@@ -137,7 +141,61 @@ def load_mask(filename, **kwargs):
             mask = mask[:, :, 3]
         else:
             mask = np.max(mask, axis=2)
-    return mask < np.max(mask) / 2
+    if mask.dtype == bool:
+        return mask
+    else:
+        return mask > np.max(mask) / 2
+
+
+def save_mask(mask, filename, image=None, **kwargs):
+    """Save a mask to a file.
+
+    Supports NPY, PNG, TIFF, ... files.
+
+    For NPY files, the mask is saved as a boolean array. For image files (PNG, TIFF, ...), the mask is saved as the alpha channel of the image (if given). If no image is given, the mask is saved as a grayscale image.
+
+    See :func:`load_mask` to load the mask again.
+    
+    Parameters
+    ----------
+    mask : np.ndarray
+        2D bool mask to save 
+    filename : str or pathlib.Path
+        Path to save mask to
+    image : np.ndarray, optional
+        Image to save. If given, the mask will be saved as the alpha channel of the image. Only supported for .png and .tif files.
+    **kwargs : dict, optional
+        passed to :func:`np.save` (for .npy) or :func:`cv2.imwrite` (else)
+    """
+
+    mask = np.squeeze(mask)
+    if mask.ndim != 2 or mask.dtype != bool:
+        raise ValueError("mask must be 2D boolean array")
+    
+    if image is not None:
+        image = np.squeeze(image)
+        if image.ndim == 3 and image.shape[2] not in (3, 4):
+            raise ValueError("image must be 2D or RBG(A)")
+
+    suffix = Path(filename).suffix
+    if suffix == ".npy":
+        if image is not None:
+            warnings.warn("save_mask() does not support saving images to .npy files", UserWarning)
+        np.save(filename, mask, **kwargs)
+    else:
+        if image is not None:
+            image = cv2.convertScaleAbs(image, alpha=(255.0/image.max()))  # convert to 8-bit
+            if image.ndim == 2:
+                image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
+            if image.shape[2] == 3:
+                image = cv2.cvtColor(image, cv2.COLOR_RGB2RGBA)
+            image[np.logical_not(mask), 3] = 0  
+            image[mask, 3] = 255
+            cv2.imwrite(str(filename), image, **kwargs)
+        else:
+            mask = mask.astype(np.uint8) * 255
+            cv2.imwrite(str(filename), mask, **kwargs)
+
 
 def save_image(image, filename, **kwargs):
     """Export an image to a file. The file format is inferred from the filename extension.

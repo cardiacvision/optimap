@@ -21,6 +21,7 @@ from .image import (
     load_image,
     load_mask,
     save_image,
+    save_mask,
     show_image,
     show_mask,
 )
@@ -74,6 +75,7 @@ __all__ = [
 
     "save_image",
     "save_image_sequence",
+    "save_mask",
     "save_video",
     "export_video",
 

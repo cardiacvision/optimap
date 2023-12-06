@@ -1,6 +1,6 @@
 """Functions for loading, saving, and displaying images, and for creating masks."""
 
-from ._core import load_image, load_mask, save_image, show_image, smooth_gaussian
+from ._core import load_image, load_mask, save_image, save_mask, show_image, smooth_gaussian
 from ._mask import (
     background_mask,
     binary_closing,
@@ -22,6 +22,7 @@ __all__ = [
     "show_image",
     "show_mask",
     "save_image",
+    "save_mask",
     "smooth_gaussian",
 
     "interactive_mask",
