@@ -384,7 +384,7 @@ def fill_mask(binary_mask, structure=None, show=True, **kwargs):
 
 
 def open_mask(binary_mask, iterations=1, border_value=0, structure=None, show=True, **kwargs):
-    """Perform binary opening on a binary mask. Consists of an erosion followed by a dilation. See https://en.wikipedia.org/wiki/Opening_(morphology).
+    """Perform binary opening on a binary mask. Consists of an erosion followed by a dilation.
 
     Parameters
     ----------
@@ -418,7 +418,7 @@ def open_mask(binary_mask, iterations=1, border_value=0, structure=None, show=Tr
 
 
 def close_mask(binary_mask, iterations=1, border_value=0, structure=None, show=True, **kwargs):
-    """Perform binary closing on a binary mask. Consists of a dilation followed by an erosion. See https://en.wikipedia.org/wiki/Closing_(morphology).
+    """Perform binary closing on a binary mask. Consists of a dilation followed by an erosion.
 
     Parameters
     ----------
