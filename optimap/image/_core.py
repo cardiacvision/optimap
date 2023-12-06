@@ -152,26 +152,29 @@ def save_mask(mask, filename, image=None, **kwargs):
 
     Supports NPY, PNG, TIFF, ... files.
 
-    For NPY files, the mask is saved as a boolean array. For image files (PNG, TIFF, ...), the mask is saved as the alpha channel of the image (if given). If no image is given, the mask is saved as a grayscale image.
+    For NPY files, the mask is saved as a boolean array. For image files (PNG, TIFF, ...),
+    the mask is saved as the alpha channel of the image (if given). If no image is given,
+    the mask is saved as a grayscale image.
 
     See :func:`load_mask` to load the mask again.
-    
+
+
     Parameters
     ----------
     mask : np.ndarray
-        2D bool mask to save 
+        2D bool mask to save
     filename : str or pathlib.Path
         Path to save mask to
     image : np.ndarray, optional
-        Image to save. If given, the mask will be saved as the alpha channel of the image. Only supported for .png and .tif files.
+        Image to save. If given, the mask will be saved as the alpha channel of the image.
+        Only supported for .png and .tif files.
     **kwargs : dict, optional
         passed to :func:`np.save` (for .npy) or :func:`cv2.imwrite` (else)
     """
-
     mask = np.squeeze(mask)
     if mask.ndim != 2 or mask.dtype != bool:
         raise ValueError("mask must be 2D boolean array")
-    
+
     if image is not None:
         image = np.squeeze(image)
         if image.ndim == 3 and image.shape[2] not in (3, 4):
@@ -189,7 +192,7 @@ def save_mask(mask, filename, image=None, **kwargs):
                 image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
             if image.shape[2] == 3:
                 image = cv2.cvtColor(image, cv2.COLOR_RGB2RGBA)
-            image[np.logical_not(mask), 3] = 0  
+            image[np.logical_not(mask), 3] = 0
             image[mask, 3] = 255
             cv2.imwrite(str(filename), image, **kwargs)
         else:

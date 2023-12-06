@@ -18,6 +18,7 @@ from .image import (
     background_mask,
     foreground_mask,
     interactive_mask,
+    invert_mask,
     load_image,
     load_mask,
     save_image,
@@ -89,6 +90,7 @@ __all__ = [
     "interactive_mask",
     "background_mask",
     "foreground_mask",
+    "invert_mask",
 
     "compute_phase",
     "compute_activation_map",

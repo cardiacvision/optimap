@@ -213,6 +213,21 @@ def show_mask(mask, image=None, title="", alpha=0.5, color="red", cmap="gray", a
     return ax
 
 
+def invert_mask(mask):
+    """Invert a binary mask.
+
+    Parameters
+    ----------
+    mask : 2D ndarray
+        Binary mask.
+
+    Returns
+    -------
+    2D ndarray
+        Inverted mask.
+    """
+    return np.logical_not(mask)
+
 def disc_mask(shape, center, radius):
     """Create a circular/disk shaped mask.
 
@@ -234,13 +249,12 @@ def disc_mask(shape, center, radius):
     cx, cy = center
     return (x - cx) ** 2 + (y - cy) ** 2 <= radius**2
 
-
-def largest_mask_island(mask: np.ndarray, invert: bool = False):
+def largest_mask_component(mask: np.ndarray, invert: bool = False, show=True, **kwargs):
     """Identify and return the largest connected component (island) in a given binary mask.
 
-    This function labels distinct regions (or islands) in a binary mask and returns the largest one in
-    terms of pixel count. Optionally, the mask can be inverted before processing and then inverted back
-    before returning the result.
+    This function labels distinct unconnected regions (or islands) in a binary mask and returns the largest
+    one in terms of pixel count. Optionally, the mask can be inverted before processing and then inverted
+    back before returning the result.
 
     Parameters
     ----------
@@ -249,6 +263,10 @@ def largest_mask_island(mask: np.ndarray, invert: bool = False):
     invert : bool, optional
         If set to True, the mask is inverted before processing and then inverted back before returning the result.
         This can be useful if the area of interest is represented by False in the original mask. Default is False.
+    show : bool, optional
+        Show the resulting mask, by default True
+    **kwargs : dict, optional
+        Additional arguments passed to :func:`show_mask`.
 
     Returns
     -------
@@ -265,10 +283,13 @@ def largest_mask_island(mask: np.ndarray, invert: bool = False):
 
     if invert:
         new_mask = np.logical_not(new_mask)
+
+    if show:
+        show_mask(new_mask, **kwargs)
     return new_mask
 
 
-def erode_mask(binary_mask, iterations=1, **kwargs):
+def erode_mask(binary_mask, iterations=1, border_value=0, structure=None, show=True, **kwargs):
     """Erode a binary mask.
 
     Parameters
@@ -277,18 +298,29 @@ def erode_mask(binary_mask, iterations=1, **kwargs):
         Binary mask.
     iterations : int, optional
         Number of iterations, by default 1
+    border_value : int, optional
+        Value of the border, by default 0
+    show : bool, optional
+        Show the resulting mask, by default True
+    structure : array_like, optional
+        Structuring element used for the erosion. See
+        `scipy documentation <https://docs.scipy.org/doc/scipy/tutorial/ndimage.html#morphology>`_
+        for more information.
     **kwargs : dict, optional
-        Additional arguments passed to :func:`scipy.ndimage.binary_erosion`.
+        Additional arguments passed to :func:`show_mask`.
 
     Returns
     -------
     2D ndarray
         Eroded mask.
     """
-    return ndimage.binary_erosion(binary_mask, iterations=iterations, **kwargs)
+    mask = ndimage.binary_erosion(binary_mask, iterations=iterations, structure=structure, border_value=border_value)
+    if show:
+        show_mask(mask, **kwargs)
+    return mask
 
 
-def dilate_mask(binary_mask, iterations=1, **kwargs):
+def dilate_mask(binary_mask, iterations=1, border_value=0, structure=None, show=True, **kwargs):
     """Dilate a binary mask.
 
     Parameters
@@ -297,36 +329,56 @@ def dilate_mask(binary_mask, iterations=1, **kwargs):
         Binary mask.
     iterations : int, optional
         Number of iterations, by default 1
+    border_value : int, optional
+        Value of the border, by default 0
+    structure : array_like, optional
+        Structuring element used for the erosion. See
+        `scipy documentation <https://docs.scipy.org/doc/scipy/tutorial/ndimage.html#morphology>`_
+        for more information.
+    show : bool, optional
+        Show the resulting mask, by default True
     **kwargs : dict, optional
-        Additional arguments passed to :func:`scipy.ndimage.binary_dilation`.
+        Additional arguments passed to :func:`show_mask`.
 
     Returns
     -------
     2D ndarray
         Dilated mask.
     """
-    return ndimage.binary_dilation(binary_mask, iterations=iterations, **kwargs)
+    mask = ndimage.binary_dilation(binary_mask, iterations=iterations, border_value=border_value, structure=structure)
+    if show:
+        show_mask(mask, **kwargs)
+    return mask
 
 
-def fill_mask_holes(binary_mask, **kwargs):
+def fill_mask(binary_mask, structure=None, show=True, **kwargs):
     """Fill holes in a binary mask.
 
     Parameters
     ----------
     binary_mask : 2D ndarray
         Binary mask.
+    structure : array_like, optional
+        Structuring element used for the erosion. See
+        `scipy documentation <https://docs.scipy.org/doc/scipy/tutorial/ndimage.html#morphology>`_
+        for more information.
+    show : bool, optional
+        Show the resulting mask, by default True
     **kwargs : dict, optional
-        Additional arguments passed to :func:`scipy.ndimage.binary_fill_holes`.
+        Additional arguments passed to :func:`show_mask`.
 
     Returns
     -------
     2D ndarray
         Mask with filled holes.
     """
-    return ndimage.binary_fill_holes(binary_mask, **kwargs)
+    mask = ndimage.binary_fill_holes(binary_mask, structure=structure)
+    if show:
+        show_mask(mask, **kwargs)
+    return mask
 
 
-def binary_opening(binary_mask, iterations=1, **kwargs):
+def open_mask(binary_mask, iterations=1, border_value=0, structure=None, show=True, **kwargs):
     """Perform binary opening on a binary mask. Consists of an erosion followed by a dilation. See https://en.wikipedia.org/wiki/Opening_(morphology).
 
     Parameters
@@ -335,18 +387,32 @@ def binary_opening(binary_mask, iterations=1, **kwargs):
         Binary mask.
     iterations : int, optional
         Number of iterations, by default 1
+    border_value : int, optional
+        Value of the border, by default 0
+    structure : array_like, optional
+        Structuring element used for the erosion. See
+        `scipy documentation <https://docs.scipy.org/doc/scipy/tutorial/ndimage.html#morphology>`_
+        for more information.
+    show : bool, optional
+        Show the resulting mask, by default True
     **kwargs : dict, optional
-        Additional arguments passed to :func:`scipy.ndimage.binary_opening`.
+        Additional arguments passed to :func:`show_mask`.
 
     Returns
     -------
     2D ndarray
         Mask after binary opening.
     """
-    return ndimage.binary_opening(binary_mask, iterations=iterations, **kwargs)
+    mask = ndimage.binary_opening(binary_mask,
+                                  iterations=iterations,
+                                  border_value=border_value,
+                                  structure=structure)
+    if show:
+        show_mask(mask, **kwargs)
+    return mask
 
 
-def binary_closing(binary_mask, iterations=1, **kwargs):
+def close_mask(binary_mask, iterations=1, border_value=0, structure=None, show=True, **kwargs):
     """Perform binary closing on a binary mask. Consists of a dilation followed by an erosion. See https://en.wikipedia.org/wiki/Closing_(morphology).
 
     Parameters
@@ -355,12 +421,26 @@ def binary_closing(binary_mask, iterations=1, **kwargs):
         Binary mask.
     iterations : int, optional
         Number of iterations, by default 1
+    border_value : int, optional
+        Value of the border, by default 0
+    structure : array_like, optional
+        Structuring element used for the erosion. See
+        `scipy documentation <https://docs.scipy.org/doc/scipy/tutorial/ndimage.html#morphology>`_
+        for more information.
+    show : bool, optional
+        Show the resulting mask, by default True
     **kwargs : dict, optional
-        Additional arguments passed to :func:`scipy.ndimage.binary_closing`.
+        Additional arguments passed to :func:`show_mask`.
 
     Returns
     -------
     2D ndarray
         Mask after binary closing.
     """
-    return ndimage.binary_closing(binary_mask, iterations=iterations, **kwargs)
+    mask = ndimage.binary_closing(binary_mask,
+                                  iterations=iterations,
+                                  border_value=border_value,
+                                  structure=structure)
+    if show:
+        show_mask(mask, **kwargs)
+    return mask

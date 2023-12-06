@@ -3,15 +3,17 @@
 from ._core import load_image, load_mask, save_image, save_mask, show_image, smooth_gaussian
 from ._mask import (
     background_mask,
-    binary_closing,
-    binary_opening,
+    close_mask,
     detect_background_threshold,
     dilate_mask,
     disc_mask,
     erode_mask,
+    fill_mask,
     foreground_mask,
     interactive_mask,
-    largest_mask_island,
+    invert_mask,
+    largest_mask_component,
+    open_mask,
     show_mask,
 )
 
@@ -26,14 +28,17 @@ __all__ = [
     "smooth_gaussian",
 
     "interactive_mask",
-    "background_mask",
     "foreground_mask",
+    "background_mask",
     "detect_background_threshold",
+    "invert_mask",
 
-    "disc_mask",
-    "largest_mask_island",
     "erode_mask",
     "dilate_mask",
-    "binary_closing",
-    "binary_opening",
+    "largest_mask_component",
+    "fill_mask",
+
+    "disc_mask",
+    "open_mask",
+    "close_mask",
 ]
