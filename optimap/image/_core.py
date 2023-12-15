@@ -240,4 +240,7 @@ def smooth_gaussian(image, sigma, **kwargs):
     if "mode" not in kwargs:
         kwargs["mode"] = "nearest"
 
+    if image.ndim == 3:  # RGB(A) image
+        sigma = (sigma, sigma, 0)
+
     return ndimage.gaussian_filter(image, sigma=sigma, **kwargs)
