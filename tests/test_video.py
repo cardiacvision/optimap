@@ -1,5 +1,5 @@
-import cv2 as cv
 import numpy as np
+import pytest
 
 import optimap as om
 
@@ -73,5 +73,9 @@ def test_resize():
     assert out.shape == (10, 64, 64)
     assert out.dtype == np.float32
 
-    out = om.video.resize(video, shape=(64, 64), interpolation=cv.INTER_AREA)
+    out = om.video.resize(video, scale=0.5, interpolation="area")
     assert out.shape == (10, 64, 64)
+
+    pytest.raises(ValueError, om.video.resize, video)
+    pytest.raises(ValueError, om.video.resize, video, scale=0.5, shape=(64, 64))
+    pytest.raises(ValueError, om.video.resize, video, scale=0.5, interpolation="foobar")

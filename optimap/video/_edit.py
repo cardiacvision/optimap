@@ -1,13 +1,16 @@
-import cv2
 import numpy as np
 
+from ..image import resize as resize_image
 from ..utils import _print, print_bar
 
 
-def resize(video, shape=None, scale=None, interpolation=cv2.INTER_CUBIC):
-    """Resize Video.
+def resize(video, shape=None, scale=None, interpolation="cubic"):
+    """Resize video.
 
     Either shape or scale must be specified.
+
+    Interpolation method is applied to each frame individually. See :func:`optimap.image.resize`
+    for interpolation methods, "area" is recommended for downsampling as it gives moire-free results.
 
     Parameters
     ----------
@@ -17,8 +20,8 @@ def resize(video, shape=None, scale=None, interpolation=cv2.INTER_CUBIC):
         Spatial shape of resized video. Either this or scale must be specified.
     scale : float
         Scale factor to apply to video, e.g. 0.5 for half the size. Either this or shape must be specified.
-    interpolation : int, optional
-        Interpolation method to use, by default cv2.INTER_CUBIC. See OpenCV documentation for details.
+    interpolation : str, optional
+        Interpolation method to use, by default "cubic". See :func:`optimap.image.resize` for interpolation methods.
 
     Returns
     -------
@@ -31,11 +34,11 @@ def resize(video, shape=None, scale=None, interpolation=cv2.INTER_CUBIC):
         raise ValueError("Only one of shape and scale parameters can be specified.")
 
     nt = video.shape[0]
-    img0 = cv2.resize(video[0], dsize=shape, fx=scale, fy=scale, interpolation=interpolation)
+    img0 = resize_image(video[0], shape=shape, scale=scale, interpolation=interpolation)
     video_new = np.zeros((nt,) + img0.shape, dtype=video.dtype)
     video_new[0] = img0
     for t in range(1, nt):
-        video_new[t] = cv2.resize(video[t], dsize=shape, fx=scale, fy=scale, interpolation=interpolation)
+        video_new[t] = resize_image(video[t], shape=shape, scale=scale, interpolation=interpolation)
     return video_new
 
 
