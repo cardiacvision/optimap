@@ -4,31 +4,38 @@ import numpy as np
 from ..utils import _print, print_bar
 
 
-def resize(video, newx, newy, interpolation=cv2.INTER_CUBIC):
+def resize(video, shape=None, scale=None, interpolation=cv2.INTER_CUBIC):
     """Resize Video.
+
+    Either shape or scale must be specified.
 
     Parameters
     ----------
     video : {t, x, y} np.ndarray
         Video to resize.
-    newx : int
-        New size in x-direction.
-    newy : int
-        New size in y-direction.
+    shape : (new_x, new_y) tuple
+        Spatial shape of resized video. Either this or scale must be specified.
+    scale : float
+        Scale factor to apply to video, e.g. 0.5 for half the size. Either this or shape must be specified.
     interpolation : int, optional
-        Interpolation method to use, by default cv2.INTER_CUBIC
+        Interpolation method to use, by default cv2.INTER_CUBIC. See OpenCV documentation for details.
 
     Returns
     -------
-    {t, newx, newy} np.ndarray
+    3D np.ndarray
         Resized video.
     """
-    _print(f"resizing video to [{newx}, {newy}]")
+    if shape is None and scale is None:
+        raise ValueError("Either shape or scale parameter must be specified.")
+    if shape is not None and scale is not None:
+        raise ValueError("Only one of shape and scale parameters can be specified.")
+    
     nt = video.shape[0]
-    video_new = np.zeros((nt,newx,newy), dtype=video.dtype)
-    for t in range(nt):
-        video_new[t] = cv2.resize(video[t], dsize=(newx, newy), interpolation=interpolation)
-    print_bar()
+    img0 = cv2.resize(video[0], dsize=shape, fx=scale, fy=scale, interpolation=interpolation)
+    video_new = np.zeros((nt,) + img0.shape, dtype=video.dtype)
+    video_new[0] = img0
+    for t in range(1, nt):
+        video_new[t] = cv2.resize(video[t], dsize=shape, fx=scale, fy=scale, interpolation=interpolation)
     return video_new
 
 

@@ -1,5 +1,6 @@
 import numpy as np
 
+import cv2 as cv
 import optimap as om
 
 
@@ -60,3 +61,17 @@ def test_temporal_difference():
 
     out = om.video.temporal_difference(video, 2)
     assert np.all(out[2:] == 2)
+
+
+def test_resize():
+    video = np.zeros((10, 128, 128), dtype=np.float32)
+    out = om.video.resize(video, shape=(64, 64))
+    assert out.shape == (10, 64, 64)
+    assert out.dtype == np.float32
+
+    out = om.video.resize(video, scale=0.5)
+    assert out.shape == (10, 64, 64)
+    assert out.dtype == np.float32
+
+    out = om.video.resize(video, shape=(64, 64), interpolation=cv.INTER_AREA)
+    assert out.shape == (10, 64, 64)

@@ -16,7 +16,7 @@ def resize(image, shape=None, scale=None, interpolation=cv2.INTER_CUBIC):
     scale : float
         Scale factor to apply to image, e.g. 0.5 for half the size
     interpolation : int, optional
-        Interpolation method to use, by default cv2.INTER_CUBIC
+        Interpolation method to use, by default cv2.INTER_CUBIC. See OpenCV documentation for details.
 
     Returns
     -------
