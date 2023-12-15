@@ -29,7 +29,7 @@ def resize(video, shape=None, scale=None, interpolation=cv2.INTER_CUBIC):
         raise ValueError("Either shape or scale parameter must be specified.")
     if shape is not None and scale is not None:
         raise ValueError("Only one of shape and scale parameters can be specified.")
-    
+
     nt = video.shape[0]
     img0 = cv2.resize(video[0], dsize=shape, fx=scale, fy=scale, interpolation=interpolation)
     video_new = np.zeros((nt,) + img0.shape, dtype=video.dtype)
