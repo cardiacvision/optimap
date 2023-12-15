@@ -27,12 +27,14 @@ class ImageSegmenter:
         self,
         image,
         mask=None,
+        default_tool="draw",
         mask_color="red",
         mask_alpha=0.3,
         lasso_props=None,
         lasso_mousebutton="left",
         pan_mousebutton="middle",
         ax=None,
+        title="",
         figsize=(7, 7),
         **kwargs,
     ):
@@ -58,6 +60,8 @@ class ImageSegmenter:
             A single image to segment
         mask : arraylike, optional
             If you want to pre-seed the mask
+        default_tool : str, default: "draw"
+            The default tool to use. One of "draw" or "erase"
         mask_color : None, color, or array of colors, optional
             the colors to use for each class. Unselected regions will always be
             totally transparent
@@ -74,6 +78,8 @@ class ImageSegmenter:
             'left', 'middle', 'right', or 1, 2, 3 respectively.
         ax : `matplotlib.axes.Axes`, optional
             The axis on which to plot. If *None* a new figure will be created.
+        title : str, optional
+            The title of the plot.
         figsize : (float, float), optional
             passed to plt.figure. Ignored if *ax* is given.
         **kwargs : dict
@@ -84,7 +90,12 @@ class ImageSegmenter:
             raise ValueError(msg)
 
         self._img = image
-        self._erasing = False
+        if default_tool == "draw":
+            self._erasing = False
+        elif default_tool == "erase":
+            self._erasing = True
+        else:
+            raise ValueError(f"Unknown default tool '{default_tool}'. Must be 'draw' or 'erase'")
         self._visible = True
         self.cmap_mask = mpl.colors.ListedColormap(["none", mask_color])
 
@@ -108,6 +119,8 @@ class ImageSegmenter:
             alpha=mask_alpha,
             interpolation="none",
         )
+        if title:
+            self.ax.set_title(title)
 
         default_lasso_props = {"color": mask_color, "linewidth": 1, "alpha": 0.8}
         if lasso_props is None:

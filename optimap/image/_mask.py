@@ -10,7 +10,7 @@ from ._segmenter import ImageSegmenter
 
 
 @interactive_backend
-def interactive_mask(image, initial_mask=None, cmap="gray", figsize=(7, 7)):
+def interactive_mask(image, initial_mask=None, default_tool="draw", cmap="gray", title="", figsize=(7, 7)):
     """Create a mask interactively by drawing on an image.
 
     .. table:: **Keyboard Shortcuts**
@@ -34,8 +34,12 @@ def interactive_mask(image, initial_mask=None, cmap="gray", figsize=(7, 7)):
         Image to draw on.
     initial_mask : 2D ndarray, optional
         Mask to start with, by default None
+    default_tool : str, optional
+        Default tool to use, by default "draw". Can be one of ``draw`` or ``erase``.
     cmap : str, optional
         Colormap of the image, by default "gray"
+    title : str, optional
+        Title of the image, by default ""
     figsize: tuple, optional
         Figure size, by default (7, 7)
 
@@ -48,8 +52,10 @@ def interactive_mask(image, initial_mask=None, cmap="gray", figsize=(7, 7)):
     segmenter = ImageSegmenter(
         image,
         mask=initial_mask,
+        default_tool=default_tool,
         cmap=cmap,
-        ax=ax
+        ax=ax,
+        title=title,
     )
     plt.show(block=True)
     return segmenter.mask
