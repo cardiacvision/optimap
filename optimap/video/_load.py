@@ -210,7 +210,7 @@ def load_video(path, start_frame=0, frames=None, step=1, use_mmap=False):
 
     if not path.exists():
         msg = f"File or folder '{path}' does not exist"
-        raise ValueError(msg)
+        raise FileNotFoundError(msg)
     elif path.is_dir():
         return load_image_folder(path, start_frame=start_frame, end_frame=end_frame, step=step)
     elif suffix in [".tif", ".tiff"]:
