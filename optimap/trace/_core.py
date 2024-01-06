@@ -114,7 +114,7 @@ def extract_traces(video, coords, size=5, show=False, window=None, **kwargs):
     return traces
 
 
-def show_positions(image, positions, ax=None):
+def show_positions(image, positions, size=None, cmap="gray", vmin=None, vmax=None, ax=None, **kwargs):
     """Overlay positions on an image.
 
     Parameters
@@ -123,8 +123,18 @@ def show_positions(image, positions, ax=None):
         Image to overlay positions on
     positions : list of tuples
         List of positions to overlay
+    size : float or array-like, shape (n, ), optional
+        Size of the points, see `s` parameter in :py:func:`matplotlib.pyplot.scatter` for more information
+    cmap : str, optional
+        Colormap to use, by default 'gray'
+    vmin : float, optional
+        Minimum value for the colormap, by default None
+    vmax : float, optional
+        Maximum value for the colormap, by default None
     ax : matplotlib.axes.Axes, optional
-        Axes to plot on
+        Axes to plot on. If None, a new figure is created.
+    kwargs : dict, optional
+        Additional arguments to pass to :py:func:`matplotlib.pyplot.scatter`
 
     Returns
     -------
@@ -136,10 +146,10 @@ def show_positions(image, positions, ax=None):
     else:
         show = False
 
-    ax.imshow(image, cmap="gray", interpolation="none")
+    ax.imshow(image, cmap=cmap, vmin=vmin, vmax=vmax, interpolation="none")
     ax.axis("off")
     for pos in positions:
-        ax.scatter(pos[0], pos[1])
+        ax.scatter(pos[0], pos[1], s=size, **kwargs)
     if show:
         plt.show()
     return ax
