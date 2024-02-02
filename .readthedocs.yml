@@ -8,7 +8,7 @@ build:
     - ffmpeg
   jobs:
     pre_install:
-     - python -m pip install opencv-python-headless ipywidgets
+      - python -m pip install opencv-python-headless ipywidgets
 
 sphinx:
   configuration: docs/conf.py

@@ -43,6 +43,7 @@ api/optimap
 ```
 
 % Generate API reference
+
 ```{eval-rst}
 .. autosummary::
    :toctree: api
