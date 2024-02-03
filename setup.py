@@ -56,7 +56,7 @@ setup(
         "numpy",
         "matplotlib",
         "scipy",
-        "scikit-image>=0.22.0",
+        "scikit-image",
         "scikit-video",
         "tqdm",
         "pooch",
