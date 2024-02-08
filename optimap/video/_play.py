@@ -5,7 +5,7 @@ from matplotlib.colors import Colormap
 
 from ..utils import interactive_backend
 from ._export import iter_alpha_blend_videos
-from ._player import Player
+from ._player import InteractivePlayer
 
 
 def play(video, skip_frame=1, title="", vmin=None, vmax=None, cmap="gray", interval=10, **kwargs):
@@ -154,9 +154,9 @@ def playn(videos, skip_frame=1, titles=None, cmaps="gray", vmins=None, vmaxs=Non
     matplotlib.animation.FuncAnimation
     """
     n = len(videos)
-    nt = videos[0].shape[0]
+    nt = len(videos[0])
     for i in range(n):
-        if videos[i].shape[0] < nt:
+        if len(videos[i]) < nt:
             msg = "videos have to be same length!"
             raise ValueError(msg)
         videos[i] = videos[i]
@@ -194,16 +194,14 @@ def playn(videos, skip_frame=1, titles=None, cmaps="gray", vmins=None, vmaxs=Non
     def update(i):
         for j in range(n):
             imshows[j].set_data(videos[j][i])
-            # suptitle.set_text(f"Frame {frame*skip_frame:4d}")
 
-    ani = Player(
+    ani = InteractivePlayer(
         fig=fig,
         func=update,
-        frames=videos[0].shape[0],
-        interval=interval,
-        mini=0,
-        maxi=videos[0].shape[0]-1,
+        start=0,
+        end=len(videos[0]),
         step=skip_frame,
+        interval=interval,
     )
     plt.show(block=True)
     return ani
@@ -224,6 +222,39 @@ def play_with_overlay(
     interval=10,
     **kwargs,
 ):
+    """Play a video with an overlay. See :func:`export_video_with_overlay` and :func:`iter_alpha_blend_videos` for more information.
+    
+    Parameters
+    ----------
+    base : np.ndarray
+        Base video to play.
+    overlay : np.ndarray
+        Video to overlay on the base video.
+    alpha : np.ndarray, optional
+        Alpha channel for the overlay, by default None
+    skip_frames : int, optional
+        Show every n-th frame, by default 1
+    cmap_base : str or matplotlib.colors.Colormap, optional
+        Colormap to use for the base video, by default "gray"
+    cmap_overlay : str or matplotlib.colors.Colormap, optional
+        Colormap to use for the overlay video, by default "Purples"
+    vmin_base : float, optional
+        Minimum value for the colorbar of the base video, by default None
+    vmax_base : float, optional
+        Maximum value for the colorbar of the base video, by default None
+    vmin_overlay : float, optional
+        Minimum value for the colorbar of the overlay video, by default None
+    vmax_overlay : float, optional
+        Maximum value for the colorbar of the overlay video, by default None
+    interval : int, optional
+        Delay between frames in ms, by default 10. This is not the actual framerate, but the delay between frames.
+    **kwargs
+        Additional keyword arguments passed to :func:`matplotlib.pyplot.subplots`
+    
+    Returns
+    -------
+    matplotlib.animation.FuncAnimation
+    """
     fig, ax = plt.subplots(**kwargs)
 
     suptitle = fig.suptitle(f"Frame {0:4d}", font="monospace")

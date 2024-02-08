@@ -37,6 +37,7 @@ from ._load import (
     load_video,
 )
 from ._play import play, play2, play_with_overlay, playn
+from ._player import InteractivePlayer
 from ._save import (
     save_image_sequence,
     save_matlab,
@@ -85,6 +86,8 @@ __all__ = [
     "set_ffmpeg_defaults",
     "set_default_ffmpeg_encoder",
     "get_default_ffmpeg_encoder",
+
+    "InteractivePlayer",
 
     "MultiRecorderImporter",
     "MiCAM05_Importer",

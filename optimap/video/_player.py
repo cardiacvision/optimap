@@ -3,24 +3,75 @@ from matplotlib.animation import FuncAnimation
 from mpl_toolkits.axes_grid1.axes_divider import make_axes_locatable
 
 
-class Player(FuncAnimation):
+class InteractivePlayer(FuncAnimation):
+    """Generic interactive looping player with play, pause, forward, backward, and slider controls based on :class:`matplotlib.animation.FuncAnimation`.
+
+    Calls a function at each frame to update the figure content with the current frame index. Can be used to create custom video players or other interactive animations, see :func:`optimap.show_video` as an example of how to use this class.
+
+    .. table:: **Keyboard Shortcuts**
+
+        ========================= ===========================
+        Key                       Action
+        ========================= ===========================
+        ``Space``                 Play/Pause
+        ``Left``                  Last frame
+        ``Right``                 Next frame
+        ``Up``                    Increase step size
+        ``Down``                  Decrease step size
+        ``q``                     Quit
+        ========================= ===========================
+
+
+    Example
+    -------
+
+    .. code-block:: python
+
+        import numpy as np
+        import matplotlib.pyplot as plt
+        from optimap.video import InteractivePlayer
+        fig, ax = plt.subplots()
+        x = np.linspace(0, 2*np.pi, 100)
+        line, = ax.plot(x, np.sin(x))
+        def update(i):
+            line.set_ydata(np.sin(x + i / 10))
+        player = InteractivePlayer(fig, update, end=len(x))
+        plt.show()
+
+    Parameters
+    ----------
+    fig : matplotlib.figure.Figure
+        Figure to plot on.
+    func : callable
+        Function to call at each frame. Must accept a single integer argument (frame index).
+    start : int, optional
+        Start frame, by default 0
+    end : int, optional
+        End frame (exclusive), by default 100
+    step : int, optional
+        Step size for forward and backward buttons, by default 1
+    interval : int, optional
+        Delay between frames in milliseconds, by default 25
+    gui_pos : tuple, optional
+        Position of the GUI elements (play, slider, etc.), by default (0.125, 0.92)
+    **kwargs
+        Additional keyword arguments passed to :class:`matplotlib.animation.FuncAnimation`
+    """
+
     def __init__(
         self,
         fig,
         func,
-        frames=None,
-        init_func=None,
-        fargs=None,
-        save_count=None,
-        mini=0,
-        maxi=100,
-        pos=(0.125, 0.92),
+        start=0,
+        end=100,
         step=1,
+        interval=25,
+        gui_pos=(0.125, 0.92),
         **kwargs,
     ):
         self.i = 0
-        self.min = mini
-        self.max = maxi
+        self.min = start
+        self.max = end
         self.runs = True
         self.forwards = True
         self.step = step
@@ -30,29 +81,30 @@ class Player(FuncAnimation):
         self.suptitle = fig.suptitle("  ", font="monospace")
         fig.canvas.mpl_connect("key_press_event", self.on_key_press)
 
-        self.setup(pos)
+        self.setup_gui(gui_pos)
         FuncAnimation.__init__(
             self,
             self.fig,
             self.update,
             frames=self.play(),
-            init_func=init_func,
-            fargs=fargs,
-            save_count=save_count,
             cache_frame_data=False,
             repeat=False,
+            interval=interval,
             **kwargs,
         )
 
     def play(self):
         while self.runs:
-            self.i = self.i + self.step * (self.forwards - (not self.forwards))
+            self.i = self.i + self.step
             if self.i > self.min and self.i < self.max:
                 yield self.i
             else:
                 if self.saving:
                     break
-                yield self.min
+                elif self.i >= self.max:
+                    yield self.min
+                else:
+                    yield self.max
 
     def update(self, i):
         self.slider.set_val(i)
@@ -74,42 +126,37 @@ class Player(FuncAnimation):
             self.button_stop.label.set_text("■")
         self.fig.canvas.draw_idle()
 
-    def forward(self, event=None):
-        self.forwards = True
-        self.start()
+    def one_forward(self, event=None):
+        self.onestep(True)
 
-    def backward(self, event=None):
-        self.forwards = False
-        self.start()
+    def one_backward(self, event=None):
+        self.onestep(False)
 
-    def oneforward(self, event=None):
-        self.forwards = True
-        self.onestep()
-
-    def onebackward(self, event=None):
-        self.forwards = False
-        self.onestep()
-
-    def onestep(self):
-        if self.i > self.min and self.i < self.max:
-            self.i = self.i + self.forwards - (not self.forwards)
-        elif self.i == self.min and self.forwards:
-            self.i += 1
-        elif self.i == self.max and not self.forwards:
-            self.i -= 1
+    def onestep(self, forwards):
+        x = 2 * forwards - 1
+        self.step = abs(self.step) * x
+        self.i += x
+        if self.i >= self.max:
+            self.i = self.min
+        elif self.i < self.min:
+            self.i = self.max
         self.func(self.i)
         self.slider.set_val(self.i)
         self.fig.canvas.draw_idle()
 
     def on_key_press(self, event):
-        if event.key == "right":
-            self.oneforward()
-        elif event.key == "left":
-            self.onebackward()
-        elif event.key == " ":
+        if event.key == " ":
             self.toggle_play()
+        elif event.key == "right":
+            self.one_forward()
+        elif event.key == "left":
+            self.one_backward()
+        elif event.key == "up":
+            self.step += 1
+        elif event.key == "down":
+            self.step -= 1
 
-    def setup(self, pos):
+    def setup_gui(self, pos):
         self.ax_player = self.fig.add_axes([pos[0], pos[1], 0.64, 0.04])
         divider = make_axes_locatable(self.ax_player)
         self.ax_slider = divider.append_axes("right", size="500%", pad=0.07)
@@ -121,6 +168,11 @@ class Player(FuncAnimation):
         self.slider.on_changed(self.set_pos)
 
     def save(self, *args, **kwargs):
+        """Save the animation as a movie file, but hide the GUI buttons and slider.
+        
+        See FuncAnimation's :meth:`~matplotlib.animation.Animation.save` for arguments.
+        """
+
         self.saving = True
         # self.save_count = self.max // self.step
 
