@@ -83,6 +83,30 @@ class MultiRecorderImporter:
 
         return arr
 
+    def get_frametimes(self):
+        """MultiRecoder can encode the time at which each frame was recorded as a unsigned 64-bit integer.
+
+        The exact meaning of value depends on the camera plugin.
+
+        Returns
+        -------
+        frametimes : np.ndarray
+            Array of frame times for each frame in the file
+        """
+        if self.version not in ["e", "f"]:
+            raise ValueError("Frametimes are only available for MultiRecorder file versions 'e' and 'f'.")
+
+        bs = 1 if self.is_8bit else 2
+        bytes_per_frame = self._Nx * self._Ny * bs
+
+        frametimes = np.zeros(self._Nt, dtype=np.uint64)
+        with open(self.filepath, "rb") as f:
+            f.seek(self._header_size, 0)
+            for i in range(self._Nt):
+                f.seek(bytes_per_frame, 1)
+                frametimes[i], = struct.unpack(f"{self._endian}Q", f.read(8))
+        return frametimes
+
     def _read_header(self, f: BinaryIO):
         """Read the header."""
         self.version = f.read(1).decode("utf-8")
