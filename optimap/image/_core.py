@@ -244,3 +244,68 @@ def smooth_gaussian(image, sigma, **kwargs):
         sigma = (sigma, sigma, 0)
 
     return ndimage.gaussian_filter(image, sigma=sigma, **kwargs)
+
+
+def collage(images, images_per_row=6, spacing=0, spacing_value=0):
+    """Create a collage from a list or array of images/masks that have the same shape.
+    
+    Creates a numpy array with the images arranged in a grid, with a specified number of images per row.
+    Optionally, a spacing can be added between the images.
+
+    Parameters
+    ----------
+    images : np.ndarray or list of np.ndarray
+        List of grayscale or RGB(A) images to combine
+    images_per_row : int, optional
+        Number of images per row, by default 6
+    spacing : int, optional
+        Spacing between images, by default 0
+    spacing_value : float, optional
+        Value for the spacing, by default 0
+
+    Returns
+    -------
+    np.ndarray
+        Collage image
+
+    Examples
+    --------
+    .. code-block:: python
+    
+            import optimap as om
+            import numpy as np
+    
+            # create a collage of 3x3 random images
+            images = [np.random.rand(100, 100) for _ in range(9)]
+            collage = om.image.collage(images, images_per_row=3, spacing=10)
+            om.image.show_image(collage)
+    """
+
+    for image in images:
+        if image.shape != images[0].shape:
+            raise ValueError("All images must have the same shape")
+    
+    blank_image = np.full((images[0].shape[0], spacing) + images[0].shape[2:],
+                          spacing_value, dtype=images[0].dtype)
+
+    collage_rows = []
+    current_index = 0
+    while current_index < len(images):
+        end_index = min(current_index + images_per_row, len(images))
+        row_images = [images[i] for i in range(current_index, end_index)]
+
+        if spacing > 0:
+            for i in range(len(row_images) - 1):
+                row_images.insert(2 * i + 1, blank_image)
+
+        collage_rows.append(np.hstack(row_images))
+        current_index = end_index
+    
+    if spacing > 0 and len(collage_rows) > 1:
+        row_space = np.full((spacing,) + collage_rows[0].shape[1:],
+                            spacing_value, dtype=collage_rows[0].dtype)
+        for i in range(len(collage_rows) - 1):
+            collage_rows.insert(2 * i + 1, row_space)
+
+    collage_image = np.vstack(collage_rows)
+    return collage_image
