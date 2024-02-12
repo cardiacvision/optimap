@@ -13,6 +13,7 @@ from ._export import (
     alpha_blend_videos,
     export_video,
     export_video_with_overlay,
+    export_video_collage,
     get_default_ffmpeg_encoder,
     iter_alpha_blend_videos,
     set_default_ffmpeg_encoder,
@@ -58,6 +59,7 @@ __all__ = [
 
     "export_video",
     "export_video_with_overlay",
+    "export_video_collage",
 
     "play",
     "play2",

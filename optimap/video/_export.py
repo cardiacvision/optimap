@@ -1,16 +1,18 @@
 import os
 import warnings
 from pathlib import Path
-from typing import Iterable, Union
+from typing import Iterable, Union, List
 
 import matplotlib.pyplot as plt
 import numpy as np
 import skvideo
 import skvideo.io
 import static_ffmpeg.run
-from matplotlib.colors import Normalize
+from matplotlib.colors import Normalize, to_rgba
 from scipy.special import comb
 from tqdm import tqdm
+
+from ..image import collage as collage_images
 
 FFMEG_DEFAULTS = {
     "libx264": {
@@ -115,6 +117,16 @@ def export_video(
 
     Downloads pre-built ffmpeg automatically if ffmpeg is not installed.
 
+    Example
+    -------
+    .. code-block:: python
+
+        import optimap as om
+        import numpy as np
+
+        video = np.random.rand(100, 100, 100)
+        om.export_video("video.mp4", video, fps=30, cmap="viridis")
+
     Parameters
     ----------
     filename : str or Path
@@ -169,6 +181,124 @@ def export_video(
         writer.writeFrame(frame)
     writer.close()
     print(f"video exported to {filename}")
+
+
+def export_video_collage(
+        filename: Union[str, Path],
+        videos: Union[np.ndarray, List[np.ndarray]],
+        ncols: int = 6,
+        padding: int = 0,
+        padding_color = 'black',
+        fps: int = 60,
+        skip_frames: int = 1,
+        cmaps: Union[str, List[str]] = "gray",
+        vmins : Union[float, List[float]] = None,
+        vmaxs : Union[float, List[float]] = None,
+        ffmpeg_encoder : str = None,
+        progress_bar : bool = True,
+):
+    """Export a list of videos to a video file (e.g. ``.mp4``) by arranging them side by side in a grid.
+
+    Uses :func:`optimap.image.collage` to arrange the video frames in a grid.
+
+    Example
+    -------
+
+    .. code-block:: python
+
+        import optimap as om
+        import numpy as np
+
+        videos = [
+            np.random.rand(100, 100, 100),
+            np.random.rand(100, 100, 100),
+            np.random.rand(100, 100, 100),
+            np.random.rand(100, 100, 100),
+        ]
+
+        cmaps = ["gray", "viridis", "plasma", "inferno"]
+        om.export_video_collage("collage.mp4", videos, ncols=2, padding=10,
+                                padding_color="white", cmaps=cmaps)
+    
+    Parameters
+    ----------
+    filename : str or Path
+        Video file path for writing.
+    videos : np.ndarray or List[np.ndarray]
+        The videos to export. Should be of shape (frames, height, width, channels) or (frames, height, width).
+        If the video is grayscale, the colormap will be applied. If it's an RGB video, its values should range
+        [0, 1] or [0, 255] (np.uint8).
+    ncols : int, optional
+        The number of columns in the collage, by default 6
+    padding : int, optional
+        The padding between the videos in pixels, by default 0
+    padding_color : str or np.ndarray (np.uint8), optional
+        The color of the padding, by default 'black'
+    fps : int, optional
+        The framerate of the output video, by default 60
+    skip_frames : int, optional
+        Only export every ``skip_frames`` frame, by default 1
+    cmaps : str or List[str], optional
+        The matplotlib colormap to use, by default "gray"
+    vmins : float or List[float], optional
+        The minimum value for the colormap, by default None
+    vmaxs : float or List[float], optional
+        The maximum value for the colormap, by default None
+    ffmpeg_encoder : str, optional
+        The ffmpeg encoder to use, by default ``'libx264'``. See :func:`set_default_ffmpeg_encoder` and
+        :func:`set_ffmpeg_defaults` for more information.
+    progress_bar : bool, optional
+        Whether to show a progress bar, by default True
+    """
+    if isinstance(videos, (str, os.PathLike)):
+        filename, videos = videos, filename
+        warnings.warn("WARNING: The order of arguments for optimap.export_video_collage() has changed. "
+                      "Please use export_video_collage(filename, videos, ...) instead of "
+                      "export_video_collage(videos, filename, ...).",
+                      DeprecationWarning)
+    if ffmpeg_encoder is None:
+        ffmpeg_encoder = DEFAULT_FFMPEG_ENCODER
+
+    Nt = len(videos[0])
+    for video in videos[1:]:
+        if len(video) != Nt:
+            raise ValueError("all videos must have the same number of frames")
+
+    if isinstance(cmaps, str):
+        cmaps = plt.get_cmap(cmaps)
+    if not isinstance(cmaps, list):
+        cmaps = [cmaps] * len(videos)
+    if not isinstance(vmins, list):
+        vmins = [vmins] * len(videos)
+    if not isinstance(vmaxs, list):
+        vmaxs = [vmaxs] * len(videos)
+    
+    if len(videos) != len(cmaps) != len(vmins) != len(vmaxs):
+        raise ValueError("videos, cmaps, vmins, and vmaxs must have the same length")
+
+    def transform_frame(frame, cmap, vmin, vmax):
+        if frame.ndim == 2:
+            frame = cmap(Normalize(vmin=vmin, vmax=vmax, clip=True)(frame))
+        if frame.dtype != np.uint8:
+            frame = (frame * 255).astype(np.uint8)
+        return frame
+    
+    if isinstance(padding_color, str):
+        padding_color = np.array(to_rgba(padding_color))
+        padding_color = (padding_color * 255).astype(np.uint8)
+
+    writer = FFmpegWriter(
+        filename,
+        inputdict={"-r": f"{fps}"},
+        outputdict=_ffmpeg_defaults(ffmpeg_encoder),
+    )
+    for t in tqdm(range(0, Nt, skip_frames), desc="exporting video", disable=not progress_bar):
+        frames = [transform_frame(video[t], cmap, vmin, vmax)
+                  for video, cmap, vmin, vmax in zip(videos, cmaps, vmins, vmaxs)]
+        frame = collage_images(frames, padding=padding, padding_value=padding_color, ncols=ncols)
+        writer.writeFrame(frame)
+    writer.close()
+    print(f"Video exported to {filename}")
 
 
 def smoothstep(x, vmin=0, vmax=1, N=2):

@@ -179,18 +179,18 @@ def test_collage():
     img = np.random.rand(100, 100).astype(np.float32)
     img_rgba = np.random.rand(100, 100, 4).astype(np.float32)
 
-    img2 = om.image.collage([img, img, img, img], images_per_row=2)
+    img2 = om.image.collage([img, img, img, img], ncols=2)
     assert img2.shape == (200, 200)
     assert img2.dtype == np.float32
 
-    img2 = om.image.collage([img_rgba, img_rgba, img_rgba, img_rgba], images_per_row=4)
+    img2 = om.image.collage([img_rgba, img_rgba, img_rgba, img_rgba], ncols=4)
     assert img2.shape == (100, 400, 4)
     assert img2.dtype == np.float32
 
-    img2 = om.image.collage([img, img, img, img], images_per_row=1, spacing=10)
+    img2 = om.image.collage([img, img, img, img], ncols=1, padding=10)
     assert img2.shape == (430, 100)
     assert img2.dtype == np.float32
 
-    img2 = om.image.collage([img, img, img, img], images_per_row=2, spacing=10)
+    img2 = om.image.collage([img, img, img, img], ncols=2, padding=10)
     assert img2.shape == (210, 210)
     assert img2.dtype == np.float32
