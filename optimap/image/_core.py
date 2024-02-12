@@ -1,3 +1,4 @@
+import os
 import warnings
 from pathlib import Path
 
@@ -147,7 +148,7 @@ def load_mask(filename, **kwargs):
         return mask > np.max(mask) / 2
 
 
-def save_mask(mask, filename, image=None, **kwargs):
+def save_mask(filename, mask, image=None, **kwargs):
     """Save a mask to a file.
 
     Supports NPY, PNG, TIFF, ... files.
@@ -161,16 +162,22 @@ def save_mask(mask, filename, image=None, **kwargs):
 
     Parameters
     ----------
-    mask : np.ndarray
-        2D bool mask to save
     filename : str or pathlib.Path
         Path to save mask to
+    mask : np.ndarray
+        2D bool mask to save
     image : np.ndarray, optional
         Image to save. If given, the mask will be saved as the alpha channel of the image.
         Only supported for .png and .tif files.
     **kwargs : dict, optional
         passed to :func:`np.save` (for .npy) or :func:`cv2.imwrite` (else)
     """
+    if isinstance(mask, (str, os.PathLike)):
+        filename, mask = mask, filename
+        warnings.warn("The order of arguments for optimap.image.save_mask() has changed. "
+                      "Please use save_mask(filename, mask, ...) instead of save_mask(mask, filename, ...).",
+                      DeprecationWarning)
+
     mask = np.squeeze(mask)
     if mask.ndim != 2 or mask.dtype != bool:
         raise ValueError("mask must be 2D boolean array")
@@ -200,20 +207,26 @@ def save_mask(mask, filename, image=None, **kwargs):
             cv2.imwrite(str(filename), mask, **kwargs)
 
 
-def save_image(image, filename, **kwargs):
+def save_image(filename, image, **kwargs):
     """Export an image to a file. The file format is inferred from the filename extension.
 
     Uses :func:`numpy.save` internally if the file extension is ``.npy`` and :func:`cv2.imwrite` otherwise.
 
     Parameters
     ----------
-    image : np.ndarray
-        Image to save
     filename : str or pathlib.Path
         Path to save image to
+    image : np.ndarray
+        Image to save
     **kwargs : dict, optional
         passed to :func:`cv2.imwrite`
     """
+    if isinstance(image, (str, os.PathLike)):
+        filename, image = image, filename
+        warnings.warn("WARNING: The order of arguments to save_image has changed. "
+                      "Please use save_image(filename, image) instead of save_video(image, filename).",
+                      DeprecationWarning)
+
     _print(f"saving image to {Path(filename).absolute()}")
     fn = Path(filename)
     if fn.suffix == ".npy":

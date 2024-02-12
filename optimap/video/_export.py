@@ -1,3 +1,5 @@
+import os
+import warnings
 from pathlib import Path
 from typing import Iterable, Union
 
@@ -99,8 +101,8 @@ class FFmpegWriter(skvideo.io.FFmpegWriter):
 
 
 def export_video(
-    video: Union[np.ndarray, Iterable[np.ndarray]],
     filename: Union[str, Path],
+    video: Union[np.ndarray, Iterable[np.ndarray]],
     fps: int = 60,
     skip_frames: int = 1,
     cmap = "gray",
@@ -115,12 +117,12 @@ def export_video(
 
     Parameters
     ----------
+    filename : str or Path
+        Video file path for writing.
     video : np.ndarray or Iterable[np.ndarray]
         The video to export. Should be of shape (frames, height, width, channels) or (frames, height, width).
         If the video is grayscale, the colormap will be applied. If it's an RGB video, its values should range
         [0, 1] or [0, 255] (np.uint8).
-    filename : str or Path
-        Video file path for writing.
     fps : int, optional
         The framerate of the output video, by default 60
     skip_frames : int, optional
@@ -137,6 +139,11 @@ def export_video(
     progress_bar : bool, optional
         Whether to show a progress bar, by default True
     """
+    if isinstance(video, (str, os.PathLike)):
+        filename, video = video, filename
+        warnings.warn("WARNING: The order of arguments for optimap.export_video() has changed. "
+                      "Please use export_video(filename, video, ...) instead of export_video(video, filename, ...).",
+                      DeprecationWarning)
     if ffmpeg_encoder is None:
         ffmpeg_encoder = DEFAULT_FFMPEG_ENCODER
 
@@ -298,9 +305,9 @@ def iter_alpha_blend_videos(
 
 
 def export_video_with_overlay(
+    filename: Union[str, Path],
     base: np.ndarray,
     overlay: np.ndarray,
-    filename: Union[str, Path],
     alpha: np.ndarray = None,
     fps: int = 60,
     skip_frames: int = 1,
@@ -323,14 +330,14 @@ def export_video_with_overlay(
 
     Parameters
     ----------
+    filename : str or Path
+        Video file path for writing.
     base : np.ndarray
         The base video. Should be of shape (frames, height, width) or (frames, height, width, channels).
         Either uint8 or float32 (expected to be in the range [0, 1]).
     overlay : np.ndarray
         The overlay video. Should be of shape (frames, height, width) or(frames, height, width, channels).
         Either uint8 or float32 (expected to be in the range [0, 1]).
-    filename : str or Path
-        Video file path for writing.
     alpha : np.ndarray, optional
         The alpha channel to use for blending, by default ``None``. Expected to be in range [0, 1], and of shape
         (T, X, Y) or (X, Y). If ``None``, the overlay array is used (if grayscale) or the alpha channel of the
@@ -357,6 +364,13 @@ def export_video_with_overlay(
     progress_bar : bool, optional
         Whether to show a progress bar, by default True
     """
+    if isinstance(overlay, (str, os.PathLike)):
+        filename, base, overlay = base, overlay, filename
+        warnings.warn("WARNING: The order of arguments for export_video_with_overlay() has changed. "
+                      "Please use export_video_with_overlay(filename, base, overlay, ...) instead of "
+                      "export_video_with_overlay(base, overlay, filename, ...).",
+                      DeprecationWarning)
+
     if ffmpeg_encoder is None:
         ffmpeg_encoder = DEFAULT_FFMPEG_ENCODER
 
