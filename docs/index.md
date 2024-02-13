@@ -23,7 +23,7 @@ tutorials/apd.ipynb
 tutorials/phase.ipynb
 tutorials/plotting.ipynb
 tutorials/smoothing.ipynb
-tutorial/io.ipynb
+tutorials/io.ipynb
 ```
 
 ```{toctree}
