@@ -44,7 +44,11 @@ def load_tiff(filename, start_frame=0, end_frame=None, step=1, use_mmap=False):
 def load_image_folder(path, prefix="", start_frame=0, end_frame=None, step=1):
     """Loads a sequences of images from a folder as a video.
 
-    Supported extensions (case-insensitive):
+    The filenames are sorted in natural order (i.e 'frame_2.png' comes before 'frame_10.png') and loaded in that order. The `prefix` parameter can be used to filter the files to load.
+
+    The `start_frame`, `end_frame` and `step` parameters can be used to load only a subset of the images. Note that they refer to the index of the images in the sorted list of files.
+
+    Supported image extensions (case-insensitive):
 
     * .tif and .tiff
     * .png
@@ -53,9 +57,9 @@ def load_image_folder(path, prefix="", start_frame=0, end_frame=None, step=1):
     Parameters
     ----------
     path : str or pathlib.Path
-        Path to folder containing .tiff images
+        Path to folder containing the images
     prefix : str, optional
-        Prefix of the files to load
+        Prefix of the image files to load, by default "".
     start_frame : int, optional
         Index of the starting frame (0-indexed). Defaults to 0.
     end_frame : int or None, optional

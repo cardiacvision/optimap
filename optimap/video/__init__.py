@@ -36,6 +36,7 @@ from ._importers import (
 from ._load import (
     load_metadata,
     load_video,
+    load_image_folder
 )
 from ._play import play, play2, play_with_overlay, playn
 from ._player import InteractivePlayer
@@ -50,6 +51,7 @@ from ._save import (
 __all__ = [
     "load_video",
     "load_metadata",
+    "load_image_folder",
 
     "save_video",
     "save_image_sequence",
