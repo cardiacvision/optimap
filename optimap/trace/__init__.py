@@ -8,6 +8,7 @@ from ._core import (
     show_positions,
     show_trace,
     show_traces,
+    collage_positions
 )
 from ._detrend import detrend_timeseries
 from ._interactive import select_positions, select_traces
@@ -27,6 +28,8 @@ __all__ = [
 
     "random_positions",
     "positions_from_A_to_B",
+
+    "collage_positions",
 
     "set_default_trace_window",
     "get_default_trace_window",

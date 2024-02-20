@@ -224,3 +224,40 @@ def show_traces(traces, x=None, fps=None, colors=None, labels=None, ax=None, **k
 def show_trace(*args, **kwargs):
     """Alias for :py:func:`show_traces`."""
     return show_traces(*args, **kwargs)
+
+
+def collage_positions(positions, image_shape, ncols=6):
+    """Correspondant to :func:`image.collage` but for positions. Collages the positions in the same way as the images would be collaged.
+
+    `positions` is a list of list of tuples, i.e. one list of positions for each image. The function collages the positions in the same way as the images would be collaged and returns a list of tuples where the positions have been offset to the correct position in the collage. All images are assumed to have the same shape `image_shape`.
+    
+    Parameters
+    ----------
+    positions : list of arrays
+        List of list of positions to collage
+    image_shape : tuple
+        Shape of the images where the positions are from
+    ncols : int, optional
+        Number of columns, by default 6
+    
+    Returns
+    -------
+    list of tuples
+        Collaged positions
+    """
+    collage = []
+    n = 0
+    offset_x = 0
+    offset_y = 0
+    while n < len(positions):
+        stop = min(ncols, len(positions))
+        for i in range(n, n + stop):
+            points = positions[i]
+            points[:, 1] += offset_x
+            points[:, 0] += offset_y
+            offset_x += image_shape[0]
+            collage.extend(points)
+        n += stop
+        offset_x = 0
+        offset_y += image_shape[1]
+    return collage
