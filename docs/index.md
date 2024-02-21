@@ -1,5 +1,5 @@
 ```{toctree}
-:maxdepth: 2
+:maxdepth: 1
 :hidden:
 :caption: 🚀 Getting Started
 
@@ -8,26 +8,15 @@ chapters/getting_started.md
 ```
 
 ```{toctree}
-:maxdepth: 2
+:maxdepth: 1
 :hidden:
 :caption: 🚀 Tutorials
 
-tutorials/basics.ipynb
-tutorials/signal_extraction.ipynb
-tutorials/mask.ipynb
-tutorials/motion_compensation.ipynb
-tutorials/activation.ipynb
-tutorials/cv.ipynb
-tutorials/ratiometry.ipynb
-tutorials/apd.ipynb
-tutorials/phase.ipynb
-tutorials/plotting.ipynb
-tutorials/smoothing.ipynb
-tutorials/io.ipynb
+tutorials/index.md
 ```
 
 ```{toctree}
-:maxdepth: 2
+:maxdepth: 1
 :hidden:
 :caption: Notes
 chapters/contributing

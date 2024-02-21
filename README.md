@@ -8,15 +8,15 @@
 
 ### optimap: An open-source library for the processing of fluorescence video data
 
-`optimap` is an open-source Python toolbox for exploring, visualizing, and analyzing high-speed fluorescence imaging data with a focus on cardiac optical mapping data. It includes modules for loading, processing and exporting videos, extracting and measuring optical traces, visualizing action potential or calcium waves, tracking motion and compensating motion artifacts, computing activation maps, measuring contractility and further analyzing and visualizing the results. Refer to the [Tutorials](https://optimap.readthedocs.io/en/latest/tutorials/basics/) and the [Documentation](https://optimap.readthedocs.io/en/latest/) for more detailed information about optimap's usage and features.
+`optimap` is an open-source Python toolbox for exploring, visualizing, and analyzing high-speed fluorescence imaging data with a focus on cardiac optical mapping data. It includes modules for loading, processing and exporting videos, extracting and measuring optical traces, visualizing action potential or calcium waves, tracking motion and compensating motion artifacts, computing activation maps, measuring contractility and further analyzing and visualizing the results. Refer to the [Tutorials](https://optimap.readthedocs.io/en/latest/tutorials/) and the [Documentation](https://optimap.readthedocs.io/en/latest/) for more detailed information about optimap's usage and features.
 
 > ⚠️ optimap is currently in early development, expect breaking changes and bugs.
 
 ## Installation
 
-`optimap` is available for Mac OSX, Windows and Linux, see [Installing optimap](https://optimap.readthedocs.io/en/latest/chapters/getting_started/#installing-optimap) for more detailed information.
+`optimap` is available for macOS, Windows and Linux, see [Installing optimap](https://optimap.readthedocs.io/en/latest/chapters/getting_started/#installing-optimap) for more detailed information.
 
-### Installing pre-built binaries (Mac OSX, Windows, Linux)
+### Installing pre-built binaries (macOS, Windows, Linux)
 
 Pre-built binaries can be installed using pip:
 
@@ -28,6 +28,12 @@ The above command will install optimap and all recommended dependencies includin
 
 ```bash
 pip install opticalmapping
+```
+
+To update optimap to the latest version run
+
+```bash
+pip install --upgrade opticalmapping[all]
 ```
 
 ## Getting Started

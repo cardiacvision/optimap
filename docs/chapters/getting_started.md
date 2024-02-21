@@ -11,17 +11,17 @@
 optimap relies heavily on [NumPy](https://numpy.org) and [Matplotlib](https://matplotlib.org). We recommend the [Scientific Python Lectures](https://lectures.scientific-python.org) and the [Python Data Science Handbook](https://jakevdp.github.io/PythonDataScienceHandbook/) for an introduction to Python and these libraries.
 ```
 
-### Installing pre-built binaries (Mac OSX, Windows, Linux)
+#### Installing pre-built binaries (macOS, Windows, Linux)
 
 The easiest way to install optimap is using `pip` in the command line:
 
-```{code-block} bash
+```bash
 pip install opticalmapping[all]
 ```
 
 If this command fails, please try the following:
 
-```{code-block} bash
+```bash
 python -m pip install opticalmapping\[all\]
 ```
 
@@ -33,9 +33,25 @@ If you do not have pip or Python installed you will first have to install these 
 To use GPU-accelerated motion tracking algorithms a CUDA-enabled version of OpenCV is required, which is currently not available on PyPI. See [](#opencv) for more information.
 ```
 
-To update optimap to the latest version run `pip install --upgrade opticalmapping[all]`. See [](#contributing) for instructions on how to install optimap from source.
+To update optimap to the latest version run
 
-# Overview
+```bash
+pip install --upgrade opticalmapping[all]`
+```
+
+#### Installing from source
+
+To install optimap from source, clone the GitHub repository and run `pip install .` in the root directory:
+
+```bash
+git clone https://github.com/cardiacvision/optimap.git
+cd optimap
+pip install .
+```
+
+See [](#contributing) for more details.
+
+# Overview of optimap
 
 optimap consists of the following modules:
 
@@ -49,7 +65,7 @@ optimap consists of the following modules:
    optimap.utils
 ```
 
-Some of the most important functions are imported into the top-level namespace:
+Some of the most important functions are also imported into the top-level namespace:
 
 ```{eval-rst}
 .. autosummary::
@@ -57,6 +73,15 @@ Some of the most important functions are imported into the top-level namespace:
 ```
 
 for convenience.
+
+See the tutorials listed below for an introduction to the main features of optimap and the API reference for a complete list of functions and classes.
+
+```{toctree}
+:maxdepth: 2
+:titlesonly:
+
+/tutorials/index.md
+```
 
 (vscode)=
 # Using optimap

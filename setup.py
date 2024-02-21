@@ -86,6 +86,7 @@ setup(
             "myst_nb>=1.0.0",
             "jupytext",
             "jupyter-cache",
+            "sphinx-remove-toctrees",
         ],
     },
 )

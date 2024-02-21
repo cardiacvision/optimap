@@ -76,6 +76,7 @@ extensions = [
     "sphinxcontrib.video",
     "sphinx.ext.viewcode",
     "myst_nb",
+    "sphinx_remove_toctrees"
 ]
 myst_enable_extensions = [
     "dollarmath"
@@ -157,6 +158,10 @@ html_theme_options = {
     "source_directory": "docs/",
 }
 
+remove_from_toctrees = [
+    "tutorials/converted/*",
+    "tutorials/index.md",
+]
 
 # based on pandas/doc/source/conf.py
 def linkcode_resolve(domain, info):
