@@ -24,6 +24,7 @@ test-command = "pytest {project}/tests"
 # https://cibuildwheel.readthedocs.io/en/stable/faq/#apple-silicon
 archs = ["x86_64", "universal2"]
 test-skip = ["*_arm64", "*_universal2:arm64"]
+test-requires = ["pytest", "opencv-python-headless<4.9.0.80"]  # OpenCV >= 4.9.0.80 requires MacOS 12.0+
 
 [tool.ruff]
 exclude = [
