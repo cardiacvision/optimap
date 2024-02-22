@@ -7,14 +7,15 @@ from .. import _cpp
 from ..utils import _print
 
 
-def normalize(video: np.ndarray, ymin=0, ymax=1, vmin=None, vmax=None, clip=True):
-    """Normalizes video to interval [``ymin``, ``ymax``]. If ``vmin`` or ``vmax`` are specified,
-    the normalization is done using these values and the resulting video will be clipped.
+def normalize(array: np.ndarray, ymin=0, ymax=1, vmin=None, vmax=None, clip=True, dtype=np.float32):
+    """Normalizes array (video, image, ...) to interval [``ymin``, ``ymax``].
+    
+    If ``vmin`` or ``vmax`` are specified, the normalization is done using these values and the resulting array will be clipped.
 
     Parameters
     ----------
-    video : {t, x, y} ndarray
-        The input video to be normalized.
+    array : ndarray
+        The input array to be normalized.
     ymin : float, optional
         Minimum value of the resulting video, by default 0
     ymax : float, optional
@@ -28,26 +29,37 @@ def normalize(video: np.ndarray, ymin=0, ymax=1, vmin=None, vmax=None, clip=True
     clip : bool, optional
         If True, the resulting video will be clipped to [``ymin``, ``ymax``], by default True
         Only applies if ``vmin`` or ``vmax`` are specified.
+    dtype : type, optional
+        Data type of the resulting array, by default np.float32
 
     Returns
     -------
-    {t, x, y} ndarray
-        Normalized video.
+    ndarray
+        Normalized array/video/image.
     """
     _print(f"normalizing video to interval [{ymin}, {ymax}] ...")
-    video = video.astype("float32")
+    dtype = np.dtype(dtype)
     do_clip = clip and (vmin is not None or vmax is not None)
-    if vmin is None:
-        vmin = np.nanmin(video)
-    if vmax is None:
-        vmax = np.nanmax(video)
 
-    eps = np.finfo(np.float32).eps
-    video = (video - vmin) / (vmax - vmin + eps) * (ymax - ymin) + ymin
+    if not (np.issubdtype(array.dtype, np.floating)
+            or np.issubdtype(array.dtype, np.complexfloating)):
+        array = array.astype(np.float32)
+
+    if vmin is None:
+        vmin = np.nanmin(array)
+    if vmax is None:
+        vmax = np.nanmax(array)
+
+    eps = np.finfo(array.dtype).eps
+    array = (array - vmin) / (vmax - vmin + eps) * (ymax - ymin) + ymin
 
     if do_clip:
-        video = np.clip(video, ymin, ymax)
-    return video
+        array = np.clip(array, ymin, ymax)
+    
+    if dtype == array.dtype:
+        return array
+    else:
+        return array.astype(dtype)
 
 
 def normalize_pixelwise(video: np.ndarray, ymin=0, ymax=1):
