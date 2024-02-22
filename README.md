@@ -14,7 +14,7 @@
 
 ## Installation
 
-`optimap` is available for macOS, Windows and Linux, see [Installing optimap](https://optimap.readthedocs.io/en/latest/chapters/getting_started/#installing-optimap) for more detailed information.
+`optimap` is available for macOS, Windows and Linux, see the [Getting Started](https://optimap.readthedocs.io/en/latest/chapters/getting_started/) guide for more detailed information.
 
 ### Installing pre-built binaries (macOS, Windows, Linux)
 
@@ -36,13 +36,9 @@ To update optimap to the latest version run
 pip install --upgrade opticalmapping[all]
 ```
 
-## Getting Started
-
-See the [Getting Started](https://optimap.readthedocs.io/en/latest/chapters/getting_started/) guide and the [Tutorials](https://optimap.readthedocs.io/en/latest/tutorials/) for an introduction to optimap and installation instructions.
-
 ## About optimap
 
-`optimap` is a script-based software, which means that you run Python-based analysis scripts rather than using a graphical user interface. We provide several example scripts which explain the usage of `optimap`, see [Tutorials](https://optimap.readthedocs.io/en/latest/tutorials/). The example scripts can also be downloaded directly by clicking on the right link in the green box at the top of each tutorial page. `optimap` is developed by members of the [Cardiac Vision Laboratory](https://cardiacvision.ucsf.edu) at the [University of California, San Franicsco](https://www.ucsf.edu). `optimap` was created for cardiovascular scientists in particular, but might also be useful for scientists in other fields, for instance, when performing calcium imaging or physiological research with moving cells or tissues. `optimap` is open-source, freely available, and relies on open-source packages such as NumPy, SciPy, matplotlib and OpenCV.
+`optimap` is a script-based software, which means that you run Python-based analysis scripts rather than using a graphical user interface. We provide several example scripts which explain the usage of `optimap`, see [Tutorials](https://optimap.readthedocs.io/en/latest/tutorials/). The example scripts can also be downloaded directly by clicking on the right link in the green box at the top of each tutorial page. `optimap` is developed by members of the [Cardiac Vision Laboratory](https://cardiacvision.ucsf.edu) at the [University of California, San Franicsco](https://www.ucsf.edu). `optimap` was created for cardiovascular scientists in particular, but might also be useful for scientists in other fields, for instance, when performing calcium imaging or physiological research with moving cells or tissues. `optimap` is open-source, freely available, and relies on open-source packages such as NumPy, SciPy, Matplotlib and OpenCV.
 
 ## Links
 
