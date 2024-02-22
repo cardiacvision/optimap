@@ -202,6 +202,7 @@ class MiCAM05_Importer:
             self._meta["date"] = self._meta["Date created"]
 
     def load_video(self, start_frame=0, frames=None, step=1):
+        """Returns a 3D numpy array containing the loaded video."""
         if frames is not None:
             end_frame = start_frame + frames
             if end_frame > self._Nt:

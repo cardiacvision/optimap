@@ -76,7 +76,8 @@ extensions = [
     "sphinxcontrib.video",
     "sphinx.ext.viewcode",
     "myst_nb",
-    "sphinx_remove_toctrees"
+    "sphinx_remove_toctrees",
+    "sphinx_design",
 ]
 myst_enable_extensions = [
     "dollarmath"

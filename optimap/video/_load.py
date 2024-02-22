@@ -154,7 +154,7 @@ def load_SciMedia_MiCAMULTIMA_metadata(filename):
     dat = MiCAM_ULTIMA_Importer(filename)
     return dat.get_metadata()
 
-def load_video(path, start_frame=0, frames=None, step=1, use_mmap=False):
+def load_video(path, start_frame=0, frames=None, step=1, use_mmap=False, **kwargs):
     """Loads a video from a file or folder, automatically detecting the file type.
 
     If ``path`` is a folder, it will load a video from a series of images in the folder.
@@ -195,6 +195,8 @@ def load_video(path, start_frame=0, frames=None, step=1, use_mmap=False):
     use_mmap : bool, optional
         If True, uses memory mapping to load the video in read-only mode, defaults to False.
         Only supported for some file types.
+    **kwargs : dict
+        Additional arguments to pass to the video loader function
 
     Returns
     -------
@@ -216,19 +218,19 @@ def load_video(path, start_frame=0, frames=None, step=1, use_mmap=False):
         msg = f"File or folder '{path}' does not exist"
         raise FileNotFoundError(msg)
     elif path.is_dir():
-        return load_image_folder(path, start_frame=start_frame, end_frame=end_frame, step=step)
+        return load_image_folder(path, start_frame=start_frame, end_frame=end_frame, step=step, **kwargs)
     elif suffix in [".tif", ".tiff"]:
-        return load_tiff(path, start_frame=start_frame, end_frame=end_frame, step=step, use_mmap=use_mmap)
+        return load_tiff(path, start_frame=start_frame, end_frame=end_frame, step=step, use_mmap=use_mmap, **kwargs)
     elif suffix in [".mat"]:
-        return load_MATLAB(path, start_frame=start_frame, end_frame=end_frame, step=step)
+        return load_MATLAB(path, start_frame=start_frame, end_frame=end_frame, step=step, **kwargs)
     elif suffix in [".gsd", ".gsh"]:
-        return load_SciMedia_MiCAM05(path, start_frame=start_frame, frames=frames, step=step)
+        return load_SciMedia_MiCAM05(path, start_frame=start_frame, frames=frames, step=step, **kwargs)
     elif suffix in [".rsh", ".rsm", ".rsd"]:
-        return load_SciMedia_MiCAMULTIMA(path, start_frame=start_frame, frames=frames, step=step)
+        return load_SciMedia_MiCAMULTIMA(path, start_frame=start_frame, frames=frames, step=step, **kwargs)
     elif suffix in [".dat"]:
-        return load_MultiRecorder(path, start_frame=start_frame, frames=frames, step=step, use_mmap=use_mmap)
+        return load_MultiRecorder(path, start_frame=start_frame, frames=frames, step=step, use_mmap=use_mmap, **kwargs)
     elif suffix in [".npy"]:
-        return load_numpy(path, start_frame=start_frame, end_frame=end_frame, step=step, use_mmap=use_mmap)
+        return load_numpy(path, start_frame=start_frame, end_frame=end_frame, step=step, use_mmap=use_mmap, **kwargs)
     else:
         msg = f"Unable to find videoloader for file extension {suffix} (for file '{path}')"
         raise ValueError(msg)

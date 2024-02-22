@@ -87,6 +87,7 @@ setup(
             "jupytext",
             "jupyter-cache",
             "sphinx-remove-toctrees",
+            "sphinx-design",
         ],
     },
 )
