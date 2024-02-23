@@ -43,6 +43,9 @@ from .video import (
     load_video,
     save_image_sequence,
     save_video,
+    show_video,
+    show_video_pair,
+    show_videos,
 )
 from .video import (
     play as play_video,
@@ -75,6 +78,9 @@ __all__ = [
     "show_positions",
     "show_traces",
     "play_video",
+    "show_video",
+    "show_video_pair",
+    "show_videos",
 
     "save_image",
     "save_image_sequence",

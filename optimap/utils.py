@@ -126,6 +126,24 @@ def disable_interactive_backend_switching():
     INTERACTIVE_BACKEND_SWITCHING = False
 
 
+def deprecated(reason):
+    """Function decorator to mark a function as deprecated.
+
+    Parameters
+    ----------
+    reason : str
+        Reason why the function is deprecated.
+    """
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            warnings.warn(f"Function '{func.__name__}' is deprecated: {reason}", DeprecationWarning)
+            return func(*args, **kwargs)
+
+        return wrapper
+    return decorator
+
+
 def interactive_backend(func):
     """Function decorator to change backend temporarily in Ipython session.
 
