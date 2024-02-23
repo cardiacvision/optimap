@@ -7,7 +7,7 @@ __all__ = [
     "print_properties",
     "enable_interactive_backend_switching",
     "disable_interactive_backend_switching",
-    "retrieve_example_data",
+    "download_example_data",
 ]
 
 import functools
@@ -24,7 +24,9 @@ from ._version import __version__
 VERBOSE = False
 INTERACTIVE_BACKEND = "QtAgg"
 INTERACTIVE_BACKEND_SWITCHING = True
-FILE_HASHES = {
+
+# old example file names and hashes, will be removed in the future
+OLD_FILE_HASHES = {
     "Example_01_Sinus_Rabbit_Basler.npy":
         "sha256:5c692cca0459c931b7f767c27162a42b31e3df90a6aeac53bb182affa2135678",
     "Example_02_VF_Rabbit_Di-4-ANEPPS_Basler_acA720-520um.npy":
@@ -51,7 +53,30 @@ FILE_HASHES = {
         "https://cardiacvision.ucsf.edu/sites/g/files/tkssra6821/f/optimap-example-file-03.npy_.webm",
     # ratiometry:
     "optimap-example-file-04.npy":
-        "https://cardiacvision.ucsf.edu/sites/g/files/tkssra6821/f/optimap-example-file-04.npy_.webm"
+        "https://cardiacvision.ucsf.edu/sites/g/files/tkssra6821/f/optimap-example-file-04.npy_.webm",
+}
+
+# New example file names and hashes
+FILE_HASHES = {
+    "Example_01_Sinus.npy":
+        "sha256:5c692cca0459c931b7f767c27162a42b31e3df90a6aeac53bb182affa2135678",
+    "Example_02_VF.npy":
+        "sha256:6252da91db434cad95758830fdf7c13a9db6793da30dd8e85e6878736e20787e",
+    "Example_03_Pacing.npy":
+        "sha256:50113334e6955f5abb3658b5027447f507fd9eef6bfef766a628c2365ff848be",
+    "Example_04_Pacing.npy":
+        "sha256:674603f64ccf754f73a264986e0bf1ee93d03ce3a9ea88f248620632046e3c40",
+    "Example_05_Ratiometry.npy":
+        "sha256:10a59863ee23abc689d8ee4cd27542ef1b7b8b8eb5668a7f2dc49572f18319f2",
+    # used in tests
+    "test-download-file.npy":
+        "sha256:0d3cfca36d8e3ad935de4d0681ddd510c1590212a99dccb196353c8ce85b7491",
+    # warped version of Example_02, used to speed up documentation build
+    "Example_02_VF_warped.npy":
+        "sha256:a1781582b669a69a9753b1c43d23e0acf26fb372426eeb6d880d2e66420b2107",
+    "Example_02_VF_warped_mask.npy":
+        "sha256:3f5d8402c8251f3cb8e8d235b459264ff7e7e2cf2b81f08129f0897baa262db6"
+>>>>>>> 4238571 (Rename retrieve_example_data to download_example_data)
 }
 
 
@@ -184,7 +209,12 @@ def interactive_backend(func):
 
     return wrapper
 
+@deprecated("Use download_example_data instead")
 def retrieve_example_data(name, directory="./example_data", silent=False):
+    return download_example_data(name, directory=directory, silent=silent)
+
+
+def download_example_data(name, directory="./example_data", silent=False):
     """Download example data if not already present.
 
     Parameters
@@ -201,16 +231,23 @@ def retrieve_example_data(name, directory="./example_data", silent=False):
     str
         Path to the file.
     """
-    known_hash = FILE_HASHES.get(name, None)
-    if known_hash is None:
-        warnings.warn(f"WARNING: Example file '{name}' is not known. Attempting to download it anyway.", UserWarning)
     if silent:
         silent = pooch.get_logger().level
         pooch.get_logger().setLevel("WARNING")
 
+    known_hash = FILE_HASHES.get(name, None)
+    remote_path = urllib.parse.quote(f"optimap-{name}", safe="")
+
+    # Compatibility with old file names, will be removed in the future
+    if known_hash is None and name in OLD_FILE_HASHES:
+        known_hash = OLD_FILE_HASHES[name]
+        remote_path = urllib.parse.quote(f"{name}", safe="")
+
+    if known_hash is None:
+        warnings.warn(f"WARNING: Example file '{name}' is not known. Attempting to download it anyway.", UserWarning)
+
     # The CMS server only allows files with a certain extensions to be uploaded.
     # We use .webm as dummy extension to upload the files, and rename them after download.
-    remote_path = urllib.parse.quote(f"{name}", safe="")
     url = f"https://cardiacvision.ucsf.edu/sites/g/files/tkssra6821/f/{remote_path}_.webm"
 
     path = pooch.retrieve(
