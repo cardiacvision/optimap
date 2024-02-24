@@ -1,3 +1,5 @@
+import warnings
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -114,19 +116,21 @@ def extract_traces(video, coords, size=5, show=False, window=None, **kwargs):
     return traces
 
 
-def show_positions(image, positions, size=None, cmap="gray", vmin=None, vmax=None, ax=None, **kwargs):
+def show_positions(positions, image=None, size=None, color=None, cmap="gray", vmin=None, vmax=None, ax=None, **kwargs):
     """Overlay positions on an image.
 
     Parameters
     ----------
-    image : 2D array
-        Image to overlay positions on
     positions : list of tuples
         List of positions to overlay
+    image : 2D array
+        Image to overlay positions on, optional
     size : float or array-like, shape (n, ), optional
         Size of the points, see `s` parameter in :py:func:`matplotlib.pyplot.scatter` for more information
+    color : str or list of str, optional
+        Color of the points, by default None
     cmap : str, optional
-        Colormap to use, by default 'gray'
+        Colormap to use for image, by default 'gray'
     vmin : float, optional
         Minimum value for the colormap, by default None
     vmax : float, optional
@@ -145,11 +149,21 @@ def show_positions(image, positions, size=None, cmap="gray", vmin=None, vmax=Non
         show = True
     else:
         show = False
+    
+    if isinstance(image, np.ndarray) and image.ndim == 2 and image.shape[1] == 2:
+        image, positions = positions, image
+        warnings.warn("The order of arguments for optimap.show_positions() has changed.", DeprecationWarning)
 
-    ax.imshow(image, cmap=cmap, vmin=vmin, vmax=vmax, interpolation="none")
-    ax.axis("off")
-    for pos in positions:
-        ax.scatter(pos[0], pos[1], s=size, **kwargs)
+    if image is not None:
+        ax.imshow(image, cmap=cmap, vmin=vmin, vmax=vmax, interpolation="none")
+        ax.axis("off")
+
+    if isinstance(color, str) or color is None:
+        color = [color, ] * len(positions)
+    if isinstance(size, (int, float)) or size is None:
+        size = [size, ] * len(positions)
+    for pos, s, c in zip(positions, size, color):
+        ax.scatter(pos[0], pos[1], s=s, c=c, **kwargs)
     if show:
         plt.show()
     return ax
