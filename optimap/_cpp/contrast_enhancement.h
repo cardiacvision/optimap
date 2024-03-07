@@ -15,16 +15,38 @@
 
 
 template <typename Derived, typename Derived2>
-auto minmax_masked(const Derived &block, const Derived2 &mask) {
-  assert(mask.shape() == block.shape());
+auto minmax_kernel(const Derived &block, const Derived2 &kernel) {
+  static_assert(std::is_same_v<typename Derived2::value_type, bool>);
+  assert(kernel.shape() == block.shape());
 
   using Scalar = typename Derived::value_type;
   Scalar max   = std::numeric_limits<Scalar>::lowest();
   Scalar min   = std::numeric_limits<Scalar>::max();
 
-  for (int row = 0; row < mask.shape(0); row++) {
-    for (int col = 0; col < mask.shape(1); col++) {
-      if (mask(row, col)) {
+  for (size_t row = 0; row < kernel.shape(0); row++) {
+    for (size_t col = 0; col < kernel.shape(1); col++) {
+      if (kernel(row, col)) {
+        max = std::max(max, block(row, col));
+        min = std::min(min, block(row, col));
+      }
+    }
+  }
+  return std::make_pair(min, max);
+}
+
+template <typename Derived, typename Derived2, typename Derived3>
+auto minmax_kernel_masked(const Derived &block, const Derived2 &kernel, const Derived3 &mask) {
+  assert(kernel.shape() == block.shape());
+  static_assert(std::is_same_v<typename Derived2::value_type, bool>);
+  static_assert(std::is_same_v<typename Derived2::value_type, typename Derived3::value_type>);
+
+  using Scalar = typename Derived::value_type;
+  Scalar max   = std::numeric_limits<Scalar>::lowest();
+  Scalar min   = std::numeric_limits<Scalar>::max();
+
+  for (size_t row = 0; row < kernel.shape(0); row++) {
+    for (size_t col = 0; col < kernel.shape(1); col++) {
+      if (kernel(row, col) && mask(row, col)) {
         max = std::max(max, block(row, col));
         min = std::min(min, block(row, col));
       }
@@ -36,17 +58,19 @@ auto minmax_masked(const Derived &block, const Derived2 &mask) {
 auto genCircleMask(const int kernel_size) {
   const bool is_odd = static_cast<bool>(kernel_size % 2);
   if (!is_odd) {
-    return Mask2b({static_cast<std::size_t>(kernel_size), static_cast<std::size_t>(kernel_size)}, true);
+    return Array2b({static_cast<std::size_t>(kernel_size), static_cast<std::size_t>(kernel_size)},
+                   true);
   }
 
   const Vec2i center         = {kernel_size / 2, kernel_size / 2};
   const unsigned int radius2 = (kernel_size / 2 + 1) * (kernel_size / 2);
 
-  Mask2b circleblock = Mask2b({static_cast<std::size_t>(kernel_size), static_cast<std::size_t>(kernel_size)}, false);
+  Array2b circleblock =
+      Array2b({static_cast<std::size_t>(kernel_size), static_cast<std::size_t>(kernel_size)}, false);
   for (long row = 0; row < kernel_size; row++) {
     for (long col = 0; col < kernel_size; col++) {
       const auto v          = Vec2i(row, col) - center;
-      circleblock(row, col) = v.length_squared() <= radius2;
+      circleblock(row, col) = static_cast<size_t>(v.length_squared()) <= radius2;
     }
   }
 
@@ -57,27 +81,29 @@ auto genCircleMask2(const int kernel_size) {
   const bool is_odd = static_cast<bool>(kernel_size % 2);
   if (!is_odd) {
 
-    return Mask2b({static_cast<std::size_t>(kernel_size), static_cast<std::size_t>(kernel_size)}, true);
+    return Array2b({static_cast<std::size_t>(kernel_size), static_cast<std::size_t>(kernel_size)},
+                   true);
   }
 
   const Vec2i center         = {kernel_size / 2, kernel_size / 2};
   const unsigned int radius2 = (kernel_size / 2) * (kernel_size / 2);
 
-  Mask2b circleblock = Mask2b({static_cast<std::size_t>(kernel_size), static_cast<std::size_t>(kernel_size)}, false);
+  Array2b circleblock =
+      Array2b({static_cast<std::size_t>(kernel_size), static_cast<std::size_t>(kernel_size)}, false);
   for (long row = 0; row < kernel_size; row++) {
     for (long col = 0; col < kernel_size; col++) {
       const auto v          = Vec2i(row, col) - center;
-      circleblock(row, col) = v.length_squared() <= radius2;
+      circleblock(row, col) = static_cast<size_t>(v.length_squared()) <= radius2;
     }
   }
 
   return circleblock;
 }
 
-auto circleMaskFactory(std::size_t kernel_size, std::string kernel_type) {
-  Mask2b mask;
+auto kernel_factory(std::size_t kernel_size, std::string kernel_type) {
+  Array2b mask;
   if (kernel_type == "block") {
-    mask = Mask2b({kernel_size, kernel_size}, true);
+    mask = Array2b({kernel_size, kernel_size}, true);
   } else if (kernel_type == "circle") {
     mask = genCircleMask(kernel_size);
   } else if (kernel_type == "circle2") {
@@ -90,14 +116,20 @@ auto circleMaskFactory(std::size_t kernel_size, std::string kernel_type) {
 }
 
 template <typename T>
-void _contrast_enhancement_padded(const Array2f &img, const Mask2b &mask, T &out) {
+void _contrast_enhancement_padded(T &out,
+                                  const Array2f &img,
+                                  const Array2b &kernel,
+                                  const Array2b &mask) {
   assert(img.dimension() == out.dimension());
   assert(img.shape(0) == out.shape(0) && img.shape(1) == out.shape(1));
-  assert(mask.shape(0) == mask.shape(1));
+  assert(kernel.shape(0) == kernel.shape(1));
+  if (mask.size() > 1) {
+    assert(mask.shape(0) == img.shape(0) && mask.shape(1) == img.shape(1));
+  }
 
   const int Nx          = img.shape(0);
   const int Ny          = img.shape(1);
-  const int kernel_size = mask.shape(0);
+  const int kernel_size = kernel.shape(0);
 
   const int offset = (kernel_size - 1) / 2;
   for (int row = 0; row < Nx; row++) {
@@ -125,9 +157,15 @@ void _contrast_enhancement_padded(const Array2f &img, const Mask2b &mask, T &out
       }
 
       const auto block = xt::view(img, xt::range(startx, endx), xt::range(starty, endy));
-      const auto maskv = xt::view(mask, xt::range(mstartx, mendx), xt::range(mstarty, mendy));
+      const auto kernel_block = xt::view(kernel, xt::range(mstartx, mendx), xt::range(mstarty, mendy));
 
-      const auto [min, max] = minmax_masked(block, maskv);
+      float min, max;
+      if (mask.size() > 1) {
+        const auto mask_block = xt::view(mask, xt::range(startx, endx), xt::range(starty, endy));
+        std::tie(min, max) = minmax_kernel_masked(block, kernel_block, mask_block);
+      } else {
+        std::tie(min, max) = minmax_kernel(block, kernel_block);
+      }
       if (max != min) {
         out(row, col) = (img(row, col) - min) / (max - min);
       } else {
@@ -139,35 +177,41 @@ void _contrast_enhancement_padded(const Array2f &img, const Mask2b &mask, T &out
 
 Array2f contrast_enhancement_img(const Array2f &img,
                                  std::size_t kernel_size,
+                                 const Array2b &mask,
                                  std::string kernel_type) {
   if (bool is_odd = kernel_size % 2; !is_odd) {
     throw std::runtime_error("only odd kernel sizes supported!");
   }
 
   Array2f out(img.shape(), std::numeric_limits<float>::quiet_NaN());
-  auto mask = circleMaskFactory(kernel_size, kernel_type);
-  _contrast_enhancement_padded(img, mask, out);
+  const auto kernel = kernel_factory(kernel_size, kernel_type);
+  _contrast_enhancement_padded(out, img, kernel, mask);
 
   return out;
 }
 
 Array3f contrast_enhancement_video(const Array3f &video,
                                    std::size_t kernel_size,
+                                   const Array3b &mask,
                                    std::string kernel_type) {
   if (bool is_odd = kernel_size % 2; !is_odd) {
     throw std::runtime_error("only odd kernel sizes supported!");
   }
 
   Array3f out(video.shape(), std::numeric_limits<float>::quiet_NaN());
-  const auto mask = circleMaskFactory(kernel_size, kernel_type);
-  const auto Nt   = video.shape(0);
+  const auto kernel = kernel_factory(kernel_size, kernel_type);
+  const auto Nt     = video.shape(0);
 #ifdef USE_OMP
 #pragma omp parallel for
 #endif
   for (int t = 0; t < Nt; t++) {
     auto img     = xt::view(video, t, xt::all(), xt::all());
     auto out_img = xt::view(out, t, xt::all(), xt::all());
-    _contrast_enhancement_padded(img, mask, out_img);
+    if (mask.size() > 1) {
+      _contrast_enhancement_padded(out_img, img, kernel, xt::view(mask, t, xt::all(), xt::all()));
+    } else {
+      _contrast_enhancement_padded(out_img, img, kernel, Array2b());
+    }
   }
 
   return out;

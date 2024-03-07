@@ -10,10 +10,27 @@ def test_contrast_enhancement():
     assert out.shape == img.shape
     assert out.dtype == np.float32
     assert np.all(out == 0)
+
+    mask = np.ones_like(img, dtype=bool)
+    out2 = om.motion.contrast_enhancement(img, 3, mask)
+    assert np.all(out2 == out)
+
     out = om.motion.contrast_enhancement(vid, 3)
     assert out.shape == vid.shape
     assert out.dtype == np.float32
     assert np.all(out == 0)
+
+    mask = np.ones_like(vid, dtype=bool)
+    out2 = om.motion.contrast_enhancement(vid, 3, mask)
+    assert np.all(out2 == out)
+
+    mask = np.zeros_like(vid, dtype=bool)
+    out2 = om.motion.contrast_enhancement(vid, 3, mask)
+    assert np.all(out2 == 0)
+
+    mask = mask[0]
+    out2 = om.motion.contrast_enhancement(vid, 3, mask)
+    assert np.all(out2 == 0)
 
 def test_flowestimator():
     estimator = om.motion.FlowEstimator()

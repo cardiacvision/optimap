@@ -39,6 +39,9 @@ def test_contrastEnhanceImg():
     assert np.all(out == 0)
 
     pytest.raises(RuntimeError, cpp.contrast_enhancement_img, img, 2)
+    
+    mask = np.ones((64, 32), dtype=bool)
+    out = cpp.contrast_enhancement_img(img, 3, mask)
 
 def test_contrastEnhanceVideo():
     vid = np.ones((100, 64, 32), dtype=np.uint16)

@@ -6,18 +6,36 @@ from ._flowestimator import FlowEstimator
 from ._warping import warp_video
 
 
-def contrast_enhancement(video_or_img: np.ndarray, kernel_size: int):
+def contrast_enhancement(video_or_img: np.ndarray, kernel_size: int, mask: np.ndarray = None):
     """Amplifies local contrast to maximum to remove fluorescence signal for motion estimation.
     See :cite:t:`Christoph2018a` for details.
 
-    :param video_or_img: {t, x, y} or {x, y} ndarray
-    :param kernel_size: int kernel size for local contrast enhancement (must be odd)
-    :return: {t, x, y} or {x, y} ndarray
+    Parameters
+    ----------
+    video_or_img : np.ndarray
+        {t, x, y} or {x, y} ndarray
+    kernel_size : int
+        Kernel size for local contrast enhancement (must be odd)
+    mask : np.ndarray, optional
+        valid values mask of shape {x, y} or {t, x, y}, by default None
+    
+    Returns
+    -------
+    np.ndarray
+        {t, x, y} or {x, y} ndarray of dtype np.float32
     """
     if video_or_img.ndim == 2:
-        return _cpp.contrast_enhancement_img(np.ascontiguousarray(video_or_img), kernel_size)
+        if mask is None:
+            return _cpp.contrast_enhancement_img(np.ascontiguousarray(video_or_img), kernel_size)
+        else:
+            return _cpp.contrast_enhancement_img(np.ascontiguousarray(video_or_img), kernel_size, np.ascontiguousarray(mask))
     else:
-        return _cpp.contrast_enhancement_video(np.ascontiguousarray(video_or_img), kernel_size)
+        if mask is None:
+            return _cpp.contrast_enhancement_video(np.ascontiguousarray(video_or_img), kernel_size)
+        else:
+            if mask.ndim == 2:
+                mask = mask[None, ...].repeat(video_or_img.shape[0], axis=0)
+            return _cpp.contrast_enhancement_video(np.ascontiguousarray(video_or_img), kernel_size, np.ascontiguousarray(mask))
 
 
 def smooth_displacements(
