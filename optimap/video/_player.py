@@ -167,20 +167,35 @@ class InteractivePlayer(FuncAnimation):
         )
         self.slider.on_changed(self.set_pos)
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, hide_slider=True, hide_buttons=True, hide_framecounter=False, **kwargs):
         """Save the animation as a movie file, but hide the GUI buttons and slider.
-        
-        See FuncAnimation's :meth:`~matplotlib.animation.Animation.save` for arguments.
+
+        Parameters
+        ----------
+        *args : 
+            See FuncAnimation's :meth:`~matplotlib.animation.Animation.save` for arguments.
+        hide_slider : bool, optional
+            Hide the slider, by default True
+        hide_buttons : bool, optional
+            Hide the play/pause button, by default True
+        hide_framecounter : bool, optional
+            Hide the frame counter, by default False
+        **kwargs :
+            See FuncAnimation's :meth:`~matplotlib.animation.Animation.save` for arguments.
         """
 
         self.saving = True
         # self.save_count = self.max // self.step
-
-        self.ax_player.set_visible(False)
-        self.ax_slider.set_visible(False)
+        if hide_buttons:
+            self.ax_player.set_visible(False)
+        if hide_slider:
+            self.ax_slider.set_visible(False)
+        if hide_framecounter:
+            self.suptitle.set_visible(False)
         super().save(*args, **kwargs)
 
         self.saving = False
         # self.save_count = None
         self.ax_player.set_visible(True)
         self.ax_slider.set_visible(True)
+        self.suptitle.set_visible(True)

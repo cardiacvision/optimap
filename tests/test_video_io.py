@@ -180,3 +180,19 @@ def test_export_video_collage(tmpdir):
     om.video.export_video_collage(filename, videos, vmins=0, vmaxs=1, padding=10, ncols=2, padding_color="white")
     assert filename.is_file() and filename.stat().st_size > 0
     assert mimetypes.guess_type(filename)[0] == "video/mp4"
+
+
+@pytest.mark.skipif(skvideo._HAS_FFMPEG == 0, reason="ffmpeg not installed")
+def test_interactive_player_save(tmpdir):
+    import matplotlib.pyplot as plt
+    video = np.zeros((100, 32, 32), dtype=np.float32)
+
+    fn = Path(tmpdir / "test.mp4")
+    # fn = Path('/tmp') / "test.mp4"
+    fig, ax = plt.subplots()
+    imshow = ax.imshow(video[0])
+    player = om.video.InteractivePlayer(fig, lambda i: imshow.set_data(video[i]), end=len(video))
+    player.save(fn, fps=25, hide_framecounter=True)
+    plt.close(fig)
+    assert fn.exists()
+    assert fn.is_file() and fn.stat().st_size > 0
