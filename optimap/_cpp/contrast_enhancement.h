@@ -13,11 +13,11 @@
 #include "definitions.h"
 #include "vectors.h"
 
-
-template <typename Derived, typename Derived2>
-auto minmax_kernel(const Derived &block, const Derived2 &kernel) {
-  static_assert(std::is_same_v<typename Derived2::value_type, bool>);
+template <typename Derived, typename Derived2, typename Derived3>
+auto minmax_kernel(const Derived &block, const Derived2 &kernel, const Derived3 &mask) {
   assert(kernel.shape() == block.shape());
+  static_assert(std::is_same_v<typename Derived2::value_type, bool>);
+  static_assert(std::is_same_v<typename Derived3::value_type, bool>);
 
   using Scalar = typename Derived::value_type;
   Scalar max   = std::numeric_limits<Scalar>::lowest();
@@ -25,32 +25,17 @@ auto minmax_kernel(const Derived &block, const Derived2 &kernel) {
 
   for (size_t row = 0; row < kernel.shape(0); row++) {
     for (size_t col = 0; col < kernel.shape(1); col++) {
-      if (kernel(row, col)) {
+      bool in_mask = mask.size() <= 1 || mask(row, col);
+      if (kernel(row, col) && in_mask) {
         max = std::max(max, block(row, col));
         min = std::min(min, block(row, col));
       }
     }
   }
-  return std::make_pair(min, max);
-}
 
-template <typename Derived, typename Derived2, typename Derived3>
-auto minmax_kernel_masked(const Derived &block, const Derived2 &kernel, const Derived3 &mask) {
-  assert(kernel.shape() == block.shape());
-  static_assert(std::is_same_v<typename Derived2::value_type, bool>);
-  static_assert(std::is_same_v<typename Derived2::value_type, typename Derived3::value_type>);
-
-  using Scalar = typename Derived::value_type;
-  Scalar max   = std::numeric_limits<Scalar>::lowest();
-  Scalar min   = std::numeric_limits<Scalar>::max();
-
-  for (size_t row = 0; row < kernel.shape(0); row++) {
-    for (size_t col = 0; col < kernel.shape(1); col++) {
-      if (kernel(row, col) && mask(row, col)) {
-        max = std::max(max, block(row, col));
-        min = std::min(min, block(row, col));
-      }
-    }
+  if (max == std::numeric_limits<Scalar>::lowest() || min == std::numeric_limits<Scalar>::max()) {
+    max = 0;
+    min = 0;
   }
   return std::make_pair(min, max);
 }
@@ -158,15 +143,11 @@ void _contrast_enhancement_padded(T &out,
 
       const auto block = xt::view(img, xt::range(startx, endx), xt::range(starty, endy));
       const auto kernel_block = xt::view(kernel, xt::range(mstartx, mendx), xt::range(mstarty, mendy));
+      const auto mask_block = (mask.size() > 1)? xt::view(mask, xt::range(startx, endx), xt::range(starty, endy)) : Array2b();
 
-      float min, max;
-      if (mask.size() > 1) {
-        const auto mask_block = xt::view(mask, xt::range(startx, endx), xt::range(starty, endy));
-        std::tie(min, max) = minmax_kernel_masked(block, kernel_block, mask_block);
-      } else {
-        std::tie(min, max) = minmax_kernel(block, kernel_block);
-      }
-      if (max != min) {
+      const bool in_mask = mask.size() <= 1 || mask(row, col);
+      auto [min, max]    = minmax_kernel(block, kernel_block, mask_block);
+      if (max != min && in_mask) {
         out(row, col) = (img(row, col) - min) / (max - min);
       } else {
         out(row, col) = 0;

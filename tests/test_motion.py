@@ -32,6 +32,18 @@ def test_contrast_enhancement():
     out2 = om.motion.contrast_enhancement(vid, 3, mask)
     assert np.all(out2 == 0)
 
+    vid = np.random.random((10, 32, 32)).astype(np.float32)
+    out = om.motion.contrast_enhancement(vid, 3)
+    assert out.shape == vid.shape
+    assert out.min() == 0
+    assert out.max() == 1
+
+    mask = np.random.random((10, 32, 32)) > 0.5
+    out = om.motion.contrast_enhancement(vid, 3, mask)
+    assert out.shape == vid.shape
+    assert out.min() == 0
+    assert out.max() == 1
+
 def test_flowestimator():
     estimator = om.motion.FlowEstimator()
     vid = np.ones((10, 128, 128), dtype=np.float32)
