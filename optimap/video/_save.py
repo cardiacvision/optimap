@@ -23,13 +23,13 @@ def save_image_sequence(video: np.ndarray,
     -------
 
     .. code-block:: python
-    
+
             import numpy as np
             import optimap as om
-    
+
             video = np.random.rand(100, 100, 100)
             om.save_image_sequence(video, filepattern="frame_{:03d}", directory="my_folder", suffix=".png")
-        
+
     Will create a folder ``my_folder`` and save the images as ``my_folder/frame_000.png``, ``my_folder/frame_001.png``, etc.
 
     Parameters

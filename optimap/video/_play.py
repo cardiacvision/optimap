@@ -223,7 +223,7 @@ def play_with_overlay(
     **kwargs,
 ):
     """Play a video with an overlay. See :func:`export_video_with_overlay` and :func:`iter_alpha_blend_videos` for more information.
-    
+
     Parameters
     ----------
     base : np.ndarray
@@ -250,7 +250,7 @@ def play_with_overlay(
         Delay between frames in ms, by default 10. This is not the actual framerate, but the delay between frames.
     **kwargs
         Additional keyword arguments passed to :func:`matplotlib.pyplot.subplots`
-    
+
     Returns
     -------
     matplotlib.animation.FuncAnimation

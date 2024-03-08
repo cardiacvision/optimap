@@ -172,7 +172,7 @@ class InteractivePlayer(FuncAnimation):
 
         Parameters
         ----------
-        *args : 
+        *args :
             See FuncAnimation's :meth:`~matplotlib.animation.Animation.save` for arguments.
         hide_slider : bool, optional
             Hide the slider, by default True
@@ -183,7 +183,6 @@ class InteractivePlayer(FuncAnimation):
         **kwargs :
             See FuncAnimation's :meth:`~matplotlib.animation.Animation.save` for arguments.
         """
-
         self.saving = True
         # self.save_count = self.max // self.step
         if hide_buttons:

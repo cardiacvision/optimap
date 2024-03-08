@@ -18,7 +18,7 @@ def contrast_enhancement(video_or_img: np.ndarray, kernel_size: int, mask: np.nd
         Kernel size for local contrast enhancement (must be odd)
     mask : np.ndarray, optional
         valid values mask of shape {x, y} or {t, x, y}, by default None
-    
+
     Returns
     -------
     np.ndarray

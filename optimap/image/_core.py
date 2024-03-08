@@ -261,7 +261,7 @@ def smooth_gaussian(image, sigma, **kwargs):
 
 def collage(images, ncols=6, padding=0, padding_value=0):
     """Create a collage from a list or array of images/masks that have the same shape.
-    
+
     Creates a numpy array with the images arranged in a grid, with a specified number of images per row.
     Optionally, padding can be added between the images.
 
@@ -286,20 +286,19 @@ def collage(images, ncols=6, padding=0, padding_value=0):
     Examples
     --------
     .. code-block:: python
-    
+
             import optimap as om
             import numpy as np
-    
+
             # create a collage of 3x3 random images
             images = [np.random.rand(100, 100) for _ in range(9)]
             collage = om.image.collage(images, ncols=3, padding=10)
             om.image.show_image(collage)
     """
-
     for image in images:
         if image.shape != images[0].shape:
             raise ValueError("All images must have the same shape")
-    
+
     blank_image = np.full((images[0].shape[0], padding) + images[0].shape[2:],
                           padding_value, dtype=images[0].dtype)
 
@@ -315,7 +314,7 @@ def collage(images, ncols=6, padding=0, padding_value=0):
 
         collage_rows.append(np.hstack(row_images))
         current_index = end_index
-    
+
     if padding > 0 and len(collage_rows) > 1:
         row_space = np.full((padding,) + collage_rows[0].shape[1:],
                             padding_value, dtype=collage_rows[0].dtype)

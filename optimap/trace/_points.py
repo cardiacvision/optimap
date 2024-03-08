@@ -24,7 +24,7 @@ def random_positions(shape_or_mask, N=1):
         mask = np.full(shape_or_mask, True, dtype=bool)
         shape = shape_or_mask
     mask = mask / mask.sum()
-    
+
     rng = np.random.default_rng()
     idxs = rng.choice(
         np.arange(mask.size),

@@ -1,7 +1,7 @@
 import os
 import warnings
 from pathlib import Path
-from typing import Iterable, Union, List
+from typing import Iterable, List, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -182,13 +182,13 @@ def export_video(
 
         if frame.dtype != np.uint8:
             frame = (frame * 255).astype(np.uint8)
-        
+
         # pad odd-sized frames to even dimension, otherwise ffmpeg will error
         if frame.shape[0] % 2 == 1:
             frame = np.pad(frame, ((0, 1), (0, 0), (0, 0)), mode=pad_mode)
         if frame.shape[1] % 2 == 1:
             frame = np.pad(frame, ((0, 0), (0, 1), (0, 0)), mode=pad_mode)
-        
+
         writer.writeFrame(frame)
     writer.close()
     print(f"video exported to {filename}")
@@ -199,7 +199,7 @@ def export_video_collage(
         videos: Union[np.ndarray, List[np.ndarray]],
         ncols: int = 6,
         padding: int = 0,
-        padding_color = 'black',
+        padding_color = "black",
         fps: int = 60,
         skip_frames: int = 1,
         cmaps: Union[str, List[str]] = "gray",
@@ -230,7 +230,7 @@ def export_video_collage(
         cmaps = ["gray", "viridis", "plasma", "inferno"]
         om.export_video_collage("collage.mp4", videos, ncols=2, padding=10,
                                 padding_color="white", cmaps=cmaps)
-    
+
     Parameters
     ----------
     filename : str or Path
@@ -283,7 +283,7 @@ def export_video_collage(
         vmins = [vmins] * len(videos)
     if not isinstance(vmaxs, list):
         vmaxs = [vmaxs] * len(videos)
-    
+
     if len(videos) != len(cmaps) != len(vmins) != len(vmaxs):
         raise ValueError("videos, cmaps, vmins, and vmaxs must have the same length")
 
@@ -293,7 +293,7 @@ def export_video_collage(
         if frame.dtype != np.uint8:
             frame = (frame * 255).astype(np.uint8)
         return frame
-    
+
     if isinstance(padding_color, str):
         padding_color = np.array(to_rgba(padding_color))
         padding_color = (padding_color * 255).astype(np.uint8)

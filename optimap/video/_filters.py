@@ -9,7 +9,7 @@ from ..utils import _print
 
 def normalize(array: np.ndarray, ymin=0, ymax=1, vmin=None, vmax=None, clip=True, dtype=np.float32):
     """Normalizes array (video, image, ...) to interval [``ymin``, ``ymax``].
-    
+
     If ``vmin`` or ``vmax`` are specified, the normalization is done using these values and the resulting array will be clipped.
 
     Parameters
@@ -55,7 +55,7 @@ def normalize(array: np.ndarray, ymin=0, ymax=1, vmin=None, vmax=None, clip=True
 
     if do_clip:
         array = np.clip(array, ymin, ymax)
-    
+
     if dtype == array.dtype:
         return array
     else:

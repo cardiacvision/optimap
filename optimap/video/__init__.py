@@ -12,8 +12,8 @@ from ._edit import (
 from ._export import (
     alpha_blend_videos,
     export_video,
-    export_video_with_overlay,
     export_video_collage,
+    export_video_with_overlay,
     get_default_ffmpeg_encoder,
     iter_alpha_blend_videos,
     set_default_ffmpeg_encoder,
@@ -33,11 +33,7 @@ from ._importers import (
     MiCAM_ULTIMA_Importer,
     MultiRecorderImporter,
 )
-from ._load import (
-    load_metadata,
-    load_video,
-    load_image_folder
-)
+from ._load import load_image_folder, load_metadata, load_video
 from ._play import play, play2, play_with_overlay, playn
 from ._player import InteractivePlayer
 from ._save import (

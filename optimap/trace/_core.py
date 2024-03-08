@@ -230,7 +230,7 @@ def collage_positions(positions, image_shape, ncols=6):
     """Correspondant to :func:`image.collage` but for positions. Collages the positions in the same way as the images would be collaged.
 
     `positions` is a list of list of tuples, i.e. one list of positions for each image. The function collages the positions in the same way as the images would be collaged and returns a list of tuples where the positions have been offset to the correct position in the collage. All images are assumed to have the same shape `image_shape`.
-    
+
     Parameters
     ----------
     positions : list of arrays
@@ -239,7 +239,7 @@ def collage_positions(positions, image_shape, ncols=6):
         Shape of the images where the positions are from
     ncols : int, optional
         Number of columns, by default 6
-    
+
     Returns
     -------
     list of tuples
