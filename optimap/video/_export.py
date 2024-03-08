@@ -110,8 +110,9 @@ def export_video(
     cmap = "gray",
     vmin : float = None,
     vmax : float = None,
-    ffmpeg_encoder : str = None,
     progress_bar : bool = True,
+    ffmpeg_encoder : str = None,
+    pad_mode : str = "edge",
 ):
     """Export a video numpy array to a video file (e.g. ``.mp4``) using `ffmpeg <https://www.ffmpeg.org>`_.
 
@@ -145,11 +146,14 @@ def export_video(
         The minimum value for the colormap, by default None
     vmax : float, optional
         The maximum value for the colormap, by default None
+    progress_bar : bool, optional
+        Whether to show a progress bar, by default True
     ffmpeg_encoder : str, optional
         The ffmpeg encoder to use, by default ``'libx264'``. See :func:`set_default_ffmpeg_encoder` and
         :func:`set_ffmpeg_defaults` for more information.
-    progress_bar : bool, optional
-        Whether to show a progress bar, by default True
+    pad_mode : str, optional
+        Odd-sized videos need to be padded to even dimensions, otherwise ffmpeg will error. The padding mode to use,
+        by default "edge". See :func:`numpy.pad` for more information.
     """
     if isinstance(video, (str, os.PathLike)):
         filename, video = video, filename
@@ -178,6 +182,13 @@ def export_video(
 
         if frame.dtype != np.uint8:
             frame = (frame * 255).astype(np.uint8)
+        
+        # pad odd-sized frames to even dimension, otherwise ffmpeg will error
+        if frame.shape[0] % 2 == 1:
+            frame = np.pad(frame, ((0, 1), (0, 0), (0, 0)), mode=pad_mode)
+        if frame.shape[1] % 2 == 1:
+            frame = np.pad(frame, ((0, 0), (0, 1), (0, 0)), mode=pad_mode)
+        
         writer.writeFrame(frame)
     writer.close()
     print(f"video exported to {filename}")

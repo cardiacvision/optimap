@@ -149,23 +149,34 @@ def test_export_video(tmpdir):
 
 
 @pytest.mark.skipif(skvideo._HAS_FFMPEG == 0, reason="ffmpeg not installed")
+def test_export_video_uneven(tmpdir):
+    om.video.set_default_ffmpeg_encoder("libx264")
+    video = np.random.random((10, 15, 21)).astype(np.float32)
+    filename = Path(tmpdir / "test.mp4")
+    om.export_video(filename, video, vmin=0, vmax=1)
+    assert filename.is_file() and filename.stat().st_size > 0
+    assert mimetypes.guess_type(filename)[0] == "video/mp4"
+
+
+@pytest.mark.skipif(skvideo._HAS_FFMPEG == 0, reason="ffmpeg not installed")
 def test_export_video_overlay(tmpdir):
     video = np.random.random((10, 4, 4)).astype(np.float32)
     overlay = np.random.random((10, 4, 4)).astype(np.float32)
-    filename = tmpdir / "test.mp4"
+    filename = Path(tmpdir / "test.mp4")
     om.video.export_video_with_overlay(filename, video, overlay=overlay, vmin_base=0, vmax_base=1)
-    assert Path(filename).is_file()
+    assert filename.is_file() and filename.stat().st_size > 0
     assert mimetypes.guess_type(filename)[0] == "video/mp4"
 
     om.video.export_video_with_overlay(filename, video, overlay=overlay, alpha=overlay)
-    assert Path(filename).is_file()
+    assert filename.is_file() and filename.stat().st_size > 0
     assert mimetypes.guess_type(filename)[0] == "video/mp4"
+
 
 @pytest.mark.skipif(skvideo._HAS_FFMPEG == 0, reason="ffmpeg not installed")
 def test_export_video_collage(tmpdir):
     videos = [np.random.random((10, 4, 4)).astype(np.float32) for _ in range(4)]
-    filename = tmpdir / "test.mp4"
+    filename = Path(tmpdir / "test.mp4")
 
     om.video.export_video_collage(filename, videos, vmins=0, vmaxs=1, padding=10, ncols=2, padding_color="white")
-    assert Path(filename).is_file()
+    assert filename.is_file() and filename.stat().st_size > 0
     assert mimetypes.guess_type(filename)[0] == "video/mp4"
