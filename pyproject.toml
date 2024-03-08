@@ -16,7 +16,7 @@ fallback_version = "0.1.0"
 
 [tool.cibuildwheel]
 archs = ["auto64"]  # 64-bit only
-skip = "pp* *musllinux*"  # disable PyPy, musl-based wheels, and Python 3.12 (waiting for dependencies to catch up)
+skip = "pp* *musllinux*"  # disable PyPy, musl-based wheels
 test-requires = ["pytest", "opencv-python-headless"]
 test-command = "pytest {project}/tests"
 

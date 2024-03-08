@@ -15,13 +15,16 @@ jobs:
         os: [ubuntu-20.04, windows-2019, macos-12]
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.16.5
         env:
           CIBW_BUILD: "cp38-macosx* cp39-manylinux_x86_64 cp312-manylinux_x86_64 cp311-win_amd64" #  Speed up CI by only building a subset of wheels
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
           path: ./wheelhouse/*.whl
+          name: wheels-${{ matrix.os }}
