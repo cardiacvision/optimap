@@ -69,7 +69,7 @@ class InteractivePlayer(FuncAnimation):
         gui_pos=(0.125, 0.92),
         **kwargs,
     ):
-        self.i = 0
+        self.i = start - step
         self.min = start
         self.max = end
         self.runs = True
@@ -96,7 +96,7 @@ class InteractivePlayer(FuncAnimation):
     def play(self):
         while self.runs:
             self.i = self.i + self.step
-            if self.i > self.min and self.i < self.max:
+            if self.i >= self.min and self.i < self.max:
                 yield self.i
             else:
                 if self.saving:
@@ -104,7 +104,7 @@ class InteractivePlayer(FuncAnimation):
                 elif self.i >= self.max:
                     yield self.min
                 else:
-                    yield self.max
+                    yield self.min
 
     def update(self, i):
         self.slider.set_val(i)
@@ -163,7 +163,7 @@ class InteractivePlayer(FuncAnimation):
         self.button_stop = matplotlib.widgets.Button(self.ax_player, label="■")
         self.button_stop.on_clicked(self.toggle_play)
         self.slider = matplotlib.widgets.Slider(
-            self.ax_slider, "", self.min, self.max, valinit=self.i,
+            self.ax_slider, "", self.min, self.max - 1, valinit=self.min,
         )
         self.slider.on_changed(self.set_pos)
 
@@ -183,8 +183,9 @@ class InteractivePlayer(FuncAnimation):
         **kwargs :
             See FuncAnimation's :meth:`~matplotlib.animation.Animation.save` for arguments.
         """
+        self.i = self.min - self.step
         self.saving = True
-        # self.save_count = self.max // self.step
+        self._save_count = (self.max - self.min) // self.step
         if hide_buttons:
             self.ax_player.set_visible(False)
         if hide_slider:
@@ -194,7 +195,7 @@ class InteractivePlayer(FuncAnimation):
         super().save(*args, **kwargs)
 
         self.saving = False
-        # self.save_count = None
+        self._save_count = None
         self.ax_player.set_visible(True)
         self.ax_slider.set_visible(True)
         self.suptitle.set_visible(True)
