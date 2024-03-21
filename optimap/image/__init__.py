@@ -17,6 +17,7 @@ from ._mask import (
     open_mask,
     show_mask,
 )
+from ..video import normalize
 
 __all__ = [
     "show_image",

@@ -15,9 +15,13 @@ def test_normalize():
     vid = vid.astype(np.float64)
     out = om.video.normalize(vid, dtype="float64")
     assert out.dtype == np.float64
+    assert np.allclose(out.max(), 1.0)
+    assert np.allclose(out.min(), 0.0)
 
-    out = om.video.normalize(vid, ymax=255, dtype="uint8")
+    out = om.video.normalize(vid, dtype="uint8")
     assert out.dtype == np.uint8
+    assert out.min() == 0
+    assert out.max() == 255
 
 def test_normalize_pixelwise():
     vid = (np.random.random((10, 128, 128)) * 8000).astype(np.uint16)
