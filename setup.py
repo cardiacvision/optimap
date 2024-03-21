@@ -63,6 +63,7 @@ setup(
         "seasonal",
         "static_ffmpeg",
         "mpl-pan-zoom",
+        "Pillow>=10.0.1"  # not a strict requirement, but it makes importing 16-bit PNGs more consistent
     ],
     tests_require=["pytest"],
     ext_modules=[cpp_module],
