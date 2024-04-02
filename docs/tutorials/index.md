@@ -15,4 +15,5 @@
 /tutorials/plotting.ipynb
 /tutorials/smoothing.ipynb
 /tutorials/io.ipynb
+/tutorials/example_files.ipynb
 ```
