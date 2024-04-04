@@ -1,5 +1,7 @@
 # Tutorials
 
+The tutorials below provide an introduction to ``optimap``. For first-time users, we recommend starting with Tutorials 1 & 2. 
+
 ```{toctree}
 :maxdepth: 1
 
