@@ -8,13 +8,13 @@
 
 ### optimap: An open-source library for the processing of fluorescence video data
 
-`optimap` is an open-source Python toolbox for exploring, visualizing, and analyzing high-speed fluorescence imaging data with a focus on cardiac optical mapping data. It includes modules for loading, processing and exporting videos, extracting and measuring optical traces, visualizing action potential or calcium waves, tracking motion and compensating motion artifacts, computing activation maps, measuring contractility and further analyzing and visualizing the results. Refer to the [Tutorials](https://optimap.readthedocs.io/en/latest/tutorials/) and the [Documentation](https://optimap.readthedocs.io/en/latest/) for more detailed information about optimap's usage and features.
+`optimap` is an open-source Python toolbox for exploring, visualizing, and analyzing high-speed fluorescence imaging data with a focus on cardiac optical mapping data. It includes modules for loading, processing and exporting videos, extracting and measuring optical traces, visualizing action potential or calcium waves, tracking motion and compensating motion artifacts, computing activation maps, conduction velocities, action potential durations, as well as measuring contractility and further analyzing and visualizing the results. Refer to the [Tutorials](https://optimap.readthedocs.io/en/latest/tutorials/) and the [Documentation](https://optimap.readthedocs.io/en/latest/) for more information about optimap's features.
 
 > ⚠️ optimap is currently in early development, expect breaking changes and bugs.
 
 ## Installation
 
-`optimap` is available for macOS, Windows and Linux, see the [Getting Started](https://optimap.readthedocs.io/en/latest/chapters/getting_started/) guide for more detailed information.
+`optimap` is available for macOS, Windows and Linux, see the [Getting Started](https://optimap.readthedocs.io/en/latest/chapters/getting_started/) guide for more information.
 
 ### Installing pre-built binaries (macOS, Windows, Linux)
 
