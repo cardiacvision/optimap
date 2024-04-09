@@ -43,8 +43,8 @@ FILE_HASHES = {
         "sha256:a1781582b669a69a9753b1c43d23e0acf26fb372426eeb6d880d2e66420b2107",
     "Example_02_VF_Rabbit_Di-4-ANEPPS_Basler_acA720-520um_warped_mask.npy":
         "sha256:3f5d8402c8251f3cb8e8d235b459264ff7e7e2cf2b81f08129f0897baa262db6",
-    #"optimap-example-file-03.npy":
-    #      "sha256:18395818ddc9575a0c360398f9dacb27dd8263c19cf872c9752efef9c1705977"
+    "optimap-example-file-03.npy":
+        "sha256:18395818ddc9575a0c360398f9dacb27dd8263c19cf872c9752efef9c1705977"
 }
 
 
