@@ -12,20 +12,21 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04, windows-2019, macos-12]
+        # macos-13 is an intel runner, macos-14 is apple silicon
+        os: [ubuntu-latest, windows-latest, macos-13, macos-14]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.16.5
+        uses: pypa/cibuildwheel@v2.17.0
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           path: ./wheelhouse/*.whl
-          name: wheels-${{ matrix.os }}
+          name: wheels-${{ matrix.os }}-${{ strategy.job-index }}
 
   build_sdist:
     name: Build source distribution
