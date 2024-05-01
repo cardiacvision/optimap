@@ -44,7 +44,9 @@ FILE_HASHES = {
     "Example_02_VF_Rabbit_Di-4-ANEPPS_Basler_acA720-520um_warped_mask.npy":
         "sha256:3f5d8402c8251f3cb8e8d235b459264ff7e7e2cf2b81f08129f0897baa262db6",
     "optimap-example-file-03.npy":
-        "https://cardiacvision.ucsf.edu/sites/g/files/tkssra6821/f/optimap-example-file-03.npy_.webm"
+        "https://cardiacvision.ucsf.edu/sites/g/files/tkssra6821/f/optimap-example-file-03.npy_.webm",
+    "optimap-example-file-04.npy":
+        "https://cardiacvision.ucsf.edu/sites/g/files/tkssra6821/f/optimap-example-file-04.npy_.webm"
 }
 
 
