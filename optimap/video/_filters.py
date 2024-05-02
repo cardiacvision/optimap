@@ -175,26 +175,45 @@ def smooth_spatiotemporal(video: np.ndarray, sigma_temporal, sigma_spatial):
     )
 
 
-def temporal_difference(video: np.ndarray, n: int):
-    """Temporal difference filter. Computes difference between frames using an offset of `n` frames.
+def temporal_difference(array: np.ndarray, n: int, fill_value: float = 0, center: bool = False):
+    """Temporal difference filter using an offset of `n` frames.
+
+    Computes temporal intensity changes in the videos or traces between frames at time :math:`t` and :math:`t - \Delta t`:
+
+    .. math::
+        \\text{signal}_{\\text{diff}}(t) = \\text{signal}(t) - \\text{signal}(t - \Delta t)
+
+    where :math:`\Delta t` is the time difference between frames (usually set to :math:`\Delta t = 1-5` frames).
+
+    The resulting signal is padded with `fill_value` to keep the original shape. If `center` is set to `True`, the padding is centered around the signal, otherwise it is added to the beginning.
 
     Parameters
     ----------
-    video : {t, x, y} ndarray
-        Video to filter.
+    array : ndarray
+        Video or signal to filter. First axis is assumed to be time.
     n : int
-        Offset
+        Offset in frames.
+    fill_value : float, optional
+        Value to fill the padded frames with, by default 0
+    center : bool, optional
+        If True, the padding is centered around the signal, by default False
+        
 
     Returns
     -------
-    {t, x, y} ndarray
-        Filtered video.
+    ndarray
+        Filtered video/signal.
     """
-    if video.dtype != np.float32:
-        video = video.astype(np.float32)
-    diff = video[n:] - video[:-n]
-    z = np.zeros((n,) + video.shape[1:], dtype=np.float32)
-    return np.vstack((z, diff))
+    if not (np.issubdtype(array.dtype, np.floating) or np.issubdtype(array.dtype, np.complexfloating)):
+        array = array.astype(np.float32)
+    
+    diff = array[n:] - array[:-n]
+    if center:
+        padding = ((n - n//2, n//2),)
+    else:
+        padding = ((n, 0),)
+    diff = np.pad(diff, padding + ((0, 0),) * (diff.ndim - 1), constant_values=fill_value)
+    return diff
 
 
 def evolve_jitter_filter(video, framerate=500.0, threshold=0.004):

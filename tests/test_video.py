@@ -64,14 +64,20 @@ def test_temporal_difference():
     video = np.zeros((10, 128, 128), dtype=np.uint16)
     for i in range(1, 10):
         video[i] = i
-    out = om.video.temporal_difference(video, 1)
+    out = om.video.temporal_difference(video, 1, fill_value=np.inf)
     assert out.shape == video.shape
     assert out.dtype == np.float32
-    assert np.all(out[0] == 0)
+    assert np.all(out[0] == np.inf)
     assert np.all(out[1:] == 1)
 
     out = om.video.temporal_difference(video, 2)
     assert np.all(out[2:] == 2)
+
+    out = om.video.temporal_difference(video, 2, fill_value=np.inf, center=True)
+    assert out.shape == video.shape
+    assert out.dtype == np.float32
+    assert np.all(out[0] == np.inf) and np.all(out[-1] == np.inf)
+    assert np.all(out[1:-1] == 2)
 
 
 def test_resize():
