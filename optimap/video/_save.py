@@ -9,15 +9,15 @@ import tifffile
 from scipy.io import savemat
 
 
-def save_image_sequence(video: np.ndarray,
+def save_image_sequence(directory: Union[str, Path],
+                        video: np.ndarray,
                         filepattern: str = "frame_{:03d}",
-                        directory: Union[str, Path] = None,
-                        suffix=".png",
+                        format=".png",
                         **kwargs):
     """Save a video as a sequence of images.
 
     This function will create a directory if it does not exist, and save each frame of the video as an image.
-    The images are named according to the provided file pattern and suffix.
+    The images are named according to the provided file pattern and format.
 
     Example
     -------
@@ -28,21 +28,29 @@ def save_image_sequence(video: np.ndarray,
             import optimap as om
 
             video = np.random.rand(100, 100, 100)
-            om.save_image_sequence(video, filepattern="frame_{:03d}", directory="my_folder", suffix=".png")
-
+            om.save_image_sequence("my_folder", video, filepattern="frame_{:03d}", format=".png")
+        
     Will create a folder ``my_folder`` and save the images as ``my_folder/frame_000.png``, ``my_folder/frame_001.png``, etc.
 
     Parameters
     ----------
+    directory : str or pathlib.Path
+        Directory to save to
     video : np.ndarray or list of np.ndarray
         The video to save as a sequence of images
     filepattern : str
         The pattern to use for the filenames. The pattern should include a placeholder for the frame number, e.g., 'frame_{:03d}'. Default is 'frame_{:03d}'.
-    directory : str or pathlib.Path, optional
-        Directory to save to, by default None
+    format : str
+        Image format to save as, e.g., '.png', '.jpg', `.tiff` etc. Default is '.png'.
     **kwargs : dict
         Additional arguments to pass to :func:`skimage.io.imsave` or :func:`tifffile.imwrite` (for ``.tiff`` files)
     """
+    if isinstance(video, (str, os.PathLike)):
+        directory, video = video, directory
+        warnings.warn("The order of arguments for optimap.save_image_sequence() has changed. "
+                      "Please use save_image_sequence(directory, video) instead of save_image_sequence(video, directory).",
+                      DeprecationWarning)
+
     if directory is not None:
         directory = Path(directory)
         if not directory.exists():
@@ -51,15 +59,28 @@ def save_image_sequence(video: np.ndarray,
         directory = Path.cwd()
 
     for i, frame in enumerate(video):
-        fn = filepattern.format(i) + suffix
+        fn = filepattern.format(i) + format
         fn = directory / fn
-        if suffix.lower() in [".tif", ".tiff"]:
-            save_tiff(frame, fn, **kwargs)
-        else:
-            sio.imsave(fn, frame, **kwargs)
+        func = save_tiff if format.lower() in [".tif", ".tiff"] else sio.imsave
+        func(fn, frame, **kwargs)
 
 
-def save_tiff(video, filename, photometric="minisblack", **kwargs):
+def save_tiff_folder(directory, video, filepattern="frame_{:03d}"):
+    """Save a video as a folder of TIFF images. See :func:`save_image_sequence` for details.
+
+    Parameters
+    ----------
+    directory : str or pathlib.Path
+        Directory to save to
+    video : np.ndarray
+        Video to save
+    filepattern : str
+        File pattern of the images, by default ``'frame_{:03d}'``
+    """
+    save_image_sequence(directory, video, filepattern=filepattern, suffix=".tiff")
+
+
+def save_tiff(filename, video, photometric="minisblack", **kwargs):
     """Save a video as a monochromatic TIFF stack.
 
     Parameters
@@ -73,26 +94,17 @@ def save_tiff(video, filename, photometric="minisblack", **kwargs):
     **kwargs : dict
         Additional arguments to pass to :func:`tifffile.imwrite`
     """
+    if isinstance(video, (str, os.PathLike)):
+        filename, video = video, filename
+        warnings.warn("The order of arguments for optimap.save_video() has changed. "
+                      "Please use save_video(filename, video) instead of save_video(video, filename).",
+                      DeprecationWarning)
+    
     filename = Path(filename)
     if filename.suffix.lower() not in [".tif, .tiff"]:
         filename = filename.with_suffix(".tiff")
     print(f"saving video to tiff stack {filename}")
     tifffile.imwrite(filename, video, photometric=photometric, **kwargs)
-
-
-def save_tiff_folder(video, filepattern="frame_{:03d}", directory=None):
-    """Save a video as a folder of TIFF images. See :func:`save_image_sequence` for details.
-
-    Parameters
-    ----------
-    video : np.ndarray
-        Video to save
-    filepattern : str
-        File pattern of the images, by default ``'frame_{:03d}'``
-    directory : str or pathlib.Path, optional
-        Directory to save to, by default current working directory
-    """
-    save_image_sequence(video, filepattern=filepattern, directory=directory, suffix=".tiff")
 
 
 def save_matlab(array, filename, fieldname="video", appendmat=True):
@@ -141,7 +153,7 @@ def save_video(filename, video, **kwargs):
         raise RuntimeError(msg)
 
     if suffix in [".tif", ".tiff"]:
-        save_tiff(video, filename)
+        save_tiff(filename, video, **kwargs)
     elif suffix in [".npy"]:
         np.save(filename, video, **kwargs)
         print(f"saved video as numpy file to {filename}")

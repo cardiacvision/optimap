@@ -33,8 +33,23 @@ from ._importers import (
     MiCAM_ULTIMA_Importer,
     MultiRecorderImporter,
 )
-from ._load import load_image_folder, load_metadata, load_video
-from ._play import play, play2, play_with_overlay, playn
+from ._load import (
+    load_metadata,
+    load_video,
+    load_image_folder
+)
+from ._play import (
+    # deprecated
+    play,
+    play2,
+    play_with_overlay,
+    playn,
+    # new names
+    show_video,
+    show_video_pair,
+    show_videos,
+    show_video_overlay
+)
 from ._player import InteractivePlayer
 from ._save import (
     save_image_sequence,
@@ -59,10 +74,16 @@ __all__ = [
     "export_video_with_overlay",
     "export_video_collage",
 
+    # deprecated
     "play",
     "play2",
     "playn",
     "play_with_overlay",
+    # new names
+    "show_videos",
+    "show_video",
+    "show_video_pair",
+    "show_video_overlay"
 
     "rotate_left",
     "rotate_right",

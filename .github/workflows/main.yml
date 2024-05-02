@@ -22,7 +22,7 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.17.0
         env:
-          CIBW_BUILD: "cp38-macosx* cp39-manylinux_x86_64 cp312-manylinux_x86_64 cp311-win_amd64" #  Speed up CI by only building a subset of wheels
+          CIBW_BUILD: "cp38-manylinux_x86_64 cp310-macosx* cp311-win_amd64 cp312-manylinux_x86_64" #  Speed up CI by only building a subset of wheels
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

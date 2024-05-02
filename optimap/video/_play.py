@@ -3,12 +3,38 @@ import numpy as np
 from matplotlib import animation
 from matplotlib.colors import Colormap
 
-from ..utils import interactive_backend
+from ..utils import deprecated, interactive_backend
 from ._export import iter_alpha_blend_videos
 from ._player import InteractivePlayer
 
-
+@deprecated("use optimap.show_video instead")
 def play(video, skip_frame=1, title="", vmin=None, vmax=None, cmap="gray", interval=10, **kwargs):
+    """Deprecated alias for :py:func:`optimap.video.show_video`."""
+    return show_video(video, skip_frame=skip_frame, title=title, vmin=vmin, vmax=vmax,
+                      cmap=cmap, interval=interval, **kwargs)
+
+
+@deprecated("use optimap.show_video_pair instead")
+def play2(video1, video2, skip_frame=1, title1="", title2="", vmin1=None, vmax1=None, vmin2=None, vmax2=None, cmap1="gray", cmap2="gray", interval=10, **kwargs):
+    """Deprecated alias for :py:func:`optimap.video.show_video_pair`."""
+    return show_video_pair(video1, video2, skip_frame=skip_frame, title1=title1, title2=title2,
+                           vmin1=vmin1, vmax1=vmax1, vmin2=vmin2, vmax2=vmax2, cmap1=cmap1, cmap2=cmap2,
+                           interval=interval, **kwargs)
+
+
+@deprecated("use optimap.show_videos instead")
+def playn(videos, skip_frame=1, titles=None, cmaps="gray", vmins=None, vmaxs=None, interval=10, **kwargs):
+    """Deprecated alias for :py:func:`optimap.video.show_videos`."""
+    return show_videos(videos, skip_frame=skip_frame, titles=titles, cmaps=cmaps, vmins=vmins, vmaxs=vmaxs, interval=interval, **kwargs)
+
+
+@deprecated("use optimap.show_videos instead")
+def play_with_overlay(*args, **kwargs):
+    """Deprecated alias for :py:func:`optimap.video.show_video_overlay`."""
+    return show_video_overlay(*args, **kwargs)
+
+
+def show_video(video, skip_frame=1, title="", vmin=None, vmax=None, cmap="gray", interval=10, **kwargs):
     """Simple video player based on matplotlib's animate function.
 
     See :py:func:`optimap.video.play2` for a player for two videos side-by-side, and :py:func:`optimap.video.playn`
@@ -44,9 +70,9 @@ def play(video, skip_frame=1, title="", vmin=None, vmax=None, cmap="gray", inter
 
     Returns
     -------
-    matplotlib.animation.FuncAnimation
+    InteractivePlayer
     """
-    return playn(
+    return show_videos(
         [video],
         skip_frame=skip_frame,
         titles=[title],
@@ -58,7 +84,7 @@ def play(video, skip_frame=1, title="", vmin=None, vmax=None, cmap="gray", inter
     )
 
 
-def play2(
+def show_video_pair(
     video1,
     video2,
     skip_frame=1,
@@ -106,7 +132,7 @@ def play2(
 
     Returns
     -------
-    matplotlib.animation.FuncAnimation
+    InteractivePlayer
     """
     if vmin1 is None and vmin2 is None:
         vmins = None
@@ -116,7 +142,7 @@ def play2(
         vmaxs = None
     else:
         vmaxs = [vmax1, vmax2]
-    return playn([video1, video2],
+    return show_videos([video1, video2],
                  skip_frame=skip_frame,
                  titles=[title1, title2],
                  cmaps=[cmap1, cmap2],
@@ -125,9 +151,8 @@ def play2(
                  interval=interval,
                  **kwargs)
 
-
 @interactive_backend
-def playn(videos, skip_frame=1, titles=None, cmaps="gray", vmins=None, vmaxs=None, interval=10, **kwargs):
+def show_videos(videos, skip_frame=1, titles=None, cmaps="gray", vmins=None, vmaxs=None, interval=10, **kwargs):
     """Video player for `n` side-by-side videos based on matplotlib's animate function.
 
     Parameters
@@ -151,7 +176,7 @@ def playn(videos, skip_frame=1, titles=None, cmaps="gray", vmins=None, vmaxs=Non
 
     Returns
     -------
-    matplotlib.animation.FuncAnimation
+    InteractivePlayer
     """
     n = len(videos)
     nt = len(videos[0])
@@ -208,7 +233,7 @@ def playn(videos, skip_frame=1, titles=None, cmaps="gray", vmins=None, vmaxs=Non
 
 
 @interactive_backend
-def play_with_overlay(
+def show_video_overlay(
     base: np.ndarray,
     overlay: np.ndarray,
     alpha: np.ndarray = None,
