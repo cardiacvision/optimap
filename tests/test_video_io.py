@@ -40,7 +40,7 @@ def test_npy_video(tmpdir):
 def test_tiff_folder(tmpdir):
     vid = np.random.random((10, 4, 6)).astype(np.float32)
 
-    om.save_image_sequence(tmpdir, vid, suffix=".tiff")
+    om.save_image_sequence(tmpdir, vid, format=".tiff")
     assert len(list(Path(tmpdir).glob("*.tiff"))) == 10
 
     video = om.load_video(tmpdir)
@@ -57,7 +57,7 @@ def test_png_folder(tmpdir):
     vid = np.random.random((10, 4, 6)) * 16535
     vid = vid.astype(np.uint16)
 
-    om.save_image_sequence(tmpdir, vid, suffix=".png")
+    om.save_image_sequence(tmpdir, vid, format=".png")
     assert len(list(Path(tmpdir).glob("*.png"))) == 10
 
     video = om.load_video(tmpdir)

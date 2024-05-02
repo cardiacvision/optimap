@@ -12,12 +12,12 @@ from scipy.io import savemat
 def save_image_sequence(directory: Union[str, Path],
                         video: np.ndarray,
                         filepattern: str = "frame_{:03d}",
-                        suffix=".png",
+                        format=".png",
                         **kwargs):
     """Save a video as a sequence of images.
 
     This function will create a directory if it does not exist, and save each frame of the video as an image.
-    The images are named according to the provided file pattern and suffix.
+    The images are named according to the provided file pattern and format.
 
     Example
     -------
@@ -28,7 +28,7 @@ def save_image_sequence(directory: Union[str, Path],
             import optimap as om
 
             video = np.random.rand(100, 100, 100)
-            om.save_image_sequence("my_folder", video, filepattern="frame_{:03d}", suffix=".png")
+            om.save_image_sequence("my_folder", video, filepattern="frame_{:03d}", format=".png")
         
     Will create a folder ``my_folder`` and save the images as ``my_folder/frame_000.png``, ``my_folder/frame_001.png``, etc.
 
@@ -40,9 +40,17 @@ def save_image_sequence(directory: Union[str, Path],
         The video to save as a sequence of images
     filepattern : str
         The pattern to use for the filenames. The pattern should include a placeholder for the frame number, e.g., 'frame_{:03d}'. Default is 'frame_{:03d}'.
+    format : str
+        Image format to save as, e.g., '.png', '.jpg', `.tiff` etc. Default is '.png'.
     **kwargs : dict
         Additional arguments to pass to :func:`skimage.io.imsave` or :func:`tifffile.imwrite` (for ``.tiff`` files)
     """
+    if isinstance(video, (str, os.PathLike)):
+        directory, video = video, directory
+        warnings.warn("The order of arguments for optimap.save_image_sequence() has changed. "
+                      "Please use save_image_sequence(directory, video) instead of save_image_sequence(video, directory).",
+                      DeprecationWarning)
+
     if directory is not None:
         directory = Path(directory)
         if not directory.exists():
@@ -51,9 +59,9 @@ def save_image_sequence(directory: Union[str, Path],
         directory = Path.cwd()
 
     for i, frame in enumerate(video):
-        fn = filepattern.format(i) + suffix
+        fn = filepattern.format(i) + format
         fn = directory / fn
-        func = save_tiff if suffix.lower() in [".tif", ".tiff"] else sio.imsave
+        func = save_tiff if format.lower() in [".tif", ".tiff"] else sio.imsave
         func(fn, frame, **kwargs)
 
 
