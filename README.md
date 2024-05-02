@@ -38,7 +38,9 @@ pip install --upgrade opticalmapping[all]
 
 ## About optimap
 
-`optimap` is a script-based software, which means that you run Python-based analysis scripts rather than using a graphical user interface. We provide several example scripts which explain the usage of `optimap`, see [Tutorials](https://optimap.readthedocs.io/en/latest/tutorials/). The example scripts can also be downloaded directly by clicking on the right link in the green box at the top of each tutorial page. `optimap` is developed by members of the [Cardiac Vision Laboratory](https://cardiacvision.ucsf.edu) at the [University of California, San Franicsco](https://www.ucsf.edu). `optimap` was created for cardiovascular scientists in particular, but might also be useful for scientists in other fields, for instance, when performing calcium imaging or physiological research with moving cells or tissues. `optimap` is open-source, freely available, and relies on open-source packages such as NumPy, SciPy, Matplotlib and OpenCV.
+`optimap` is an interactive, script or notebook-based software library created for cardiovascular scientists in particular, but might also be useful for scientists in other fields. For instance, when performing calcium imaging or physiological research with moving cells or tissues. It is designed to be a flexible and customizable analysis workflow toolkit, which allows for a wide range of analyses and visualizations. See the [Tutorials](https://optimap.readthedocs.io/en/latest/tutorials/) for examples and more information about the usage of `optimap`. The tutorials can be downloaded by clicking on the link in the green box at the top of each tutorial page.
+
+`optimap` is developed by members of the [Cardiac Vision Laboratory](https://cardiacvision.ucsf.edu) at the [University of California, San Franicsco](https://www.ucsf.edu). It is open-source, freely available, and relies on open-source packages such as NumPy, SciPy, Matplotlib and OpenCV.
 
 ## Links
 
