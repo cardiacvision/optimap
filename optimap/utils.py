@@ -135,7 +135,7 @@ def print_properties(array: np.ndarray):
     print(f"datatype of array: {array.dtype}")
     print(f"minimum value in entire array: {np.nanmin(array)}")
     print(f"maximum value in entire array: {np.nanmax(array)}")
-    if nans := np.sum(np.isnan(array)) > 0:
+    if (nans := np.sum(np.isnan(array))) > 0:
         print(f"number of NaNs in array: {nans}")
     print_bar(force=True)
 
