@@ -13,6 +13,7 @@ __all__ = [
 import functools
 import urllib.parse
 import warnings
+from pathlib import Path
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -215,11 +216,11 @@ def interactive_backend(func):
     return wrapper
 
 @deprecated("Use download_example_data instead")
-def retrieve_example_data(name, directory="./example_data", silent=False):
+def retrieve_example_data(name, directory="./optimap_example_data", silent=False):
     return download_example_data(name, directory=directory, silent=silent)
 
 
-def download_example_data(name, directory="./example_data", silent=False):
+def download_example_data(name, directory="./optimap_example_data", silent=False):
     """Download example data if not already present.
 
     Parameters
@@ -255,13 +256,20 @@ def download_example_data(name, directory="./example_data", silent=False):
     # We use .webm as dummy extension to upload the files, and rename them after download.
     url = f"https://cardiacvision.ucsf.edu/sites/g/files/tkssra6821/f/{remote_path}_.webm"
 
+    is_zip = Path(name).suffix == ".zip"
     path = pooch.retrieve(
         url=url,
         known_hash=known_hash,
         fname=name,
         path=directory,
+        processor=pooch.Unzip(extract_dir=Path(name).stem) if is_zip else None,
     )
 
     if silent:
         pooch.get_logger().setLevel(silent)
+
+    if is_zip:
+        path = Path(path[0]).parent
+    else:
+        path = Path(path)
     return path

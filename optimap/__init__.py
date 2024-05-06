@@ -36,7 +36,7 @@ from .trace import (
     show_positions,
     show_traces,
 )
-from .utils import is_verbose, print_bar, print_properties, set_verbose
+from .utils import is_verbose, print_bar, print_properties, set_verbose, download_example_data
 from .video import (
     export_video,
     load_metadata,
@@ -103,6 +103,7 @@ __all__ = [
     "compute_phase",
     "compute_activation_map",
 
+    "download_example_data",
     "set_verbose",
     "is_verbose",
     "print_bar",
