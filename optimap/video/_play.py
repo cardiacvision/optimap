@@ -181,10 +181,12 @@ def show_videos(videos, skip_frame=1, titles=None, cmaps="gray", vmins=None, vma
     n = len(videos)
     nt = len(videos[0])
     for i in range(n):
+        if videos[i].ndim < 3 or videos[i].ndim > 4:
+            msg = f"Video {i} is not a video, it has shape {videos[i].shape}! Use show_image or show_traces instead."
+            raise ValueError(msg)
         if len(videos[i]) < nt:
             msg = "videos have to be same length!"
             raise ValueError(msg)
-        videos[i] = videos[i]
 
     if titles is None:
         titles = [f"Video {i}" for i in range(n)]
