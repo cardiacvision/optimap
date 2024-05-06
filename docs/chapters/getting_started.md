@@ -119,8 +119,10 @@ optimap uses [Matplotlib](https://matplotlib.org/) for plotting. The following f
 
 ```{eval-rst}
 .. autosummary::
-   optimap.video.play
-   optimap.video.play2
+   optimap.video.show_video
+   optimap.video.show_videos
+   optimap.video.show_video_pair
+   optimap.video.show_video_overlay
    optimap.trace.select_positions
    optimap.trace.select_traces
    optimap.trace.compare_traces
