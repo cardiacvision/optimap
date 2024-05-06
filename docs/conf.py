@@ -124,7 +124,7 @@ intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "scipy": ("https://docs.scipy.org/doc/scipy/", None),
     "skimage": ("https://scikit-image.org/docs/stable/", None),
-    # "monochrome": ("https://monochrome.readthedocs.io/en/latest/", None),  # TODO: fix
+    "monochrome": ("https://monochrome.readthedocs.io/stable/", None),
 }
 
 # Add any paths that contain templates here, relative to this directory.
