@@ -181,9 +181,9 @@ def temporal_difference(array: np.ndarray, n: int, fill_value: float = 0, center
     Computes temporal intensity changes in the videos or traces between frames at time :math:`t` and :math:`t - \Delta t`:
 
     .. math::
-        \\text{signal}_{\\text{diff}}(t) = \\text{signal}(t) - \\text{signal}(t - \Delta t)
+        \\text{signal}_{\\text{diff}}(t) = \\text{signal}(t) - \\text{signal}(t - \\Delta t)
 
-    where :math:`\Delta t` is the time difference between frames (usually set to :math:`\Delta t = 1-5` frames).
+    where :math:`\\Delta t` is the time difference between frames (usually set to :math:`\\Delta t = 1-5` frames).
 
     The resulting signal is padded with `fill_value` to keep the original shape. If `center` is set to `True`, the padding is centered around the signal, otherwise it is added to the beginning.
 
