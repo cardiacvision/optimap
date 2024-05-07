@@ -83,7 +83,7 @@ __all__ = [
     "show_videos",
     "show_video",
     "show_video_pair",
-    "show_video_overlay"
+    "show_video_overlay",
 
     "rotate_left",
     "rotate_right",

@@ -46,6 +46,7 @@ from .video import (
     show_video,
     show_video_pair,
     show_videos,
+    show_video_overlay,
 )
 from .video import (
     play as play_video,
@@ -81,6 +82,7 @@ __all__ = [
     "show_video",
     "show_video_pair",
     "show_videos",
+    "show_video_overlay",
 
     "save_image",
     "save_image_sequence",

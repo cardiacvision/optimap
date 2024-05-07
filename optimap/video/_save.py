@@ -29,7 +29,7 @@ def save_image_sequence(directory: Union[str, Path],
 
             video = np.random.rand(100, 100, 100)
             om.save_image_sequence("my_folder", video, filepattern="frame_{:03d}", format=".png")
-        
+
     Will create a folder ``my_folder`` and save the images as ``my_folder/frame_000.png``, ``my_folder/frame_001.png``, etc.
 
     Parameters
@@ -99,7 +99,7 @@ def save_tiff(filename, video, photometric="minisblack", **kwargs):
         warnings.warn("The order of arguments for optimap.save_video() has changed. "
                       "Please use save_video(filename, video) instead of save_video(video, filename).",
                       DeprecationWarning)
-    
+
     filename = Path(filename)
     if filename.suffix.lower() not in [".tif, .tiff"]:
         filename = filename.with_suffix(".tiff")

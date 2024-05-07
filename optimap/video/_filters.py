@@ -197,7 +197,7 @@ def temporal_difference(array: np.ndarray, n: int, fill_value: float = 0, center
         Value to fill the padded frames with, by default 0
     center : bool, optional
         If True, the padding is centered around the signal, by default False
-        
+
 
     Returns
     -------
@@ -206,7 +206,7 @@ def temporal_difference(array: np.ndarray, n: int, fill_value: float = 0, center
     """
     if not (np.issubdtype(array.dtype, np.floating) or np.issubdtype(array.dtype, np.complexfloating)):
         array = array.astype(np.float32)
-    
+
     diff = array[n:] - array[:-n]
     if center:
         padding = ((n - n//2, n//2),)

@@ -37,7 +37,7 @@ def play_with_overlay(*args, **kwargs):
 def show_video(video, skip_frame=1, title="", vmin=None, vmax=None, cmap="gray", interval=10, **kwargs):
     """Simple video player based on matplotlib's animate function.
 
-    See :py:func:`optimap.video.play2` for a player for two videos side-by-side, and :py:func:`optimap.video.playn`
+    See :py:func:`optimap.video.show_video_pair` for a player for two videos side-by-side, and :py:func:`optimap.video.show_videos`
     for a player for `n` videos side-by-side.
 
     .. note::
@@ -150,6 +150,7 @@ def show_video_pair(
                  vmaxs=vmaxs,
                  interval=interval,
                  **kwargs)
+
 
 @interactive_backend
 def show_videos(videos, skip_frame=1, titles=None, cmaps="gray", vmins=None, vmaxs=None, interval=10, **kwargs):

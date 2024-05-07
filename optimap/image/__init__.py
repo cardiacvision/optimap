@@ -34,6 +34,7 @@ __all__ = [
     "flip_up_down",
     "crop",
     "pad",
+    "normalize",
     "collage",
     "smooth_gaussian",
 
