@@ -1,0 +1,21 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: >-
+  optimap: An open-source library for the processing of
+  fluorescence video data
+message: 'If you use this software, please cite it as below.'
+type: software
+authors:
+  - family-names: Lebert
+    given-names: Jan
+    orcid: 'https://orcid.org/0000-0001-8754-4964'
+  - family-names: Christoph
+    given-names: Jan
+    orcid: 'https://orcid.org/0000-0003-3594-4717'
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.8336455
+url: 'https://github.com/cardiacvision/optimap'
+license: MIT
