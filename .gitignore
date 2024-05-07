@@ -2,6 +2,7 @@ optimap/_version.py
 *.whl
 public
 example_data
+optimap_example_data
 .jupyter_cache
 jupyter_execute
 
