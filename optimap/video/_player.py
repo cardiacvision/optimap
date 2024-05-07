@@ -139,7 +139,7 @@ class InteractivePlayer(FuncAnimation):
         if self.i >= self.max:
             self.i = self.min
         elif self.i < self.min:
-            self.i = self.max
+            self.i = self.max - 1
         self.func(self.i)
         self.slider.set_val(self.i)
         self.fig.canvas.draw_idle()
