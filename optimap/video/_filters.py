@@ -23,7 +23,7 @@ def normalize(array: np.ndarray, ymin=0, ymax=None, vmin=None, vmax=None, dtype=
         import optimap as om
         import numpy as np
 
-        filepath = om.download_example_data("Example_01_Sinus.npy")
+        filepath = om.download_example_data("Sinus_Rabbit_1.npy")
         video = om.load_video(filepath)
 
         # normalize video to interval [0, 1] using the minimum and maximum values of the video
