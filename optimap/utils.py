@@ -273,3 +273,29 @@ def download_example_data(name, directory="./optimap_example_data", silent=False
     else:
         path = Path(path)
     return path
+
+
+def jupyter_render_animation(f, mp4_filename=None, save_args={}):
+    """Helper function for our documentation to render animations in Jupyter notebooks."""
+    from IPython import get_ipython
+    from IPython.display import HTML, Video
+
+    ipython = get_ipython()
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        
+        disable_interactive_backend_switching()
+        plt.switch_backend('Agg')
+        ani = f()
+        ani.repeat = True
+        ipython.run_line_magic("matplotlib", "inline")
+        enable_interactive_backend_switching()
+
+        if mp4_filename is None:
+            vid = HTML(ani.to_html5_video(embed_limit=2**128))
+            plt.close('all')
+        else:
+            ani.save(mp4_filename, **save_args)
+            plt.close('all')
+            vid = Video(filename=mp4_filename, embed=True, html_attributes="controls autoplay loop")
+    return vid
