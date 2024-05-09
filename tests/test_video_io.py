@@ -173,11 +173,11 @@ def test_export_video_overlay(tmpdir):
 
 
 @pytest.mark.skipif(skvideo._HAS_FFMPEG == 0, reason="ffmpeg not installed")
-def test_export_video_collage(tmpdir):
+def test_export_videos(tmpdir):
     videos = [np.random.random((10, 4, 4)).astype(np.float32) for _ in range(4)]
     filename = Path(tmpdir / "test.mp4")
 
-    om.video.export_video_collage(filename, videos, vmins=0, vmaxs=1, padding=10, ncols=2, padding_color="white")
+    om.video.export_videos(filename, videos, vmins=0, vmaxs=1, padding=10, ncols=2, padding_color="white")
     assert filename.is_file() and filename.stat().st_size > 0
     assert mimetypes.guess_type(filename)[0] == "video/mp4"
 

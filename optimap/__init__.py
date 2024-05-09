@@ -39,6 +39,7 @@ from .trace import (
 from .utils import is_verbose, print_bar, print_properties, set_verbose, download_example_data
 from .video import (
     export_video,
+    export_videos,
     load_metadata,
     load_video,
     save_image_sequence,
@@ -89,6 +90,7 @@ __all__ = [
     "save_mask",
     "save_video",
     "export_video",
+    "export_videos",
 
     "extract_traces",
     "compare_traces",

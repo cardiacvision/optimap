@@ -131,12 +131,13 @@ def motion_compensate(
     postsmooth=None,
     method=None,
 ):
-    """Typical motion compensation pipeline for a optical mapping video. See :py:func:`contrast_enhancement`
-    and :py:func:`estimate_displacements` for details.
+    """Typical motion compensation pipeline for a optical mapping video.
 
     First, the video is smoothed in space and time using a Gaussian kernel. Then, local contrast is enhanced to
     remove fluorescence signal. Finally, optical flow is estimated between every frame and a reference frame,
     and the video is warped to the reference frame using the estimated optical flow.
+
+    See :py:func:`motion.contrast_enhancement` and :py:func:`motion.estimate_displacements` for further details.
 
     Parameters
     ----------

@@ -12,6 +12,7 @@ from ._edit import (
 from ._export import (
     alpha_blend_videos,
     export_video,
+    export_videos,
     export_video_collage,
     export_video_with_overlay,
     get_default_ffmpeg_encoder,
@@ -71,6 +72,7 @@ __all__ = [
     "save_tiff_folder",
 
     "export_video",
+    "export_videos",
     "export_video_with_overlay",
     "export_video_collage",
 

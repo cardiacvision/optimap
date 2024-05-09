@@ -13,6 +13,7 @@ from scipy.special import comb
 from tqdm import tqdm
 
 from ..image import collage as collage_images
+from ..utils import deprecated
 
 FFMEG_DEFAULTS = {
     "libx264": {
@@ -163,6 +164,9 @@ def export_video(
     if ffmpeg_encoder is None:
         ffmpeg_encoder = DEFAULT_FFMPEG_ENCODER
 
+    if isinstance(video, np.ndarray) and (video.ndim < 3 or video.ndim > 4):
+        raise ValueError(f"videos has invalid shape {video.shape}, expected (T, X, Y) or (T, X, Y, C)")
+
     if isinstance(cmap, str):
         cmap = plt.get_cmap(cmap)
     norm = Normalize(vmin=vmin, vmax=vmax, clip=True)
@@ -194,7 +198,7 @@ def export_video(
     print(f"video exported to {filename}")
 
 
-def export_video_collage(
+def export_videos(
         filename: Union[str, Path],
         videos: Union[np.ndarray, List[np.ndarray]],
         ncols: int = 6,
@@ -228,7 +232,7 @@ def export_video_collage(
         ]
 
         cmaps = ["gray", "viridis", "plasma", "inferno"]
-        om.export_video_collage("collage.mp4", videos, ncols=2, padding=10,
+        om.export_videos("collage.mp4", videos, ncols=2, padding=10,
                                 padding_color="white", cmaps=cmaps)
 
     Parameters
@@ -263,12 +267,19 @@ def export_video_collage(
     """
     if isinstance(videos, (str, os.PathLike)):
         filename, videos = videos, filename
-        warnings.warn("WARNING: The order of arguments for optimap.export_video_collage() has changed. "
-                      "Please use export_video_collage(filename, videos, ...) instead of "
-                      "export_video_collage(videos, filename, ...).",
+        warnings.warn("WARNING: The order of arguments for optimap.export_videos() has changed. "
+                      "Please use export_videos(filename, videos, ...) instead of "
+                      "export_videos(videos, filename, ...).",
                       DeprecationWarning)
     if ffmpeg_encoder is None:
         ffmpeg_encoder = DEFAULT_FFMPEG_ENCODER
+
+    if isinstance(videos, np.ndarray) and (videos.ndim < 3 or videos.ndim > 4):
+        raise ValueError(f"videos has invalid shape {videos.shape}, expected (N, T, X, Y) or (N, T, X, Y, C)")
+    else:
+        for video in videos:
+            if video.ndim < 3 or video.ndim > 4:
+                raise ValueError(f"videos has invalid shape {video.shape}, expected (T, X, Y) or (T, X, Y, C)")
 
     Nt = len(videos[0])
     for video in videos[1:]:
@@ -310,6 +321,11 @@ def export_video_collage(
         writer.writeFrame(frame)
     writer.close()
     print(f"Video exported to {filename}")
+
+
+@deprecated("Use export_videos() instead")
+def export_video_collage(*args, **kwargs):
+    return export_videos(*args, **kwargs)
 
 
 def smoothstep(x, vmin=0, vmax=1, N=2):

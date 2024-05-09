@@ -265,7 +265,7 @@ def collage(images, ncols=6, padding=0, padding_value=0):
     Creates a numpy array with the images arranged in a grid, with a specified number of images per row.
     Optionally, padding can be added between the images.
 
-    See :func:`export_video_collage` to save a video collage to a video file.
+    See :func:`export_videos` to save a video collage to a video file.
 
     Parameters
     ----------
