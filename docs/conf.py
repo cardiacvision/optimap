@@ -71,13 +71,13 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
     "sphinx_copybutton",
-    "sphinx_codeautolink",
     'sphinxcontrib.bibtex',
     "sphinxcontrib.video",
     "sphinx.ext.viewcode",
     "myst_nb",
     "sphinx_remove_toctrees",
     "sphinx_design",
+    "sphinx_codeautolink",
 ]
 myst_enable_extensions = [
     "dollarmath"
@@ -142,9 +142,10 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'tutorials/converted']
 # a list of builtin themes.
 #
 html_copy_source = True  # needed for download notebook button
-# html_css_files = [
-#     "custom.css",
-# ]
+html_static_path = ["_static"]
+html_css_files = [
+    "custom.css",
+]
 html_title = "optimap"
 html_theme = "furo"
 
