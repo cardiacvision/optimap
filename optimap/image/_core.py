@@ -299,8 +299,8 @@ def collage(images, ncols=6, padding=0, padding_value=0):
         if image.shape != images[0].shape:
             raise ValueError("All images must have the same shape")
 
-    blank_image = np.full((images[0].shape[0], padding) + images[0].shape[2:],
-                          padding_value, dtype=images[0].dtype)
+    pad_array = np.full((images[0].shape[0], padding) + images[0].shape[2:],
+                         padding_value, dtype=images[0].dtype)
 
     collage_rows = []
     current_index = 0
@@ -308,9 +308,13 @@ def collage(images, ncols=6, padding=0, padding_value=0):
         end_index = min(current_index + ncols, len(images))
         row_images = [images[i] for i in range(current_index, end_index)]
 
+        if end_index - current_index < ncols:
+            blank_image = np.full(images[0].shape, padding_value, dtype=images[0].dtype)
+            row_images.extend([blank_image] * (ncols - len(row_images)))
+
         if padding > 0:
             for i in range(len(row_images) - 1):
-                row_images.insert(2 * i + 1, blank_image)
+                row_images.insert(2 * i + 1, pad_array)
 
         collage_rows.append(np.hstack(row_images))
         current_index = end_index

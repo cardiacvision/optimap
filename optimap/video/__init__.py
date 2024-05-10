@@ -74,13 +74,14 @@ __all__ = [
     "export_video",
     "export_videos",
     "export_video_with_overlay",
-    "export_video_collage",
 
     # deprecated
     "play",
     "play2",
     "playn",
     "play_with_overlay",
+    "export_video_collage",
+    
     # new names
     "show_videos",
     "show_video",
