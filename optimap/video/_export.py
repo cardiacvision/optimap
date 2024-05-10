@@ -290,6 +290,11 @@ def export_videos(
         cmaps = plt.get_cmap(cmaps)
     if not isinstance(cmaps, list):
         cmaps = [cmaps] * len(videos)
+    else:
+        for i in range(len(cmaps)):
+            if isinstance(cmaps[i], str):
+                cmaps[i] = plt.get_cmap(cmaps[i])
+
     if not isinstance(vmins, list):
         vmins = [vmins] * len(videos)
     if not isinstance(vmaxs, list):
@@ -455,6 +460,7 @@ def iter_alpha_blend_videos(
             f_base = cmap_base(norm1(f_base))
         if f_overlay.ndim == 2:
             f_overlay = cmap_overlay(norm2(f_overlay))
+        f_alpha = np.clip(f_alpha, 0, 1)
 
         frame = f_base * (1 - f_alpha) + f_overlay * f_alpha
         frame = np.clip(frame, 0, 1)  # sometimes rounding errors lead to values > 1
