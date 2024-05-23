@@ -186,16 +186,17 @@ class InteractivePlayer(FuncAnimation):
         self.i = self.min - self.step
         self.saving = True
         self._save_count = (self.max - self.min) // self.step
-        if hide_buttons:
-            self.ax_player.set_visible(False)
-        if hide_slider:
-            self.ax_slider.set_visible(False)
-        if hide_framecounter:
-            self.suptitle.set_visible(False)
-        super().save(*args, **kwargs)
+        self.ax_player.set_visible(not hide_buttons)
+        self.ax_slider.set_visible(not hide_slider)
+        self.suptitle.set_visible(not hide_framecounter)
 
+        super().save(*args, **kwargs)
+        
         self.saving = False
+        # reset frame generator, it's exhausted now
+        self._iter_gen = self.play
         self._save_count = None
+
         self.ax_player.set_visible(True)
         self.ax_slider.set_visible(True)
         self.suptitle.set_visible(True)
