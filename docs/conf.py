@@ -24,6 +24,7 @@ try:
 except ImportError:
     release = "unknown"
 
+os.environ["TQDM_DISABLE"] = "True"
 
 # -- Convert tutorials -------------------------------------------------------
 # convert notebooks to python files for download
