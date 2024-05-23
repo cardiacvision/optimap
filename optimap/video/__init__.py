@@ -1,5 +1,6 @@
 """Functions for loading, viewing, filtering, saving and exporting videos."""
 
+from ..image import normalize
 from ._edit import (
     crop,
     flip_left_right,
@@ -23,7 +24,6 @@ from ._export import (
 )
 from ._filters import (
     evolve_jitter_filter,
-    normalize,
     normalize_pixelwise,
     normalize_pixelwise_slidingwindow,
     smooth_spatiotemporal,

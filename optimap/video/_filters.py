@@ -5,7 +5,6 @@ from scipy import ndimage
 
 from .. import _cpp
 from ..utils import _print
-from ..image import normalize
 
 
 def normalize_pixelwise(video: np.ndarray, ymin=0, ymax=1):
