@@ -32,6 +32,17 @@ def test_16bit_export(tmpdir):
     assert np.allclose(img, img2)
 
 
+def test_compat_export(tmpdir):
+    img = np.random.rand(100, 100).astype(np.float32)
+    img = (img * 65535).astype(np.uint16)
+
+    fn = tmpdir / "test.png"
+    om.image.save_image(fn, img, compat=True)
+    img2 = om.image.load_image(fn)
+    assert img2.dtype == np.dtype("uint8")
+    assert img2.max() > 100
+
+
 def test_mask_export(tmpdir):
     img = np.random.rand(100, 100).astype(np.float32)
     mask = img > 0.5

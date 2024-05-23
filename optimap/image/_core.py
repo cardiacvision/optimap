@@ -9,6 +9,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy import ndimage
 
 from ..utils import _print
+from ._edit import normalize
 
 
 def show_image(image,
@@ -207,7 +208,7 @@ def save_mask(filename, mask, image=None, **kwargs):
             cv2.imwrite(str(filename), mask, **kwargs)
 
 
-def save_image(filename, image, **kwargs):
+def save_image(filename, image: np.ndarray, compat=False, **kwargs):
     """Export an image to a file. The file format is inferred from the filename extension.
 
     Uses :func:`numpy.save` internally if the file extension is ``.npy`` and :func:`cv2.imwrite` otherwise.
@@ -218,6 +219,8 @@ def save_image(filename, image, **kwargs):
         Path to save image to
     image : np.ndarray
         Image to save
+    compat : bool, optional
+        If True, convert the image to a standard 8-bit format before saving. This can prevent issues where high-bitrate images appear black in some viewers. Defaults to False.
     **kwargs : dict, optional
         passed to :func:`cv2.imwrite`
     """
@@ -232,7 +235,8 @@ def save_image(filename, image, **kwargs):
     if fn.suffix == ".npy":
         np.save(fn, image, **kwargs)
     else:
-        # skimage.io.imsave(filename, image, **kwargs)
+        if compat:
+            image = normalize(image, dtype="uint8")
         cv2.imwrite(str(fn), image, **kwargs)
 
 

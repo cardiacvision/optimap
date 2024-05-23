@@ -9,6 +9,86 @@ MAP_INTERPOLATION = {
     "lanczos": cv2.INTER_LANCZOS4,
 }
 
+def normalize(array: np.ndarray, ymin=0, ymax=None, vmin=None, vmax=None, dtype=np.float32, clip=True):
+    """Normalize an array (video, image, ...) to a specified range and data type.
+
+    By default, the input will be normalized to the interval [0, 1] with type np.float32 based on the minumum and maximum value of the input array.
+
+    If parameters ``vmin`` or ``vmax`` are specified, the normalization is performed using these values and the resulting array will be clipped.
+
+    The parameters ``ymin`` and ``ymax`` specify the minimum and maximum values of the resulting array, by default 0 and 1 if ``dtype`` is a floating point type, or the maximum value of the data type if ``dtype`` is an integer type.
+
+    Examples
+    --------
+    .. code-block:: python
+
+        import optimap as om
+        import numpy as np
+
+        filepath = om.download_example_data("Sinus_Rabbit_1.npy")
+        video = om.load_video(filepath)
+
+        # normalize video to interval [0, 1] using the minimum and maximum values of the video
+        video_normalized = om.video.normalize(video)
+
+        # normalize video to interval [0, 255] by converting the video to uint8
+        video_normalized_uint8 = om.video.normalize(video, ymin=0, ymax=255, dtype=np.uint8)
+
+    Parameters
+    ----------
+    array : ndarray
+        The input array to be normalized.
+    ymin : float, optional
+        Minimum value of the resulting video, by default 0
+    ymax : float, optional
+        Maximum value of the resulting video, by default 1 for floating point arrays, or the maximum value of the data type for integer arrays.
+    vmin : float, optional
+        Minimum value of the input video, by default None
+        If None, the minimum value of the input video is calculated.
+    vmax : float, optional
+        Maximum value of the input video, by default None
+        If None, the maximum value of the input video is calculated.
+    dtype : type, optional
+        Data type of the resulting array, by default np.float32
+    clip : bool, optional
+        If True, the resulting video will be clipped to [``ymin``, ``ymax``], by default True
+        Only applies if ``vmin`` or ``vmax`` are specified.
+
+    Returns
+    -------
+    ndarray
+        Normalized array/video/image.
+    """
+    do_clip = clip and (vmin is not None or vmax is not None)
+    dtype = np.dtype(dtype)
+
+    if ymax is None:
+        if dtype.kind in ["u", "i"]:
+            ymax = np.iinfo(dtype).max
+        else:
+            ymax = 1.0
+
+    if not (np.issubdtype(array.dtype, np.floating)
+            or np.issubdtype(array.dtype, np.complexfloating)):
+        array = array.astype(np.float32)
+
+    if vmin is None:
+        vmin = np.nanmin(array)
+    if vmax is None:
+        vmax = np.nanmax(array)
+
+    eps = np.finfo(array.dtype).eps
+    array = (array - vmin) / (vmax - vmin + eps) * (ymax - ymin) + ymin
+
+    if do_clip:
+        array = np.clip(array, ymin, ymax)
+
+    if dtype == array.dtype:
+        return array
+    else:
+        return array.astype(dtype)
+
+
 def resize(image, shape=None, scale=None, interpolation="cubic"):
     """Resize image.
 
