@@ -81,7 +81,8 @@ extensions = [
     "sphinx_codeautolink",
 ]
 myst_enable_extensions = [
-    "dollarmath"
+    "dollarmath",
+    "colon_fence"
 ]
 
 # API settings
