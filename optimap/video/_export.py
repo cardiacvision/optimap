@@ -35,6 +35,21 @@ FFMEG_DEFAULTS = {
 DEFAULT_FFMPEG_ENCODER = "libx264"
 
 
+def _fix_ffmpeg_location():
+    """Make skvideo use static ffmpeg if system ffmpeg not found."""
+    if not skvideo._HAS_FFMPEG:
+        # ffmpeg not found, download static binary for it
+        ffmpeg, _  = static_ffmpeg.run.get_or_fetch_platform_executables_else_raise()
+        skvideo.setFFmpegPath(str(Path(ffmpeg).parent))
+        assert skvideo._HAS_FFMPEG
+
+        # fix global variables
+        skvideo.io.ffmpeg._HAS_FFMPEG = skvideo._HAS_FFMPEG
+        skvideo.io.ffmpeg._FFMPEG_PATH = skvideo._FFMPEG_PATH
+        skvideo.io.ffmpeg._FFMPEG_SUPPORTED_DECODERS = skvideo._FFMPEG_SUPPORTED_DECODERS
+        skvideo.io.ffmpeg._FFMPEG_SUPPORTED_ENCODERS = skvideo._FFMPEG_SUPPORTED_ENCODERS
+
+
 def _ffmpeg_defaults(encoder: str = "libx264"):
     if encoder not in FFMEG_DEFAULTS:
         msg = f"ffmpeg encoder {encoder} not supported"
@@ -88,17 +103,7 @@ class FFmpegWriter(skvideo.io.FFmpegWriter):
     """Wrapper around `skvideo.io.FFmpegWriter` which downloads static binaries if ffmpeg is not installed."""
 
     def __init__(self, *args, **kwargs):
-        if not skvideo._HAS_FFMPEG:
-            # ffmpeg not found, download static binary for it
-            ffmpeg, _  = static_ffmpeg.run.get_or_fetch_platform_executables_else_raise()
-            skvideo.setFFmpegPath(str(Path(ffmpeg).parent))
-            assert skvideo._HAS_FFMPEG
-
-            # fix global variables
-            skvideo.io.ffmpeg._HAS_FFMPEG = skvideo._HAS_FFMPEG
-            skvideo.io.ffmpeg._FFMPEG_PATH = skvideo._FFMPEG_PATH
-            skvideo.io.ffmpeg._FFMPEG_SUPPORTED_DECODERS = skvideo._FFMPEG_SUPPORTED_DECODERS
-            skvideo.io.ffmpeg._FFMPEG_SUPPORTED_ENCODERS = skvideo._FFMPEG_SUPPORTED_ENCODERS
+        _fix_ffmpeg_location()
 
         super().__init__(*args, **kwargs)
 

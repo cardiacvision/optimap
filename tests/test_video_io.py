@@ -196,3 +196,13 @@ def test_interactive_player_save(tmpdir):
     plt.close(fig)
     assert fn.exists()
     assert fn.is_file() and fn.stat().st_size > 0
+
+
+@pytest.mark.skipif(skvideo._HAS_FFMPEG == 0, reason="ffmpeg not installed")
+def test_mp4_import(tmpdir):
+    video = np.random.random((100, 4, 6)).astype(np.float32)
+    filename = tmpdir / "test.mp4"
+    om.export_video(filename, video, vmin=0, vmax=1, fps=10)
+
+    video2 = om.load_video(filename, as_grey=True)
+    assert video.shape == video2.shape

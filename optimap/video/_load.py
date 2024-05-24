@@ -4,12 +4,14 @@ from pathlib import Path
 
 import numpy as np
 import skimage.io as sio
+import skvideo.io
 from scipy.io import loadmat
 from tifffile import imread as tifffile_imread
 from tifffile import memmap as tifffile_memmap
 
 from ..utils import _print
 from ._importers import MiCAM05_Importer, MiCAM_ULTIMA_Importer, MultiRecorderImporter
+from ._export import _fix_ffmpeg_location
 
 
 def _natural_sort_path_key(path: Path, _nsre=re.compile("([0-9]+)")):
@@ -147,12 +149,31 @@ def load_SciMedia_MiCAM05_metadata(filename):
     return dat.get_metadata()
 
 def load_SciMedia_MiCAMULTIMA(filename, start_frame=0, frames=None, step=1):
-    dat = MiCAM_ULTIMA_Importer(filename)
-    return dat.load_video(start_frame=start_frame, frames=frames, step=step)
+    importer = MiCAM_ULTIMA_Importer(filename)
+    return importer.load_video(start_frame=start_frame, frames=frames, step=step)
 
 def load_SciMedia_MiCAMULTIMA_metadata(filename):
-    dat = MiCAM_ULTIMA_Importer(filename)
-    return dat.get_metadata()
+    importer = MiCAM_ULTIMA_Importer(filename)
+    return importer.get_metadata()
+
+def load_encoded_video(filename, start_frame=0, end_frame=None, step=1, as_grey=True):
+    _fix_ffmpeg_location()
+    if end_frame is None:
+        num_frames = 0
+    else:
+        num_frames = end_frame
+    try:
+        data = skvideo.io.vread(
+            str(filename),
+            num_frames=num_frames,
+            as_grey=as_grey
+        )
+    except AttributeError as e:
+        raise AttributeError("Error during video load. Make sure you've updated scikit-video using 'pip install --upgrade --no-deps --force-reinstall git+https://github.com/scikit-video/scikit-video.git'") from e
+    data = data[start_frame:end_frame:step]
+    if as_grey:
+        data = data[..., 0]
+    return data
 
 def load_video(path, start_frame=0, frames=None, step=1, use_mmap=False, **kwargs):
     """Loads a video from a file or folder, automatically detecting the file type.
@@ -231,6 +252,8 @@ def load_video(path, start_frame=0, frames=None, step=1, use_mmap=False, **kwarg
         return load_MultiRecorder(path, start_frame=start_frame, frames=frames, step=step, use_mmap=use_mmap, **kwargs)
     elif suffix in [".npy"]:
         return load_numpy(path, start_frame=start_frame, end_frame=end_frame, step=step, use_mmap=use_mmap, **kwargs)
+    elif suffix in [".mp4", ".avi", ".webm", ".mov", ".mkv", ".gif", ".wmv", ".m4v"]:
+        return load_encoded_video(path, start_frame=start_frame, end_frame=end_frame, step=step, **kwargs)
     else:
         msg = f"Unable to find videoloader for file extension {suffix} (for file '{path}')"
         raise ValueError(msg)
