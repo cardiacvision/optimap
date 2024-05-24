@@ -212,7 +212,7 @@ def save_mask(filename, mask, image=None, **kwargs):
 def save_image(filename, image: np.ndarray, compat=False, **kwargs):
     """Save an image to a file. Makes best effort to avoid data precision loss, use {func}`export_image` to export images for publications.
     
-    The file format is inferred from the filename extension.
+    The image data is saved as it is, without any normalization or scaling.
 
     The following file formats and image data types are supported:
     * NumPy: .npy, all data types
@@ -220,6 +220,8 @@ def save_image(filename, image: np.ndarray, compat=False, **kwargs):
     * TIFF: .tif/.tiff, 8-bit unsigned, 16-bit unsigned, 32-bit float, or 64-bit float images
     * JPEG: .jpeg/.jpg, 8-bit unsigned
     * Windows bitmaps: .bmp, 8-bit unsigned
+
+    The file format is inferred from the filename extension.
 
     Uses :func:`numpy.save` internally if the file extension is ``.npy`` and :func:`cv2.imwrite` otherwise.
 
