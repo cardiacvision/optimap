@@ -23,6 +23,7 @@ from .image import (
     load_mask,
     save_image,
     save_mask,
+    export_image,
     show_image,
     show_mask,
 )
@@ -40,6 +41,7 @@ from .utils import is_verbose, print_bar, print_properties, set_verbose, downloa
 from .video import (
     export_video,
     export_videos,
+    export_video_with_overlay,
     load_metadata,
     load_video,
     save_image_sequence,
@@ -86,11 +88,13 @@ __all__ = [
     "show_video_overlay",
 
     "save_image",
+    "export_image",
     "save_image_sequence",
     "save_mask",
     "save_video",
     "export_video",
     "export_videos",
+    "export_video_with_overlay",
 
     "extract_traces",
     "compare_traces",

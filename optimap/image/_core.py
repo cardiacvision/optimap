@@ -4,6 +4,7 @@ from pathlib import Path
 
 import cv2
 import matplotlib.pyplot as plt
+from matplotlib.colors import Normalize
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy import ndimage
@@ -209,7 +210,16 @@ def save_mask(filename, mask, image=None, **kwargs):
 
 
 def save_image(filename, image: np.ndarray, compat=False, **kwargs):
-    """Export an image to a file. The file format is inferred from the filename extension.
+    """Save an image to a file. Makes best effort to avoid data precision loss, use {func}`export_image` to export images for publications.
+    
+    The file format is inferred from the filename extension.
+
+    The following file formats and image data types are supported:
+    * NumPy: .npy, all data types
+    * PNG: .png, 8-bit or 16-bit unsigned per image channel
+    * TIFF: .tif/.tiff, 8-bit unsigned, 16-bit unsigned, 32-bit float, or 64-bit float images
+    * JPEG: .jpeg/.jpg, 8-bit unsigned
+    * Windows bitmaps: .bmp, 8-bit unsigned
 
     Uses :func:`numpy.save` internally if the file extension is ``.npy`` and :func:`cv2.imwrite` otherwise.
 
@@ -238,6 +248,41 @@ def save_image(filename, image: np.ndarray, compat=False, **kwargs):
         if compat:
             image = normalize(image, dtype="uint8")
         cv2.imwrite(str(fn), image, **kwargs)
+
+
+def export_image(filename,
+                 image: np.ndarray,
+                 cmap = "gray",
+                 vmin : float = None,
+                 vmax : float = None):
+    """Export an image to a file for publications, use {func}`save_image` to save an image if it will be reimported later.
+
+    Images will be converted to uint8, colormap will be applied to grayscale images.
+
+    The file format is inferred from the filename extension.
+
+    Parameters
+    ----------
+    filename : str or pathlib.Path
+        Path to save image to
+    image : np.ndarray
+        Image to save HxW or HxWxC
+    cmap : str or matplotlib.colors.Colormap, optional
+        Colormap to use for grayscale images, by default "gray"
+    vmin : float, optional
+        Minimum value for the colormap, by default None
+    vmax : float, optional
+        Maximum value for the colormap, by default None
+    """
+    if isinstance(cmap, str):
+        cmap = plt.get_cmap(cmap)
+    norm = Normalize(vmin=vmin, vmax=vmax, clip=True)
+    if image.ndim == 2:
+        image = cmap(norm(image))
+
+    if image.dtype != np.uint8:
+        image = (image * 255).astype(np.uint8)
+    save_image(filename, image)
 
 
 def smooth_gaussian(image, sigma, **kwargs):

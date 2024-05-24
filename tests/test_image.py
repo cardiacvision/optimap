@@ -1,12 +1,13 @@
 from pathlib import Path
 
 import numpy as np
+import matplotlib.pyplot as plt
 import pytest
 
 import optimap as om
 
 
-def test_image_export(tmpdir):
+def test_image_save(tmpdir):
     img = np.random.rand(100, 100).astype(np.float32)
 
     fn = tmpdir / "test.npy"
@@ -14,8 +15,8 @@ def test_image_export(tmpdir):
     img2 = om.image.load_image(fn)
     assert np.allclose(img, img2)
 
-def test_16bit_export(tmpdir):
-    """Test if 16-bit PNG and TIFF export works."""
+def test_16bit_save(tmpdir):
+    """Test if 16-bit PNG and TIFF save works."""
     img = np.random.rand(100, 100).astype(np.float32)
     img = (img * 65535).astype(np.uint16)
 
@@ -32,7 +33,7 @@ def test_16bit_export(tmpdir):
     assert np.allclose(img, img2)
 
 
-def test_compat_export(tmpdir):
+def test_compat_save(tmpdir):
     img = np.random.rand(100, 100).astype(np.float32)
     img = (img * 65535).astype(np.uint16)
 
@@ -43,7 +44,26 @@ def test_compat_export(tmpdir):
     assert img2.max() > 100
 
 
-def test_mask_export(tmpdir):
+def test_image_export(tmpdir):
+    img = np.random.rand(100, 100).astype(np.float32)
+    
+    fn = tmpdir / "test.png"
+    om.image.export_image(fn, img)
+    img2 = om.image.load_image(fn)
+    assert img2.ndim == 3
+    assert img2.dtype == np.dtype("uint8")
+
+    fn = tmpdir / "test.jpg"
+    om.image.export_image(fn, img, vmin=0.1, vmax=0.9, cmap=plt.get_cmap("viridis"))
+
+    fn = tmpdir / "test.tiff"
+    om.image.export_image(fn, img, vmin=0.1, vmax=0.9, cmap="viridis")
+    img2 = om.image.load_image(fn)
+    assert img2.ndim == 3
+    assert img2.dtype == np.dtype("uint8")
+
+
+def test_mask_save(tmpdir):
     img = np.random.rand(100, 100).astype(np.float32)
     mask = img > 0.5
 
