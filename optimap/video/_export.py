@@ -427,6 +427,9 @@ def iter_alpha_blend_videos(
             alpha = overlay[..., 3, np.newaxis]
         elif overlay.ndim == 3:
             alpha = overlay[..., np.newaxis]
+    elif isinstance(alpha, (int, float)):
+        alpha = np.full(base.shape[1, 2], alpha)[np.newaxis, :, :, np.newaxis]
+        alpha = np.repeat(alpha, base.shape[0], axis=0)
     else:
         if alpha.ndim == 2:
             alpha = alpha[np.newaxis, :, :, np.newaxis]
@@ -434,10 +437,16 @@ def iter_alpha_blend_videos(
         elif alpha.ndim == 3:
             alpha = alpha[..., np.newaxis]
 
-    if overlay.ndim == 4:
-        alpha[np.isnan(overlay[..., 3])] = 0
+    if overlay.ndim == 4 and overlay.shape[-1] == 4:
+        nans = np.isnan(overlay[..., 3])
+        if np.any(nans):
+            alpha = np.copy(alpha)
+            alpha[nans] = 0
     else:
-        alpha[np.isnan(overlay)] = 0
+        nans = np.isnan(overlay)
+        if np.any(nans):
+            alpha = np.copy(alpha)
+            alpha[nans] = 0
 
     if isinstance(cmap_base, str):
         cmap_base = plt.get_cmap(cmap_base)
