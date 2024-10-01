@@ -494,22 +494,47 @@ namespace xt
             using size_type = std::size_t;
             using value_type = xtl::promote_type_t<typename std::decay_t<CT>::value_type...>;
 
-            template <class S>
-            inline value_type access(const tuple_type& t, size_type axis, S index) const
+            template <class It>
+            inline value_type access(const tuple_type& t, size_type axis, It first, It last) const
             {
-                auto match = [&index, axis](auto& arr)
+                // trim off extra indices if provided to match behavior of containers
+                auto dim_offset = std::distance(first, last) - std::get<0>(t).dimension();
+                size_t axis_dim = *(first + axis + dim_offset);
+                auto match = [&](auto& arr)
                 {
-                    if (index[axis] >= arr.shape()[axis])
+                    if (axis_dim >= arr.shape()[axis])
                     {
-                        index[axis] -= arr.shape()[axis];
+                        axis_dim -= arr.shape()[axis];
                         return false;
                     }
                     return true;
                 };
 
-                auto get = [&index](auto& arr)
+                auto get = [&](auto& arr)
                 {
-                    return arr[index];
+                    size_t offset = 0;
+                    const size_t end = arr.dimension();
+                    for (size_t i = 0; i < end; i++)
+                    {
+                        const auto& shape = arr.shape();
+                        const size_t stride = std::accumulate(
+                            shape.begin() + i + 1,
+                            shape.end(),
+                            1,
+                            std::multiplies<size_t>()
+                        );
+                        if (i == axis)
+                        {
+                            offset += axis_dim * stride;
+                        }
+                        else
+                        {
+                            const auto len = (*(first + i + dim_offset));
+                            offset += len * stride;
+                        }
+                    }
+                    const auto element = arr.begin() + offset;
+                    return *element;
                 };
 
                 size_type i = 0;
@@ -533,22 +558,40 @@ namespace xt
             using size_type = std::size_t;
             using value_type = xtl::promote_type_t<typename std::decay_t<CT>::value_type...>;
 
-            template <class S>
-            inline value_type access(const tuple_type& t, size_type axis, S index) const
+            template <class It>
+            inline value_type access(const tuple_type& t, size_type axis, It first, It) const
             {
-                auto get_item = [&index](auto& arr)
+                auto get_item = [&](auto& arr)
                 {
-                    return arr[index];
+                    size_t offset = 0;
+                    const size_t end = arr.dimension();
+                    size_t after_axis = 0;
+                    for (size_t i = 0; i < end; i++)
+                    {
+                        if (i == axis)
+                        {
+                            after_axis = 1;
+                        }
+                        const auto& shape = arr.shape();
+                        const size_t stride = std::accumulate(
+                            shape.begin() + i + 1,
+                            shape.end(),
+                            1,
+                            std::multiplies<size_t>()
+                        );
+                        const auto len = (*(first + i + after_axis));
+                        offset += len * stride;
+                    }
+                    const auto element = arr.begin() + offset;
+                    return *element;
                 };
-                size_type i = index[axis];
-                index.erase(index.begin() + std::ptrdiff_t(axis));
+                size_type i = *(first + axis);
                 return apply<value_type>(i, get_item, t);
             }
         };
 
         template <class... CT>
-        class vstack_access : private concatenate_access<CT...>,
-                              private stack_access<CT...>
+        class vstack_access
         {
         public:
 
@@ -556,25 +599,27 @@ namespace xt
             using size_type = std::size_t;
             using value_type = xtl::promote_type_t<typename std::decay_t<CT>::value_type...>;
 
-            using concatenate_base = concatenate_access<CT...>;
-            using stack_base = stack_access<CT...>;
-
-            template <class S>
-            inline value_type access(const tuple_type& t, size_type axis, S index) const
+            template <class It>
+            inline value_type access(const tuple_type& t, size_type axis, It first, It last) const
             {
                 if (std::get<0>(t).dimension() == 1)
                 {
-                    return stack_base::access(t, axis, index);
+                    return stack.access(t, axis, first, last);
                 }
                 else
                 {
-                    return concatenate_base::access(t, axis, index);
+                    return concatonate.access(t, axis, first, last);
                 }
             }
+
+        private:
+
+            concatenate_access<CT...> concatonate;
+            stack_access<CT...> stack;
         };
 
         template <template <class...> class F, class... CT>
-        class concatenate_invoker : private F<CT...>
+        class concatenate_invoker
         {
         public:
 
@@ -592,18 +637,19 @@ namespace xt
             inline value_type operator()(Args... args) const
             {
                 // TODO: avoid memory allocation
-                return this->access(m_t, m_axis, xindex({static_cast<size_type>(args)...}));
+                xindex index({static_cast<size_type>(args)...});
+                return access_method.access(m_t, m_axis, index.begin(), index.end());
             }
 
             template <class It>
             inline value_type element(It first, It last) const
             {
-                // TODO: avoid memory allocation
-                return this->access(m_t, m_axis, xindex(first, last));
+                return access_method.access(m_t, m_axis, first, last);
             }
 
         private:
 
+            F<CT...> access_method;
             tuple_type m_t;
             size_type m_axis;
         };
@@ -772,13 +818,13 @@ namespace xt
      * @param axis axis along which elements are concatenated
      * @returns xgenerator evaluating to concatenated elements
      *
-     * \code{.cpp}
+     * @code{.cpp}
      * xt::xarray<double> a = {{1, 2, 3}};
      * xt::xarray<double> b = {{2, 3, 4}};
      * xt::xarray<double> c = xt::concatenate(xt::xtuple(a, b)); // => {{1, 2, 3},
      *                                                           //     {2, 3, 4}}
      * xt::xarray<double> d = xt::concatenate(xt::xtuple(a, b), 1); // => {{1, 2, 3, 2, 3, 4}}
-     * \endcode
+     * @endcode
      */
     template <class... CT>
     inline auto concatenate(std::tuple<CT...>&& t, std::size_t axis = 0)
@@ -823,7 +869,7 @@ namespace xt
      * @param axis axis along which elements are stacked
      * @returns xgenerator evaluating to stacked elements
      *
-     * \code{.cpp}
+     * @code{.cpp}
      * xt::xarray<double> a = {1, 2, 3};
      * xt::xarray<double> b = {5, 6, 7};
      * xt::xarray<double> s = xt::stack(xt::xtuple(a, b)); // => {{1, 2, 3},
@@ -831,7 +877,7 @@ namespace xt
      * xt::xarray<double> t = xt::stack(xt::xtuple(a, b), 1); // => {{1, 5},
      *                                                        //     {2, 6},
      *                                                        //     {3, 7}}
-     * \endcode
+     * @endcode
      */
     template <class... CT>
     inline auto stack(std::tuple<CT...>&& t, std::size_t axis = 0)
@@ -849,7 +895,7 @@ namespace xt
     /**
      * @brief Stack xexpressions in sequence horizontally (column wise).
      * This is equivalent to concatenation along the second axis, except for 1-D
-     * xexpressions where it concatenate along the firts axis.
+     * xexpressions where it concatenate along the first axis.
      *
      * @param t \ref xtuple of xexpressions to stack
      * @return xgenerator evaluating to stacked elements
@@ -1093,12 +1139,12 @@ namespace xt
      *               from which the diagonals should be taken.
      * @returns xexpression with values of the diagonal
      *
-     * \code{.cpp}
+     * @code{.cpp}
      * xt::xarray<double> a = {{1, 2, 3},
      *                         {4, 5, 6}
      *                         {7, 8, 9}};
      * auto b = xt::diagonal(a); // => {1, 5, 9}
-     * \endcode
+     * @endcode
      */
     template <class E>
     inline auto diagonal(E&& arr, int offset = 0, std::size_t axis_1 = 0, std::size_t axis_2 = 1)
@@ -1109,7 +1155,7 @@ namespace xt
         auto shape = arr.shape();
         auto dimension = arr.dimension();
 
-        // The following shape calculation code is an almost verbatim adaptation of numpy:
+        // The following shape calculation code is an almost verbatim adaptation of NumPy:
         // https://github.com/numpy/numpy/blob/2aabeafb97bea4e1bfa29d946fbf31e1104e7ae0/numpy/core/src/multiarray/item_selection.c#L1799
         auto ret_shape = xtl::make_sequence<shape_type>(dimension - 1, 0);
         int dim_1 = static_cast<int>(shape[axis_1]);
@@ -1145,12 +1191,12 @@ namespace xt
      * @param k the offset of the considered diagonal
      * @returns xexpression function with shape n x n and arr on the diagonal
      *
-     * \code{.cpp}
+     * @code{.cpp}
      * xt::xarray<double> a = {1, 5, 9};
      * auto b = xt::diag(a); // => {{1, 0, 0},
      *                       //     {0, 5, 0},
      *                       //     {0, 0, 9}}
-     * \endcode
+     * @endcode
      */
     template <class E>
     inline auto diag(E&& arr, int k = 0)

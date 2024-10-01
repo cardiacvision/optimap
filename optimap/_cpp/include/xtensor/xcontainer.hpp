@@ -472,16 +472,16 @@ namespace xt
      *
      * @warning This method is meant for performance, for expressions with a dynamic
      * number of dimensions (i.e. not known at compile time). Since it may have
-     * undefined behavior (see parameters), operator() should be prefered whenever
+     * undefined behavior (see parameters), operator() should be preferred whenever
      * it is possible.
      * @warning This method is NOT compatible with broadcasting, meaning the following
      * code has undefined behavior:
-     * \code{.cpp}
+     * @code{.cpp}
      * xt::xarray<double> a = {{0, 1}, {2, 3}};
      * xt::xarray<double> b = {0, 1};
      * auto fd = a + b;
      * double res = fd.uncheked(0, 1);
-     * \endcode
+     * @endcode
      */
     template <class D>
     template <class... Args>
@@ -502,16 +502,16 @@ namespace xt
      *
      * @warning This method is meant for performance, for expressions with a dynamic
      * number of dimensions (i.e. not known at compile time). Since it may have
-     * undefined behavior (see parameters), operator() should be prefered whenever
+     * undefined behavior (see parameters), operator() should be preferred whenever
      * it is possible.
      * @warning This method is NOT compatible with broadcasting, meaning the following
      * code has undefined behavior:
-     * \code{.cpp}
+     * @code{.cpp}
      * xt::xarray<double> a = {{0, 1}, {2, 3}};
      * xt::xarray<double> b = {0, 1};
      * auto fd = a + b;
      * double res = fd.uncheked(0, 1);
-     * \endcode
+     * @endcode
      */
     template <class D>
     template <class... Args>
@@ -662,7 +662,7 @@ namespace xt
     }
 
     /**
-     * Returns a reference to the element at the specified position in the containter
+     * Returns a reference to the element at the specified position in the container
      * storage (as if it was one dimensional).
      * @param i index specifying the position in the storage.
      * Must be smaller than the number of elements in the container.
@@ -675,7 +675,7 @@ namespace xt
     }
 
     /**
-     * Returns a constant reference to the element at the specified position in the containter
+     * Returns a constant reference to the element at the specified position in the container
      * storage (as if it was one dimensional).
      * @param i index specifying the position in the storage.
      * Must be smaller than the number of elements in the container.
@@ -1080,11 +1080,11 @@ namespace xt
      * Reshapes the container and keeps old elements. The `shape` argument can have one of its value
      * equal to `-1`, in this case the value is inferred from the number of elements in the container
      * and the remaining values in the `shape`.
-     * \code{.cpp}
+     * @code{.cpp}
      * xt::xarray<int> a = { 1, 2, 3, 4, 5, 6, 7, 8 };
      * a.reshape({-1, 4});
      * //a.shape() is {2, 4}
-     * \endcode
+     * @endcode
      * @param shape the new shape (has to have same number of elements as the original container)
      * @param layout the layout to compute the strides (defaults to static layout of the container,
      *               or for a container with dynamic layout to XTENSOR_DEFAULT_LAYOUT)

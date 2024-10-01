@@ -1059,7 +1059,7 @@ namespace xt
      *
      * This function can be used to easily create performant xfunctions from lambdas:
      *
-     * \code{cpp}
+     * @code{cpp}
      * template <class E1>
      * inline auto square(E1&& e1) noexcept
      * {
@@ -1068,7 +1068,7 @@ namespace xt
      *     };
      *     return make_lambda_xfunction(std::move(fnct), std::forward<E1>(e1));
      * }
-     * \endcode
+     * @endcode
      *
      * Lambda function allow the reusal of a single arguments in multiple places (otherwise
      * only correctly possible when using xshared_expressions). ``auto`` lambda functions are
@@ -1757,8 +1757,8 @@ namespace xt
                 auto d = math::abs(internal_type(a) - internal_type(b));
                 return d <= m_atol
                        || d <= m_rtol
-                                   * double((std::max
-                                   )(math::abs(internal_type(a)), math::abs(internal_type(b))));
+                                   * double((std::max)(math::abs(internal_type(a)), math::abs(internal_type(b)))
+                                   );
             }
 
         private:
@@ -3088,6 +3088,88 @@ namespace xt
         return f;
     }
 
+    namespace detail
+    {
+        template <class E1, class E2>
+        auto calculate_discontinuity(E1&& discontinuity, E2&&)
+        {
+            return discontinuity;
+        }
+
+        template <class E2>
+        auto calculate_discontinuity(xt::placeholders::xtuph, E2&& period)
+        {
+            return 0.5 * period;
+        }
+
+        template <class E1, class E2>
+        auto
+        calculate_interval(E2&& period, typename std::enable_if<std::is_integral<E1>::value, E1>::type* = 0)
+        {
+            auto interval_high = 0.5 * period;
+            uint64_t remainder = static_cast<uint64_t>(period) % 2;
+            auto boundary_ambiguous = (remainder == 0);
+            return std::make_tuple(interval_high, boundary_ambiguous);
+        }
+
+        template <class E1, class E2>
+        auto
+        calculate_interval(E2&& period, typename std::enable_if<std::is_floating_point<E1>::value, E1>::type* = 0)
+        {
+            auto interval_high = 0.5 * period;
+            auto boundary_ambiguous = true;
+            return std::make_tuple(interval_high, boundary_ambiguous);
+        }
+    }
+
+    /**
+     * @ingroup basic_functions
+     * @brief Unwrap by taking the complement of large deltas with respect to the period
+     * @details https://numpy.org/doc/stable/reference/generated/numpy.unwrap.html
+     * @param p Input array.
+     * @param discontinuity
+     *     Maximum discontinuity between values, default is `period / 2`.
+     *     Values below `period / 2` are treated as if they were `period / 2`.
+     *     To have an effect different from the default, use `discontinuity > period / 2`.
+     * @param axis Axis along which unwrap will operate, default: the last axis.
+     * @param period Size of the range over which the input wraps. Default: \f$ 2 \pi \f$.
+     */
+
+    template <class E1, class E2 = xt::placeholders::xtuph, class E3 = double>
+    inline auto unwrap(
+        E1&& p,
+        E2 discontinuity = xnone(),
+        std::ptrdiff_t axis = -1,
+        E3 period = 2.0 * xt::numeric_constants<double>::PI
+    )
+    {
+        auto discont = detail::calculate_discontinuity(discontinuity, period);
+        using value_type = typename std::decay_t<E1>::value_type;
+        std::size_t saxis = normalize_axis(p.dimension(), axis);
+        auto dd = diff(p, 1, axis);
+        xstrided_slice_vector slice(p.dimension(), all());
+        slice[saxis] = range(1, xnone());
+        auto interval_tuple = detail::calculate_interval<value_type>(period);
+        auto interval_high = std::get<0>(interval_tuple);
+        auto boundary_ambiguous = std::get<1>(interval_tuple);
+        auto interval_low = -interval_high;
+        auto ddmod = xt::eval(xt::fmod(xt::fmod(dd - interval_low, period) + period, period) + interval_low);
+        if (boundary_ambiguous)
+        {
+            // for `mask = (abs(dd) == period/2)`, the above line made
+            //`ddmod[mask] == -period/2`. correct these such that
+            //`ddmod[mask] == sign(dd[mask])*period/2`.
+            auto boolmap = xt::equal(ddmod, interval_low) && (xt::greater(dd, 0.0));
+            ddmod = xt::where(boolmap, interval_high, ddmod);
+        }
+        auto ph_correct = xt::eval(ddmod - dd);
+        ph_correct = xt::where(xt::abs(dd) < discont, 0.0, ph_correct);
+        E1 up(p);
+        strided_view(up, slice) = strided_view(p, slice)
+                                  + xt::cumsum(ph_correct, static_cast<std::ptrdiff_t>(saxis));
+        return up;
+    }
+
     /**
      * @ingroup basic_functions
      * @brief Returns the one-dimensional piecewise linear interpolant to a function with given discrete data
@@ -3175,9 +3257,9 @@ namespace xt
         {
             using value_type = typename std::decay<E1>::type::value_type;
 
-            std::size_t const na = e1.size();
-            std::size_t const nv = e2.size();
-            std::size_t const n = na - nv + 1;
+            const std::size_t na = e1.size();
+            const std::size_t nv = e2.size();
+            const std::size_t n = na - nv + 1;
             xt::xtensor<value_type, 1> out = xt::zeros<value_type>({n});
             for (std::size_t i = 0; i < n; i++)
             {
@@ -3194,14 +3276,14 @@ namespace xt
         {
             using value_type = typename std::decay<E1>::type::value_type;
 
-            std::size_t const na = e1.size();
-            std::size_t const nv = e2.size();
-            std::size_t const n = na + nv - 1;
+            const std::size_t na = e1.size();
+            const std::size_t nv = e2.size();
+            const std::size_t n = na + nv - 1;
             xt::xtensor<value_type, 1> out = xt::zeros<value_type>({n});
             for (std::size_t i = 0; i < n; i++)
             {
-                std::size_t const jmn = (i >= nv - 1) ? i - (nv - 1) : 0;
-                std::size_t const jmx = (i < na - 1) ? i : na - 1;
+                const std::size_t jmn = (i >= nv - 1) ? i - (nv - 1) : 0;
+                const std::size_t jmx = (i < na - 1) ? i : na - 1;
                 for (std::size_t j = jmn; j <= jmx; ++j)
                 {
                     out(i) += e1(j) * e2(i - j);

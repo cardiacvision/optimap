@@ -536,16 +536,16 @@ namespace xt
      *
      * @warning This method is meant for performance, for expressions with a dynamic
      * number of dimensions (i.e. not known at compile time). Since it may have
-     * undefined behavior (see parameters), operator() should be prefered whenever
+     * undefined behavior (see parameters), operator() should be preferred whenever
      * it is possible.
      * @warning This method is NOT compatible with broadcasting, meaning the following
      * code has undefined behavior:
-     * \code{.cpp}
+     * @code{.cpp}
      * xt::xarray<double> a = {{0, 1}, {2, 3}};
      * xt::xarray<double> b = {0, 1};
      * auto fd = a + b;
      * double res = fd.uncheked(0, 1);
-     * \endcode
+     * @endcode
      */
     template <class D>
     template <class... Args>
@@ -562,16 +562,16 @@ namespace xt
      *
      * @warning This method is meant for performance, for expressions with a dynamic
      * number of dimensions (i.e. not known at compile time). Since it may have
-     * undefined behavior (see parameters), operator() should be prefered whenever
+     * undefined behavior (see parameters), operator() should be preferred whenever
      * it is possible.
      * @warning This method is NOT compatible with broadcasting, meaning the following
      * code has undefined behavior:
-     * \code{.cpp}
+     * @code{.cpp}
      * xt::xarray<double> a = {{0, 1}, {2, 3}};
      * xt::xarray<double> b = {0, 1};
      * auto fd = a + b;
      * double res = fd.uncheked(0, 1);
-     * \endcode
+     * @endcode
      */
     template <class D>
     template <class... Args>
