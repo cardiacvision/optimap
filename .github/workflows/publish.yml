@@ -2,6 +2,12 @@ name: Build, test and deploy to PyPI
 
 on:
   workflow_dispatch:
+    inputs:
+      upload_pypi:
+        description: 'Upload to PyPI?'
+        required: true
+        default: false
+        type: boolean
   release:
     types:
       - published
@@ -48,6 +54,7 @@ jobs:
     name: Upload to PyPI
     needs: [build_wheels, build_sdist]
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'release' || github.event.inputs.upload_pypi == 'true' }}
     environment:
       name: pypi
       url: https://pypi.org/p/opticalmapping
