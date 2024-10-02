@@ -53,7 +53,8 @@ setup(
     packages=find_packages(),
     package_data={"optimap": ["assets/*.png"]},
     install_requires=[
-        "numpy<2.0",
+        'numpy<2.0; python_version<"3.13"',  # some deps have issues with numpy 2.0 currently
+        'numpy; python_version>="3.13"',  # numpy has no 3.13 wheels for versions < 2.0
         "matplotlib",
         "scipy",
         "scikit-image",
