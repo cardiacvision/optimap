@@ -1,3 +1,5 @@
+import warnings
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -103,14 +105,20 @@ def compare_traces(videos, coords=None, labels=None, colors=None, size=5, ref_fr
     if x is not None and fps is not None:
         msg = "`x` and `fps` parameters cannot be passed at the same time"
         raise ValueError(msg)
+    
+    max_len = max([video.shape[0] for video in videos])
+    for i in range(len(videos)):
+        if videos[i].shape[0] != max_len:
+            warnings.warn("Videos have different lengths. Padding with NaNs.")
+            videos[i] = np.pad(videos[i], ((0, max_len - videos[i].shape[0]), (0, 0), (0, 0)), mode="constant", constant_values=np.nan)
 
     if fps is not None:
-        x = np.arange(videos[0].shape[0]) / fps
+        x = np.arange(max_len) / fps
         x_label = "Time [s]"
     elif x is not None:
         x_label = None
     else:
-        x = np.arange(videos[0].shape[0])
+        x = np.arange(max_len)
         x_label = "Frame"
 
     if coords is None:
