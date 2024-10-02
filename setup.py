@@ -53,7 +53,7 @@ setup(
     packages=find_packages(),
     package_data={"optimap": ["assets/*.png"]},
     install_requires=[
-        "numpy",
+        "numpy<2.0",
         "matplotlib",
         "scipy",
         "scikit-image",
