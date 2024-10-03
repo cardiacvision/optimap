@@ -1,0 +1,32 @@
+name: Build docs
+
+on:
+    push:
+
+jobs:
+    build_docs:
+        name: Build docs
+        runs-on: ubuntu-latest
+        steps:
+            - name: Set up Python
+              uses: actions/setup-python@v2
+              with:
+                  python-version: 3.12
+
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Install optimap
+              run: pip install .[docs]
+            
+            - name: Install opencv
+              run: pip install opencv-python-headless ipywidgets
+            
+            - name: Build docs
+              run: python -m sphinx -b dirhtml docs docs/_build
+
+            - name: Upload artifact
+              uses: actions/upload-artifact@v4
+              with:
+                path: docs/_build
+                name: juypter_cache
