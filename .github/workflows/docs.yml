@@ -11,6 +11,8 @@ jobs:
     build_docs:
         name: Build docs
         runs-on: ubuntu-latest
+        permissions:
+          contents: write
         steps:
             - name: Avoid git conflicts when tag and branch pushed at same time
               if: github.ref_type == 'tag'
@@ -30,9 +32,23 @@ jobs:
             - name: Install opencv
               run: pip install opencv-python-headless ipywidgets
 
+            - name: Cache file downloads and jupyter notebook execution
+              uses: actions/cache@v4
+              with:
+                path: |
+                    docs/tutorials/example_data
+                    .jupyter_cache
+                key: docs-example-files
+
             - name: Build docs
               run: python -m sphinx -b dirhtml docs docs/_build/html
 
+            - name: TMP
+              run: |
+                    echo "ls docs/tutorials/example_data"
+                    ls docs/tutorials/example_data
+                    echo "ls .jupyter_cache"
+                    ls .jupyter_cache
             # - name: Upload artifact
             #   uses: actions/upload-artifact@v4
             #   with:
