@@ -36,7 +36,7 @@ jobs:
               uses: actions/cache@v4
               with:
                 path: |
-                    docs/tutorials/example_data
+                    docs/tutorials/optimap_example_data
                     .jupyter_cache
                 key: docs-example-files
 
@@ -46,9 +46,9 @@ jobs:
             - name: TMP
               run: |
                     echo "ls docs/tutorials/example_data"
-                    ls docs/tutorials/example_data
+                    ls docs/tutorials/optimap_example_data || true
                     echo "ls .jupyter_cache"
-                    ls .jupyter_cache
+                    ls .jupyter_cache || true
             # - name: Upload artifact
             #   uses: actions/upload-artifact@v4
             #   with:
