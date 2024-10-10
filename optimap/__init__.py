@@ -54,9 +54,7 @@ from .video import (
 from .video import (
     play as play_video,
 )
-from .apd import (
-    detect_apd
-)
+
 __all__ = [
     "__version__",
     "__version_tuple__",
