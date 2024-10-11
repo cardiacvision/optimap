@@ -44,24 +44,20 @@ jobs:
             - name: Cache excample file downloads
               uses: actions/cache@v4
               with:
-                path: |
-                    docs/tutorials/optimap_example_data
+                path: docs/tutorials/optimap_example_data
                 key: optimap-example-files
 
             - name: Cache jupyter notebook cache
               uses: actions/cache@v4
               with:
-                path: |
-                    docs/.jupyter_cache
+                path: .jupyter_cache
                 key: docs-jupyter-cache
 
             - name: Build docs
               run: |
-                mkdir -p docs/.jupyter_cache  # otherwise jcache will ask for confirmation
-                jcache notebook -p docs/.jupyter_cache list
+                mkdir -p .jupyter_cache  # otherwise jcache will ask for confirmation
+                jcache notebook -p .jupyter_cache list
                 python -m sphinx -b dirhtml --doctree-dir docs/doctrees docs docs/_build
-                find docs/_build -iname '.jupyter_cache' # should be empty but sometimes it's not
-                find docs/_build -iname '.jupyter_cache' -exec rm -rf {} \;
               env:
                 TQDM_MININTERVAL: 20
 
