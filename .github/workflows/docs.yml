@@ -25,7 +25,7 @@ jobs:
               run: sleep 60
 
             - name: Set up Python
-              uses: actions/setup-python@v2
+              uses: actions/setup-python@v5
               with:
                   python-version: 3.12
 
@@ -52,12 +52,14 @@ jobs:
               uses: actions/cache@v4
               with:
                 path: |
-                    docs/_build/.jupyter_cache
+                    docs/.jupyter_cache
                 key: docs-jupyter-cache
 
             - name: Build docs
               run: |
-                cd docs; python -m sphinx -b dirhtml . _build; cd ..
+                python -c "import optimap; print(optimap.__version__)"
+                jcache -p docs/.jupyter_cache notebook list
+                python -m sphinx -b html --doctree-dir docs/doctrees docs docs/_build
               env:
                 TQDM_MININTERVAL: 20
 
