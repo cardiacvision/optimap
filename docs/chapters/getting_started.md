@@ -1,7 +1,7 @@
 (installing)=
 # Installing optimap
 
-`optimap` is available for Windows, Mac OSX, and Linux. Pre-built binaries can be installed using `pip`, see below. You can find more detailed installation instructions in our [Installation Guide](https://optimap.readthedocs.io/en/latest/chapters/installation/). You can find the latest version of our sourcode here:
+`optimap` is available for Windows, Mac OSX, and Linux. Pre-built binaries can be installed using `pip`, see below. You can find more detailed installation instructions in our [Installation Guide](#installation). You can find the latest version of our source code here:
 
 [https://github.com/cardiacvision/optimap](https://github.com/cardiacvision/optimap).
 
@@ -16,13 +16,7 @@ optimap relies heavily on [NumPy](https://numpy.org) and [Matplotlib](https://ma
 The easiest way to install optimap is using `pip` in the command line:
 
 ```bash
-pip install opticalmapping[all]
-```
-
-If this command fails, please try the following:
-
-```bash
-python -m pip install opticalmapping\[all\]
+pip install "opticalmapping[all]"
 ```
 
 ```{note}
@@ -36,7 +30,7 @@ To use GPU-accelerated motion tracking algorithms a CUDA-enabled version of Open
 To update optimap to the latest version run
 
 ```bash
-pip install --upgrade opticalmapping[all]`
+pip install --upgrade "opticalmapping[all]"`
 ```
 
 #### Installing from source
