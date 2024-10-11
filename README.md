@@ -1,6 +1,6 @@
 # optimap
 
-[![docs](https://github.com/cardiacvision/optimap/actions/workflows/docs.yml/badge.svg)](https://github.com/cardiacvision/optimap/actions/workflows/docs.yml)
+[![docs](https://github.com/cardiacvision/optimap/actions/workflows/docs.yml/badge.svg)](https://cardiacvision.github.io/optimap/)
 [![tests](https://github.com/cardiacvision/optimap/actions/workflows/main.yml/badge.svg)](https://github.com/cardiacvision/optimap/actions/workflows/main.yml)
 [![PyPI](https://img.shields.io/pypi/v/opticalmapping.svg)](https://pypi.org/project/opticalmapping/)
 [![Supported Python versions](https://img.shields.io/pypi/pyversions/opticalmapping.svg)](https://python.org)
