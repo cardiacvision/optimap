@@ -59,6 +59,8 @@ jobs:
               run: |
                 jcache notebook -p docs/.jupyter_cache list
                 python -m sphinx -b dirhtml --doctree-dir docs/doctrees docs docs/_build
+                find docs/_build -iname '.jupyter_cache' # should be empty but sometimes it's not
+                find docs/_build -iname '.jupyter_cache' -exec rm -rf {} \;
               env:
                 TQDM_MININTERVAL: 20
 

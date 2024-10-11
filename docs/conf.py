@@ -144,7 +144,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'tutorials/converted']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_copy_source = True  # needed for download notebook button
+html_copy_source = False
 html_static_path = ["_static"]
 html_css_files = [
     "custom.css",
