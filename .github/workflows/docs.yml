@@ -57,9 +57,8 @@ jobs:
 
             - name: Build docs
               run: |
-                python -c "import optimap; print(optimap.__version__)"
-                jcache -p docs/.jupyter_cache notebook list
-                python -m sphinx -b html --doctree-dir docs/doctrees docs docs/_build
+                jcache notebook -p docs/.jupyter_cache list
+                python -m sphinx -b dirhtml --doctree-dir docs/doctrees docs docs/_build
               env:
                 TQDM_MININTERVAL: 20
 
