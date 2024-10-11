@@ -100,7 +100,7 @@ codeautolink_global_preface = "import optimap as om"
 nb_execution_mode = "cache"
 nb_execution_timeout = 600  # seconds
 nb_execution_excludepatterns = ['tutorials/converted/*']
-jupyter_cache = str(Path(__file__).parent / ".jupyter_cache")
+nb_execution_cache_path = str(Path(__file__).parent / ".jupyter_cache")
 
 # add_module_names = False
 # napoleon_google_docstring = False

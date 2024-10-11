@@ -78,7 +78,7 @@ setup(
         ],
         "test": ["pytest"],
         "docs": [
-            "sphinx",
+            "sphinx>=7.4.6",
             "sphinxcontrib-napoleon",
             "sphinxcontrib-bibtex",
             "sphinxcontrib-video",
