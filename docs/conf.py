@@ -124,9 +124,9 @@ intersphinx_mapping = {
     "matplotlib": ("https://matplotlib.org/stable", None),
     "numpy": ("https://numpy.org/doc/stable", None),
     "python": ("https://docs.python.org/3", None),
-    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
-    "skimage": ("https://scikit-image.org/docs/stable/", None),
-    "monochrome": ("https://monochrome.readthedocs.io/stable/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy", None),
+    "skimage": ("https://scikit-image.org/docs/stable", None),
+    "monochrome": ("https://monochrome.readthedocs.io/stable", None),
 }
 
 # Add any paths that contain templates here, relative to this directory.
