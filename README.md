@@ -4,7 +4,7 @@
 [![tests](https://github.com/cardiacvision/optimap/actions/workflows/main.yml/badge.svg)](https://github.com/cardiacvision/optimap/actions/workflows/main.yml)
 [![PyPI](https://img.shields.io/pypi/v/opticalmapping.svg)](https://pypi.org/project/opticalmapping/)
 [![Supported Python versions](https://img.shields.io/pypi/pyversions/opticalmapping.svg)](https://python.org)
-[![DOI](https://zenodo.org/badge/677528623.svg)](https://zenodo.org/badge/latestdoi/677528623)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8336455.svg)](https://doi.org/10.5281/zenodo.13922150)
 
 ### optimap: An open-source library for processing fluorescence video data
 
