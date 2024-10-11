@@ -210,7 +210,7 @@ def save_mask(filename, mask, image=None, **kwargs):
 
 
 def save_image(filename, image: np.ndarray, compat=False, **kwargs):
-    """Save an image to a file. Makes best effort to avoid data precision loss, use {func}`export_image` to export images for publications.
+    """Save an image to a file. Makes best effort to avoid data precision loss, use :func:`export_image` to export images for publications.
     
     The image data is saved as it is, without any normalization or scaling.
 
@@ -257,7 +257,7 @@ def export_image(filename,
                  cmap = "gray",
                  vmin : float = None,
                  vmax : float = None):
-    """Export an image to a file for publications, use {func}`save_image` to save an image if it will be reimported later.
+    """Export an image to a file for publications, use :func:`save_image` to save an image if it will be reimported later.
 
     Images will be converted to uint8, colormap will be applied to grayscale images.
 
