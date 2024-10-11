@@ -39,7 +39,7 @@ jobs:
               uses: actions/checkout@v4
 
             - name: Install optimap
-              run: python -m pip install -e .[docs]
+              run: python -m pip install .[docs]
               
             - name: Cache excample file downloads
               uses: actions/cache@v4
@@ -56,19 +56,16 @@ jobs:
                 key: docs-jupyter-cache
 
             - name: Build docs
-              run: python -m sphinx -b dirhtml docs docs/_build/html
-
-            # - name: Upload artifact
-            #   uses: actions/upload-artifact@v4
-            #   with:
-            #     path: docs/_build/html
-            #     name: juypter_cache
+              run: |
+                cd docs; python -m sphinx -b dirhtml . _build; cd ..
+              env:
+                TQDM_MININTERVAL: 10
 
             - name: Sanitize ref name for docs version
               run: echo "DOCS_VERSION=${GITHUB_REF_NAME//[^A-Za-z0-9._-]/_}" >> $GITHUB_ENV
 
             - name: Move to versioned directory
-              run: mv docs/_build/html .github/pages/$DOCS_VERSION
+              run: mv docs/_build .github/pages/$DOCS_VERSION
 
             - name: Upload artifact
               uses: actions/upload-pages-artifact@v3
