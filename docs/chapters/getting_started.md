@@ -1,7 +1,7 @@
 (installing)=
 # Installing optimap
 
-`optimap` is available for Windows, Mac OSX, and Linux. Pre-built binaries can be installed using `pip`, see below. You can find more detailed installation instructions in our [Installation Guide](#installation). You can find the latest version of our source code at [https://github.com/cardiacvision/optimap](github.com/cardiacvision/optimap).
+`optimap` is available for Windows, Mac OSX, and Linux. Pre-built binaries can be installed using `pip`, see below. You can find more detailed installation instructions in our [Installation Guide](#installation). You can find the latest version of our source code at [github.com/cardiacvision/optimap](https://github.com/cardiacvision/optimap).
 
 `optimap` requires Python 3.8 or later. To install [Python](https://en.wikipedia.org/wiki/Python_programming_language) we recommend installing the [Anaconda distribution](https://www.anaconda.com/download), which includes Python and many useful packages for scientific computing, or by installing [Python directly](https://code.visualstudio.com/docs/python/python-tutorial#_install-a-python-interpreter).
 
