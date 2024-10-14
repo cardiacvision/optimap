@@ -16,15 +16,15 @@
 
 `optimap` is available for macOS, Windows and Linux, see the [Getting Started](https://cardiacvision.github.io/optimap/main/chapters/getting_started/) guide for more information.
 
-### Installing pre-built binaries (macOS, Windows, Linux)
-
-Pre-built binaries can be installed using pip:
+You can install `optimap` using [pip](https://packaging.python.org/en/latest/tutorials/installing-packages/):
 
 ```bash
 pip install "opticalmapping[all]"
 ```
 
-The above command will install optimap and all recommended dependencies including OpenCV and PySide2. If you wish to install your own version of OpenCV (e.g. for CUDA support) or Qt implementation use:
+The above command will install optimap and all recommended dependencies including [OpenCV](https://opencv.org) and [PySide2](https://pypi.org/project/PySide2/).
+
+**Note:** In some advanced cases, you may want to install your own version of OpenCV (e.g. for CUDA support) or a different Qt implementation. In such cases, use:
 
 ```bash
 pip install opticalmapping
