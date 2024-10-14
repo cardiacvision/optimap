@@ -287,7 +287,7 @@ def jupyter_render_animation(f, mp4_filename=None, save_args={}):
         disable_interactive_backend_switching()
         plt.switch_backend('Agg')
         ani = f()
-        ani.repeat = True
+        ani._repeat = True  # loop animation, public attribute was deprecated in matplotlib 3.9
         ipython.run_line_magic("matplotlib", "inline")
         enable_interactive_backend_switching()
 
