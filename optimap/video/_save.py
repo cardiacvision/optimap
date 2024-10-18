@@ -53,7 +53,9 @@ def save_image_sequence(directory: Union[str, Path],
 
     if directory is not None:
         directory = Path(directory)
-        if not directory.exists():
+        if directory.exists() and not directory.is_dir():
+            raise ValueError(f"Path '{directory.absolute()}' exists but is not a directory")
+        elif not directory.exists():
             directory.mkdir(parents=True)
     else:
         directory = Path.cwd()
