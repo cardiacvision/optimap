@@ -102,9 +102,9 @@ You could run the Python script in a terminal with `python3 basics.py` from the 
 
 # Interactive Plots
 
-```{admonition} Working with remote Jupyter notebooks
+```{admonition} Working with **remote** Jupyter notebooks
 :class: warning
-optimap is currently not designed to be used with Jupyter Notebook running on a remote server. The interactive plotting functions listed below might not work as expected.
+The interactive plotting functions in optimap may not work as expected when using Jupyter Notebook on a **remote** server (i.e., not on your local computer). This is because the interactive plots require a local display to work properly.
 ```
 
 optimap uses [Matplotlib](https://matplotlib.org/) for plotting. The following functions require an interactive Matplotlib backend:
