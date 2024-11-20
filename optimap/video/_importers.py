@@ -157,7 +157,10 @@ class MultiRecorderImporter:
         else:
             msg = f"Unknown MultiRecorder file version: {self.version}"
             raise ValueError(msg)
-
+        
+        self._meta["Number of frames"] = self._Nt
+        self._meta["Image width"] = self._Nx
+        self._meta["Image height"] = self._Ny
 
 class MiCAM05_Importer:
     """Importer for SciMedia MiCAM05 CMOS camera recordings (.gsh / .gsd files).
