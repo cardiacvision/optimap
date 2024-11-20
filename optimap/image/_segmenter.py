@@ -7,15 +7,27 @@ import numpy as np
 from matplotlib.widgets import Button, LassoSelector
 from mpl_pan_zoom import PanManager, zoom_factory
 from PIL import Image
+import skimage
 
 ASSETS_DIR = pathlib.Path(__file__).parent.parent / "assets"
 DRAW_SYMBOL = ASSETS_DIR / "draw_symbol.png"
 ERASER_SYMBOL = ASSETS_DIR / "eraser_symbol.png"
+LARGEST_ISLAND_SYMBOL = ASSETS_DIR / "largest_component_symbol.png"
 UNDO_SYMBOL = ASSETS_DIR / "undo_symbol.png"
 REDO_SYMBOL = ASSETS_DIR / "redo_symbol.png"
 VISIBILITY_ON_SYMBOL = ASSETS_DIR / "visibility_on_symbol.png"
 VISIBILITY_OFF_SYMBOL = ASSETS_DIR / "visibility_off_symbol.png"
 INVERT_SYMBOL = ASSETS_DIR / "invert_symbol.png"
+
+
+def _largest_mask_component(mask: np.ndarray) -> np.ndarray:
+    """Identify and return the largest connected component (island) in a given binary mask."""
+    labels = skimage.measure.label(mask)
+    label_count = np.bincount(labels.ravel())
+    largest_label = label_count[1:].argmax() + 1
+    new_mask = labels == largest_label
+    return new_mask
+
 
 class ImageSegmenter:
     """Manually segment an image with the lasso selector."""
@@ -199,6 +211,11 @@ class ImageSegmenter:
         self.button_erase = Button(ax_erase, "", image=Image.open(ERASER_SYMBOL))
         self.button_erase.on_clicked(self._enable_erasing)
 
+        pos[0] += BUTTON_WIDTH + BUTTON_SPACING
+        ax_island = self.fig.add_axes(pos)
+        self.button_island = Button(ax_island, "", image=Image.open(LARGEST_ISLAND_SYMBOL))
+        self.button_island.on_clicked(self._largest_island)
+
     def _on_key_press(self, event):
         if event.key == "ctrl+z" or event.key == "cmd+z":
             self._undo()
@@ -241,6 +258,12 @@ class ImageSegmenter:
         self._mask_history.append(self._mask.copy())
         self._mask_future.clear()
         self.mask = np.logical_not(self.mask)
+        self._draw_mask()
+    
+    def _largest_island(self, event=None) -> None:
+        self._mask_history.append(self._mask.copy())
+        self._mask_future.clear()
+        self.mask = _largest_mask_component(self.mask)
         self._draw_mask()
 
     def _draw_mask(self) -> None:

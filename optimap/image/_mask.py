@@ -1,12 +1,11 @@
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-import skimage
 from scipy import ndimage
 
 from ..utils import interactive_backend
 from ._GHT import GHT, im2hist
-from ._segmenter import ImageSegmenter
+from ._segmenter import ImageSegmenter, _largest_mask_component
 
 
 @interactive_backend
@@ -286,18 +285,13 @@ def largest_mask_component(mask: np.ndarray, invert: bool = False, show=True, **
     """
     if invert:
         mask = np.logical_not(mask)
-
-    labels = skimage.measure.label(mask)
-    label_count = np.bincount(labels.ravel())
-    largest_label = label_count[1:].argmax() + 1
-    new_mask = labels == largest_label
-
+    mask = _largest_mask_component(mask)
     if invert:
-        new_mask = np.logical_not(new_mask)
+        mask = np.logical_not(mask)
 
     if show:
-        show_mask(new_mask, **kwargs)
-    return new_mask
+        show_mask(mask, **kwargs)
+    return mask
 
 
 def erode_mask(binary_mask, iterations=1, border_value=0, structure=None, show=True, **kwargs):
