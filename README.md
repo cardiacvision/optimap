@@ -10,8 +10,6 @@
 
 `optimap` is an open-source Python toolbox for exploring, visualizing, and analyzing high-speed fluorescence imaging data with a focus on cardiac optical mapping data. It includes modules for loading, processing and exporting videos, extracting and measuring optical traces, visualizing action potential or calcium waves, tracking motion and compensating motion artifacts, computing activation maps, conduction velocities, action potential durations, as well as measuring contractility and further analyzing and visualizing the results. Refer to the [Tutorials](https://cardiacvision.github.io/optimap/main/tutorials/) and the [Documentation](https://cardiacvision.github.io/optimap/) for more information about optimap's features.
 
-> ⚠️ optimap is currently in early development, expect breaking changes and bugs.
-
 ## Installation
 
 `optimap` is available for macOS, Windows and Linux, see the [Getting Started](https://cardiacvision.github.io/optimap/main/chapters/getting_started/) guide for more information.
