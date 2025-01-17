@@ -100,6 +100,12 @@ You could run the Python script in a terminal with `python3 basics.py` from the 
 
 [Monochrome](https://github.com/sitic/monochrome/) is a separate project to view high-dynamic range monochromatic videos, such as those produced by optical mapping. It can be used as a standalone application or as a Python library. Monochrome is not required to use optimap, but it can be useful for viewing optical mapping data in addition to the functions provided by optimap.
 
+To install monochrome, run:
+
+```bash
+pip install monochrome
+```
+
 # Interactive Plots
 
 ```{admonition} Working with **remote** Jupyter notebooks
