@@ -5,7 +5,7 @@ from pathlib import Path
 import numpy as np
 import skimage.io as sio
 import skvideo.io
-from scipy.io import loadmat
+import pymatreader
 from tifffile import imread as tifffile_imread
 from tifffile import memmap as tifffile_memmap
 
@@ -113,16 +113,38 @@ def load_MATLAB(filename, fieldname=None, start_frame=0, end_frame=None, step=1)
     step : int, optional
         Steps between frames. If greater than 1, it will skip frames. Defaults to 1.
     """
-    data = loadmat(filename)
-    if fieldname is None:
-        fields = [key for key in data.keys() if not key.startswith("__")]
-        if len(fields) == 0:
-            msg = f"No fields found in file '{filename}'"
+    variable_names = [fieldname] if fieldname is not None else None
+    data = pymatreader.read_mat(filename, variable_names=variable_names)
+
+    if fieldname is not None:
+        video = data[fieldname]
+        if not isinstance(video, np.ndarray) and video.ndim in [2, 3]:
+            msg = f"Field '{fieldname}' in file '{filename}' is not a numpy array"
             raise ValueError(msg)
-        elif len(fields) > 1:
-            warnings.warn(f"Multiple fields found in file '{filename}', loading first field '{fields[0]}'", UserWarning)
-        fieldname = fields[0]
-    video = data[fieldname]
+
+    fields = [key for key in data.keys() if not key.startswith("__")]
+    npyfields = [key for key in fields if isinstance(data[key], np.ndarray)]
+    npyfields = [key for key in npyfields if data[key].ndim >= 2 and data[key].ndim <= 3]
+    npyfields = list(sorted(npyfields, key=lambda x: data[x].ndim, reverse=True))
+    if len(npyfields) == 0:
+        msg = f"No video files found in file '{filename}'. Fields: {fields}"
+        raise ValueError(msg)
+    elif len(npyfields) == 1:
+        video = data[npyfields[0]]
+        if video.ndim == 3 and video.shape[-1] > video.shape[0] and video.shape[-1] > video.shape[1]:
+            # Assume the last dimension is the channel dimension
+            video = np.moveaxis(video, -1, 0)
+    else:
+        if 'cmosData' in fields and 'bgimage' in fields:
+            # Rhythm data format from Efimov lab
+            video = -np.moveaxis(data['cmosData'], -1, 0)
+        else:
+            warnings.warn(f"Multiple fields found in file '{filename}': {fields}. Loading field '{npyfields[0]}'", UserWarning)
+            video = data[npyfields[0]]
+            if video.ndim == 3 and video.shape[-1] > video.shape[0] and video.shape[-1] > video.shape[1]:
+                # Assume the last dimension is the channel dimension
+                video = np.moveaxis(video, -1, 0)
+    
     return video[start_frame:end_frame:step]
 
 
