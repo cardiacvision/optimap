@@ -66,7 +66,8 @@ setup(
         "mpl-pan-zoom",
         "monochrome",
         "pymatreader",
-        "Pillow>=10.0.1"  # not a strict requirement, but it makes importing 16-bit PNGs more consistent
+        "Pillow>=10.0.1",  # not a strict requirement, but it makes importing 16-bit PNGs more consistent
+        "packaging"
     ],
     tests_require=["pytest"],
     ext_modules=[cpp_module],

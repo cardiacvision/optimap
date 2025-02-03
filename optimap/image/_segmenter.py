@@ -1,11 +1,12 @@
 import pathlib
 from collections import deque
 
+import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-import numpy as np
 from matplotlib.widgets import Button, LassoSelector
 from mpl_pan_zoom import PanManager, zoom_factory
+from packaging import version
 from PIL import Image
 import skimage
 
@@ -145,7 +146,7 @@ class ImageSegmenter:
         if isinstance(lasso_mousebutton, str):
             lasso_mousebutton = button_dict[lasso_mousebutton.lower()]
 
-        if mpl.__version__ < "3.7":
+        if version.parse(mpl.__version__) < version.parse("3.7"):
             self.lasso = LassoSelector(
                 self.ax,
                 self._onselect,
