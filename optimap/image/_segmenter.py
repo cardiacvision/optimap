@@ -64,6 +64,7 @@ class ImageSegmenter:
             ``e``                     Erase mode
             ``d``                     Draw/Lasso mode
             ``v``                     Toggle mask visibility
+            ``i``                     Invert mask
             ``q``                     Quit
             ========================= ===========================
 
@@ -228,6 +229,8 @@ class ImageSegmenter:
             self._disable_erasing()
         elif event.key == "v":
             self._toggle_visibility()
+        elif event.key == "i":
+            self._inverse_mask()
 
     def _enable_erasing(self, event=None):
         self._erasing = True

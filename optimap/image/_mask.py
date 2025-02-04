@@ -23,6 +23,7 @@ def interactive_mask(image, initial_mask=None, default_tool="draw", cmap="gray",
         ``e``                     Erase mode
         ``d``                     Draw/Lasso mode
         ``v``                     Toggle mask visibility
+        ``i``                     Invert mask
         ``q``                     Quit
         ========================= ===========================
 
