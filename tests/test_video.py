@@ -96,3 +96,58 @@ def test_resize():
     pytest.raises(ValueError, om.video.resize, video)
     pytest.raises(ValueError, om.video.resize, video, scale=0.5, shape=(64, 64))
     pytest.raises(ValueError, om.video.resize, video, scale=0.5, interpolation="foobar")
+
+def test_collage():
+    # Test case 1: Basic 2x2 collage, grayscale videos
+    video1 = np.random.rand(10, 50, 50).astype(np.float32)
+    video2 = np.random.rand(10, 50, 50).astype(np.float32)
+    video3 = np.random.rand(10, 50, 50).astype(np.float32)
+    video4 = np.random.rand(10, 50, 50).astype(np.float32)
+    videos = [video1, video2, video3, video4]
+    collaged = om.video.collage(videos, ncols=2)
+    assert collaged.shape == (10, 100, 100)
+    assert collaged.dtype == np.float32
+
+    # Test case 2: 1x4 collage, RGB videos
+    video1_rgb = np.random.rand(10, 50, 50, 3).astype(np.float64)
+    video2_rgb = np.random.rand(10, 50, 50, 3).astype(np.float64)
+    video3_rgb = np.random.rand(10, 50, 50, 3).astype(np.float64)
+    video4_rgb = np.random.rand(10, 50, 50, 3).astype(np.float64)
+    videos_rgb = [video1_rgb, video2_rgb, video3_rgb, video4_rgb]
+    collaged_rgb = om.video.collage(videos_rgb, ncols=4)
+    assert collaged_rgb.shape == (10, 50, 200, 3)
+    assert collaged_rgb.dtype == np.float64
+
+    # Test case 3: Padding, grayscale
+    collaged_pad = om.video.collage(videos, ncols=2, padding=10)
+    assert collaged_pad.shape == (10, 110, 110)
+    assert collaged_pad.dtype == np.float32
+
+    # Test case 4: Padding, RGB
+    collaged_pad_rgb = om.video.collage(videos_rgb, ncols=4, padding=5)
+    assert collaged_pad_rgb.shape == (10, 50, 215, 3) # 4 * 50 + 3 * 5
+    assert collaged_pad_rgb.dtype == np.float64
+
+    # Test case 5: Different ncols, grayscale, with some padding
+    collaged_ncols = om.video.collage(videos, ncols=3, padding=2)
+    assert collaged_ncols.shape == (10, 102, 154)  # 2 rows: (50+2+50) , (50 + 2 + 50 + 2 +50)
+    assert collaged_ncols.dtype == np.float32
+
+    # Test case 6: Single video, no padding (should return the same video)
+    collaged_single = om.video.collage([video1], ncols=1)
+    assert collaged_single.shape == video1.shape
+    assert np.array_equal(collaged_single, video1)
+
+    # Test case 7: Empty list (should raise ValueError)
+    with pytest.raises(ValueError):
+        om.video.collage([])
+
+    # Test case 8: Different shapes (should raise ValueError)
+    video_diff = np.random.rand(10, 50, 60).astype(np.float32)  # Different width
+    with pytest.raises(ValueError):
+        om.video.collage([video1, video_diff])
+
+    # Test case 9: Different number of frames. (should raise ValueError)
+    video_diff_frames = np.random.rand(12, 50, 50).astype(np.float32)  # Different num frames
+    with pytest.raises(ValueError):
+        om.video.collage([video1, video_diff_frames])

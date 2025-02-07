@@ -9,6 +9,7 @@ from ._edit import (
     resize,
     rotate_left,
     rotate_right,
+    collage
 )
 from ._export import (
     alpha_blend_videos,
@@ -95,6 +96,7 @@ __all__ = [
     "resize",
     "crop",
     "pad",
+    "collage",
 
     "normalize",
     "normalize_pixelwise",
