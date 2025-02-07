@@ -3,7 +3,7 @@ import numpy as np
 def normalize(array: np.ndarray, ymin=0, ymax=None, vmin=None, vmax=None, dtype=np.float32, clip=True):
     """Normalize an array (time-series or multiple-timeseries, 1D or 2D array) to a specified range and data type.
 
-    By default, the input will be normalized to the interval [0, 1] with type np.float32 based on the minumum and maximum value of the input array.
+    By default, the input will be normalized to the interval [0, 1] with type np.float32 based on the minimum and maximum value of the input array.
 
     If parameters ``vmin`` or ``vmax`` are specified, the normalization is performed using these values and the resulting array will be clipped.
 
