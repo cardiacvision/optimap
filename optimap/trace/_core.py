@@ -241,9 +241,12 @@ def show_trace(*args, **kwargs):
 
 
 def collage_positions(positions, image_shape, ncols=6):
-    """Correspondant to :func:`image.collage` but for positions. Collages the positions in the same way as the images would be collaged.
+    """Arranges a list of position arrays into a grid layout, corresponding to an image collage.
 
-    `positions` is a list of list of tuples, i.e. one list of positions for each image. The function collages the positions in the same way as the images would be collaged and returns a list of tuples where the positions have been offset to the correct position in the collage. All images are assumed to have the same shape `image_shape`.
+    This function takes a list of position arrays (e.g., coordinates of detected features) and
+    rearranges them as if the corresponding images were arranged in a grid (see :func:`optimap.image.collage`
+    and :func:`optimap.video.collage`).  It handles the offsets required to position the points correctly within 
+    the combined grid.  All images are assumed to have the same shape `image_shape`.
 
     Parameters
     ----------

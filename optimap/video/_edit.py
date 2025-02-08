@@ -159,7 +159,7 @@ def collage(videos, ncols=6, padding=0, padding_value=0):
     """
     Creates a video collage from a list of videos with the same shape.
 
-    Arranges the frames of the videos in a grid, similar to the :py:func:`optimap.image.collage` function. See also and :func:`optimap.video.export_videos` to export a list of video as a collage to a mp4 file.
+    Arranges the frames of the videos in a grid, similar to the :py:func:`optimap.image.collage` function. See also :func:`optimap.video.export_videos` to export a list of video as a collage to a mp4 file and :func`optimap.trace.collage_positions` to create a collage of positions.
 
     Parameters
     ----------
