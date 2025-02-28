@@ -2,8 +2,8 @@
 
 [![docs](https://github.com/cardiacvision/optimap/actions/workflows/docs.yml/badge.svg)](https://cardiacvision.github.io/optimap/)
 [![tests](https://github.com/cardiacvision/optimap/actions/workflows/main.yml/badge.svg)](https://github.com/cardiacvision/optimap/actions/workflows/main.yml)
-[![PyPI](https://img.shields.io/pypi/v/opticalmapping.svg)](https://pypi.org/project/opticalmapping/)
-[![Supported Python versions](https://img.shields.io/pypi/pyversions/opticalmapping.svg)](https://python.org)
+[![PyPI](https://img.shields.io/pypi/v/optimap.svg)](https://pypi.org/project/optimap/)
+[![Supported Python versions](https://img.shields.io/pypi/pyversions/optimap.svg)](https://python.org)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8336455.svg)](https://doi.org/10.5281/zenodo.13922150)
 
 ### optimap: An open-source library for processing fluorescence video data
@@ -17,7 +17,7 @@
 You can install `optimap` using [pip](https://packaging.python.org/en/latest/tutorials/installing-packages/):
 
 ```bash
-pip install "opticalmapping[all]"
+pip install "optimap[all]"
 ```
 
 The above command will install optimap and all recommended dependencies including [OpenCV](https://opencv.org) and [PySide2](https://pypi.org/project/PySide2/).
@@ -25,13 +25,13 @@ The above command will install optimap and all recommended dependencies includin
 **Note:** In some advanced cases, you may want to install your own version of OpenCV (e.g. for CUDA support) or a different Qt implementation. In such cases, use:
 
 ```bash
-pip install opticalmapping
+pip install optimap
 ```
 
 To update optimap to the latest version run
 
 ```bash
-pip install --upgrade "opticalmapping[all]"
+pip install --upgrade "optimap[all]"
 ```
 
 ## About optimap

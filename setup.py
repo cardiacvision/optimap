@@ -23,7 +23,7 @@ if add_openmp_flags_if_available(cpp_module):
     cpp_module.extra_compile_args.append("-DUSE_OMP")
 
 setup(
-    name="opticalmapping",
+    name="optimap",
     url="https://github.com/cardiacvision/optimap",
     author="Jan Lebert",
     author_email="jan.lebert@ucsf.edu",

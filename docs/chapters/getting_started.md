@@ -14,11 +14,11 @@ optimap relies heavily on [NumPy](https://numpy.org) and [Matplotlib](https://ma
 The easiest way to install optimap is using `pip` in the command line:
 
 ```bash
-pip install "opticalmapping[all]"
+pip install "optimap[all]"
 ```
 
 ```{note}
-`pip install opticalmapping` will install the core functionality of optimap. However, the [OpenCV](https://opencv.org/) and dependencies are not installed by default which are required for the {mod}`optimap.motion` and {mod}`optimap.video` modules. To install these dependencies use `pip install "opticalmapping[all]"` or install OpenCV manually.
+`pip install optimap` will install the core functionality of optimap. However, the [OpenCV](https://opencv.org/) and dependencies are not installed by default which are required for the {mod}`optimap.motion` and {mod}`optimap.video` modules. To install these dependencies use `pip install "optimap[all]"` or install OpenCV manually.
 
 If you do not have pip or Python installed you will first have to install these packages.
 
@@ -28,7 +28,7 @@ To use GPU-accelerated motion tracking algorithms a CUDA-enabled version of Open
 To update optimap to the latest version run
 
 ```bash
-pip install --upgrade "opticalmapping[all]"`
+pip install --upgrade "optimap[all]"`
 ```
 
 #### Installing from source

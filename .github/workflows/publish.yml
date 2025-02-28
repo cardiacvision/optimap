@@ -57,7 +57,7 @@ jobs:
     if: ${{ github.event_name == 'release' || github.event.inputs.upload_pypi == 'true' }}
     environment:
       name: pypi
-      url: https://pypi.org/p/opticalmapping
+      url: https://pypi.org/p/optimap
     permissions:
       id-token: write
     steps:
