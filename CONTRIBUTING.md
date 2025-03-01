@@ -12,7 +12,7 @@ To install optimap in development mode use:
 ```bash
 git clone git@github.com:cardiacvision/optimap.git
 cd optimap
-pip install -e .[all]
+pip install -e .
 ```
 
 optimap can be updated by running `git pull` in the `optimap` directory. Changes to the Python code will be reflected immediately.
@@ -37,7 +37,7 @@ For this please create an issue on the [issue page](https://github.com/cardiacvi
 For bug reports, please make sure that you are using the latest version of optimap by running
 
 ```bash
-pip install --upgrade opticalmapping[all]
+pip install --upgrade optimap
 ```
 
 and checking if the bug still exists. Whenever possible, please provide error messages, sample code, screenshots or other files when [creating a new issue](https://github.com/cardiacvision/optimap/issues/new).

@@ -22,7 +22,7 @@ Installing `optimap` on Windows requires `Python`, `Numpy` and `matplotlib` to b
 Installing `optimap` on Mac OSX requires `Python`, `Numpy` and `matplotlib` to be installed on the system. On Mac OSX, [Homebrew](https://brew.sh/) is a popular and very useful, freely available package manager with which one can install `Python`, `Numpy` and `matplotlib`. Paste and execute the following command in the Mac OSX terminal to install `Homebrew`: `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`. Note that Mac OSX has a native Python version installed and it is necessary to install a separate Python 3.8 version or later. Next, you need to install `pip`, which is a package installer specifically for Python packages. You can install `pip` using Homebrew: `brew install pip`. You can then use `pip` to install optimap:
 
 ```{code-block} bash
-pip install optimap[all]
+pip install optimap
 ```
 
 ## Installing optimap on Linux
@@ -30,25 +30,9 @@ pip install optimap[all]
 With `pip` and `Python` already installed it is very straight-forward to install `optimap` on Linux systems:
 
 ```{code-block} bash
-pip install optimap[all]
+pip install optimap
 ```
 
-This will install the core functionality of optimap. However, the [OpenCV](https://opencv.org/) and dependencies are not installed by default which are required for the {mod}`optimap.motion` and {mod}`optimap.video` modules. To install these dependencies use `pip install optimap[all]` or install OpenCV manually.
+This will install the core functionality of optimap.
 
-If this command fails, please try the following:
-
-```{code-block} bash
-python -m pip install optimap\[all\]
-```
-
-```{note}
-`pip install optimap` will install the core functionality of optimap. However, the [OpenCV](https://opencv.org/) and dependencies are not installed by default which are required for the {mod}`optimap.motion` and {mod}`optimap.video` modules. To install these dependencies use `pip install optimap[all]` or install OpenCV manually.
-
-To use GPU-accelerated motion tracking algorithms a CUDA-enabled version of OpenCV is required, which is currently not available on PyPI. See [](#opencv) for more information.
-```
-
-To update optimap to the latest version run `pip install --upgrade optimap[all]`. See [](#contributing) for instructions on how to install optimap from source.
-
-## GPU Acceleration
-
-By default, `optimap` will be installed without GPU-acceleration (graphics processing unit).
+To update optimap to the latest version run `pip install --upgrade optimap`. See [](#contributing) for instructions on how to install optimap from source.

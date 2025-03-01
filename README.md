@@ -17,21 +17,20 @@
 You can install `optimap` using [pip](https://packaging.python.org/en/latest/tutorials/installing-packages/):
 
 ```bash
-pip install "optimap[all]"
-```
-
-The above command will install optimap and all recommended dependencies including [OpenCV](https://opencv.org) and [PySide2](https://pypi.org/project/PySide2/).
-
-**Note:** In some advanced cases, you may want to install your own version of OpenCV (e.g. for CUDA support) or a different Qt implementation. In such cases, use:
-
-```bash
 pip install optimap
 ```
 
 To update optimap to the latest version run
 
 ```bash
-pip install --upgrade "optimap[all]"
+pip install --upgrade optimap
+```
+
+**Advanced users only:** If you need a custom version of [OpenCV](https://opencv.org) (e.g. with CUDA support) or a different Qt implementation, you can install optimap without automatic dependency resolution and then manually install the core dependencies. This approach avoids installing the bundled OpenCV and PySide6 packages:
+
+```bash
+pip install --no-deps optimap
+pip install -r https://raw.githubusercontent.com/cardiacvision/optimap/refs/heads/main/requirements-core.txt
 ```
 
 ## About optimap

@@ -1,0 +1,14 @@
+numpy
+matplotlib
+scipy
+scikit-image
+scikit-video
+tqdm
+pooch
+seasonal
+static_ffmpeg
+mpl-pan-zoom
+monochrome
+pymatreader
+Pillow>=10.0.1
+packaging

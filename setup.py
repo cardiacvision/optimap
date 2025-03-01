@@ -1,16 +1,12 @@
 # ruff: noqa: I001
 import os
-import site
-import sys
+from pathlib import Path
 
 from setuptools import find_packages, setup
 # Available at setup time due to pyproject.toml (use pip install .)
 import numpy
 from extension_helpers import add_openmp_flags_if_available
 from pybind11.setup_helpers import Pybind11Extension, build_ext
-
-# pip bug workaround https://github.com/pypa/pip/issues/7953
-site.ENABLE_USER_SITE = "--user" in sys.argv[1:]
 
 PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
 
@@ -21,6 +17,34 @@ cpp_module.include_dirs.append(numpy.get_include())
 
 if add_openmp_flags_if_available(cpp_module):
     cpp_module.extra_compile_args.append("-DUSE_OMP")
+
+core_requirements = [
+    "matplotlib",
+    "mpl-pan-zoom",
+    "numpy",
+    "packaging",
+    "Pillow>=10.0.1",  # not a strict requirement, but it makes importing 16-bit PNGs more consistent
+    "pooch",
+    "pymatreader",
+    "scikit-image",
+    "scikit-video",
+    "scipy",
+    "seasonal",
+    "static_ffmpeg",
+    "tqdm",
+]
+
+recommended_requirements = [
+    "monochrome",
+    "opencv-contrib-python",
+    "PySide6",
+]
+
+# Update requirements-core.txt if needed
+core_reqs_fn = Path(__file__).parent / "requirements-core.txt"
+core_reqs_fn.write_text("\n".join(core_requirements))
+if (core_reqs_fn.read_text().strip().splitlines() != core_requirements):
+    core_reqs_fn.write_text("\n".join(core_requirements))
 
 setup(
     name="optimap",
@@ -53,31 +77,12 @@ setup(
     python_requires=">=3.8",
     packages=find_packages(),
     package_data={"optimap": ["assets/*.png"]},
-    install_requires=[
-        "numpy",
-        "matplotlib",
-        "scipy",
-        "scikit-image",
-        "scikit-video",
-        "tqdm",
-        "pooch",
-        "seasonal",
-        "static_ffmpeg",
-        "mpl-pan-zoom",
-        "monochrome",
-        "pymatreader",
-        "Pillow>=10.0.1",  # not a strict requirement, but it makes importing 16-bit PNGs more consistent
-        "packaging"
-    ],
+    install_requires=core_requirements + recommended_requirements,
     tests_require=["pytest"],
     ext_modules=[cpp_module],
     cmdclass={"build_ext": build_ext},
     zip_safe=False,
     extras_require={
-        "all": [
-            "opencv-contrib-python",
-            "PySide6",
-        ],
         "test": ["pytest"],
         "docs": [
             "sphinx>=7.4.6",

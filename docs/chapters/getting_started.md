@@ -1,7 +1,7 @@
 (installing)=
 # Installing optimap
 
-`optimap` is available for Windows, Mac OSX, and Linux. Pre-built binaries can be installed using `pip`, see below. You can find more detailed installation instructions in our [Installation Guide](#installation). You can find the latest version of our source code at [github.com/cardiacvision/optimap](https://github.com/cardiacvision/optimap).
+`optimap` is available for Windows, Mac OSX, and Linux and can be installed using [`pip`](https://pip.pypa.io/), see below. You can find more detailed installation instructions in our [Installation Guide](#installation). You can find the latest version of our source code at [github.com/cardiacvision/optimap](https://github.com/cardiacvision/optimap).
 
 `optimap` requires Python 3.8 or later. To install [Python](https://en.wikipedia.org/wiki/Python_programming_language) we recommend installing the [Anaconda distribution](https://www.anaconda.com/download), which includes Python and many useful packages for scientific computing, or by installing [Python directly](https://code.visualstudio.com/docs/python/python-tutorial#_install-a-python-interpreter).
 
@@ -14,22 +14,23 @@ optimap relies heavily on [NumPy](https://numpy.org) and [Matplotlib](https://ma
 The easiest way to install optimap is using `pip` in the command line:
 
 ```bash
-pip install "optimap[all]"
-```
-
-```{note}
-`pip install optimap` will install the core functionality of optimap. However, the [OpenCV](https://opencv.org/) and dependencies are not installed by default which are required for the {mod}`optimap.motion` and {mod}`optimap.video` modules. To install these dependencies use `pip install "optimap[all]"` or install OpenCV manually.
-
-If you do not have pip or Python installed you will first have to install these packages.
-
-To use GPU-accelerated motion tracking algorithms a CUDA-enabled version of OpenCV is required, which is currently not available on PyPI. See [](#opencv) for more information.
+pip install optimap
 ```
 
 To update optimap to the latest version run
 
 ```bash
-pip install --upgrade "optimap[all]"`
+pip install --upgrade optimap
 ```
+
+````{note}
+`pip install optimap` will install optimap with all recommended dependencies including [OpenCV](https://opencv.org/) and PySide6, which may not be desired in some advanced use cases. For example, if you need a custom version of OpenCV (e.g., with CUDA support for GPU-accelerated motion tracking) or a different Qt implementation use the following command to install optimap with minimal dependencies:
+
+```bash
+pip install --no-deps optimap
+pip install -r https://raw.githubusercontent.com/cardiacvision/optimap/refs/heads/main/requirements-core.txt
+```
+````
 
 #### Installing from source
 

@@ -22,7 +22,7 @@ test-requires = ["pytest", "opencv-python-headless"]
 test-command = "pytest {project}/tests"
 manylinux-x86_64-image = "quay.io/pypa/manylinux_2_28_x86_64"  # TODO: temporary, remove after upgrade of cibuildwheel
 
-[tool.ruff]
+[tool.ruff.lint]
 exclude = [
   "docs",
 ]
@@ -34,5 +34,4 @@ ignore = [
     "PLW0603",
     "D401",
     "D205",
-    
 ]
