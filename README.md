@@ -26,13 +26,6 @@ To update optimap to the latest version run
 pip install --upgrade optimap
 ```
 
-**Advanced users only:** If you need a custom version of [OpenCV](https://opencv.org) (e.g. with CUDA support) or a different Qt implementation, you can install optimap without automatic dependency resolution and then manually install the core dependencies. This approach avoids installing the bundled OpenCV and PySide6 packages:
-
-```bash
-pip install --no-deps optimap
-pip install -r https://raw.githubusercontent.com/cardiacvision/optimap/refs/heads/main/requirements-core.txt
-```
-
 ## About optimap
 
 `optimap` is an interactive, script or notebook-based software library created for cardiovascular scientists in particular, but might also be useful for scientists in other fields. For instance, when performing calcium imaging or physiological research with moving cells or tissues. It is designed to be a flexible and customizable analysis workflow toolkit, which allows for a wide range of analyses and visualizations. See the [Tutorials](https://cardiacvision.github.io/optimap/main/tutorials/) for examples and more information about the usage of `optimap`. The tutorials can be downloaded by clicking on the link in the green box at the top of each tutorial page.
