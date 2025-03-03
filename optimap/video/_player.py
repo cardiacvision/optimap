@@ -191,7 +191,7 @@ class InteractivePlayer(FuncAnimation):
         self.suptitle.set_visible(not hide_framecounter)
 
         super().save(*args, **kwargs)
-        
+
         self.saving = False
         # reset frame generator, it's exhausted now
         self._iter_gen = self.play

@@ -149,7 +149,7 @@ def show_positions(positions, image=None, size=None, color=None, cmap="gray", vm
         show = True
     else:
         show = False
-    
+
     if isinstance(image, np.ndarray) and image.ndim == 2 and image.shape[1] == 2:
         image, positions = positions, image
         warnings.warn("The order of arguments for optimap.show_positions() has changed.", DeprecationWarning)
@@ -245,7 +245,7 @@ def collage_positions(positions, image_shape, ncols=6):
 
     This function takes a list of position arrays (e.g., coordinates of detected features) and
     rearranges them as if the corresponding images were arranged in a grid (see :func:`optimap.image.collage`
-    and :func:`optimap.video.collage`).  It handles the offsets required to position the points correctly within 
+    and :func:`optimap.video.collage`).  It handles the offsets required to position the points correctly within
     the combined grid.  All images are assumed to have the same shape `image_shape`.
 
     Parameters

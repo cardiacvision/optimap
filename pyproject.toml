@@ -22,16 +22,28 @@ test-requires = ["pytest"]
 test-command = "pytest {project}/tests"
 manylinux-x86_64-image = "quay.io/pypa/manylinux_2_28_x86_64"  # TODO: temporary, remove after upgrade of cibuildwheel
 
+[tool.ruff]
+line-length = 120
+extend-exclude = [
+    "docs",
+    "tests"
+]
+
 [tool.ruff.lint]
 exclude = [
   "docs",
 ]
 select = ['E', 'F', 'W', 'A', 'PLC', 'PLE', 'PLW', 'I', 'D', 'Q']
-target-version = "py39"
-line-length = 120
 ignore = [
-    "PLW2901",
-    "PLW0603",
+    "E501",  # line too long
+    "PLW2901",  # loop variable overwritten
+    "PLW0603",  # global statement
     "D401",
     "D205",
 ]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.flake8-builtins]
+builtins-allowed-modules = ["trace"]

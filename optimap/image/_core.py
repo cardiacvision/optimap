@@ -4,8 +4,8 @@ from pathlib import Path
 
 import cv2
 import matplotlib.pyplot as plt
-from matplotlib.colors import Normalize
 import numpy as np
+from matplotlib.colors import Normalize
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy import ndimage
 
@@ -211,7 +211,7 @@ def save_mask(filename, mask, image=None, **kwargs):
 
 def save_image(filename, image: np.ndarray, compat=False, **kwargs):
     """Save an image to a file. Makes best effort to avoid data precision loss, use :func:`export_image` to export images for publications.
-    
+
     The image data is saved as it is, without any normalization or scaling.
 
     The following file formats and image data types are supported:

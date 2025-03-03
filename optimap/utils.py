@@ -279,9 +279,9 @@ def jupyter_render_animation(f, mp4_filename=None, save_args={}):
     ipython = get_ipython()
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        
+
         disable_interactive_backend_switching()
-        plt.switch_backend('Agg')
+        plt.switch_backend("Agg")
         ani = f()
         ani._repeat = True  # loop animation, public attribute was deprecated in matplotlib 3.9
         ipython.run_line_magic("matplotlib", "inline")
@@ -289,9 +289,9 @@ def jupyter_render_animation(f, mp4_filename=None, save_args={}):
 
         if mp4_filename is None:
             vid = HTML(ani.to_html5_video(embed_limit=2**128))
-            plt.close('all')
+            plt.close("all")
         else:
             ani.save(mp4_filename, **save_args)
-            plt.close('all')
+            plt.close("all")
             vid = Video(filename=mp4_filename, embed=True, html_attributes="controls autoplay loop")
     return vid

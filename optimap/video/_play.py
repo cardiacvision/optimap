@@ -7,6 +7,7 @@ from ..utils import deprecated, interactive_backend
 from ._export import iter_alpha_blend_videos
 from ._player import InteractivePlayer
 
+
 @deprecated("use optimap.show_video instead")
 def play(video, skip_frame=1, title="", vmin=None, vmax=None, cmap="gray", interval=10, **kwargs):
     """Deprecated alias for :py:func:`optimap.video.show_video`."""
@@ -37,8 +38,8 @@ def play_with_overlay(*args, **kwargs):
 def show_video(video, skip_frame=1, title="", vmin=None, vmax=None, cmap="gray", interval=10, **kwargs):
     """Simple video player based on matplotlib's animate function.
 
-    See :py:func:`optimap.video.show_video_pair` for a player for two videos side-by-side, and :py:func:`optimap.video.show_videos`
-    for a player for `n` videos side-by-side.
+    See :py:func:`optimap.video.show_video_pair` for a player for two videos side-by-side,
+    and :py:func:`optimap.video.show_videos` for a player for `n` videos side-by-side.
 
     .. note::
         Using Monochrome is an alternative to this function, which allows for more control over the video player.

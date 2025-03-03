@@ -3,15 +3,15 @@ import warnings
 from pathlib import Path
 
 import numpy as np
+import pymatreader
 import skimage.io as sio
 import skvideo.io
-import pymatreader
 from tifffile import imread as tifffile_imread
 from tifffile import memmap as tifffile_memmap
 
 from ..utils import _print
-from ._importers import MiCAM05_Importer, MiCAM_ULTIMA_Importer, MultiRecorderImporter
 from ._export import _fix_ffmpeg_location
+from ._importers import MiCAM05_Importer, MiCAM_ULTIMA_Importer, MultiRecorderImporter
 
 
 def _natural_sort_path_key(path: Path, _nsre=re.compile("([0-9]+)")):
@@ -135,16 +135,16 @@ def load_MATLAB(filename, fieldname=None, start_frame=0, end_frame=None, step=1)
             # Assume the last dimension is the channel dimension
             video = np.moveaxis(video, -1, 0)
     else:
-        if 'cmosData' in fields and 'bgimage' in fields:
+        if "cmosData" in fields and "bgimage" in fields:
             # Rhythm data format from Efimov lab
-            video = -np.moveaxis(data['cmosData'], -1, 0)
+            video = -np.moveaxis(data["cmosData"], -1, 0)
         else:
             warnings.warn(f"Multiple fields found in file '{filename}': {fields}. Loading field '{npyfields[0]}'", UserWarning)
             video = data[npyfields[0]]
             if video.ndim == 3 and video.shape[-1] > video.shape[0] and video.shape[-1] > video.shape[1]:
                 # Assume the last dimension is the channel dimension
                 video = np.moveaxis(video, -1, 0)
-    
+
     return video[start_frame:end_frame:step]
 
 

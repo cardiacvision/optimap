@@ -96,6 +96,7 @@ def smooth_spatiotemporal(video: np.ndarray, sigma_temporal, sigma_spatial):
 
 
 def temporal_difference(array: np.ndarray, n: int, fill_value: float = 0, center: bool = False):
+    # ruff: noqa: D301
     """Temporal difference filter using an offset of `n` frames.
 
     Computes temporal intensity changes in the videos or traces between frames at time :math:`t` and :math:`t - \\Delta t`:

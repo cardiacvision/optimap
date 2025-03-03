@@ -11,8 +11,8 @@ from ._core import (
     show_traces,
 )
 from ._detrend import detrend_timeseries
-from ._normalize import normalize
 from ._interactive import select_positions, select_traces
+from ._normalize import normalize
 from ._points import positions_from_A_to_B, random_positions
 
 __all__ = [

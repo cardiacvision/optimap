@@ -24,18 +24,20 @@ def contrast_enhancement(video_or_img: np.ndarray, kernel_size: int, mask: np.nd
     np.ndarray
         {t, x, y} or {x, y} ndarray of dtype np.float32
     """
+    video_or_img = np.ascontiguousarray(video_or_img)
+    mask = np.ascontiguousarray(mask) if mask is not None else None
     if video_or_img.ndim == 2:
         if mask is None:
-            return _cpp.contrast_enhancement_img(np.ascontiguousarray(video_or_img), kernel_size)
+            return _cpp.contrast_enhancement_img(video_or_img, kernel_size)
         else:
-            return _cpp.contrast_enhancement_img(np.ascontiguousarray(video_or_img), kernel_size, np.ascontiguousarray(mask))
+            return _cpp.contrast_enhancement_img(video_or_img, kernel_size, mask)
     else:
         if mask is None:
-            return _cpp.contrast_enhancement_video(np.ascontiguousarray(video_or_img), kernel_size)
+            return _cpp.contrast_enhancement_video(video_or_img, kernel_size)
         else:
             if mask.ndim == 2:
                 mask = mask[None, ...].repeat(video_or_img.shape[0], axis=0)
-            return _cpp.contrast_enhancement_video(np.ascontiguousarray(video_or_img), kernel_size, np.ascontiguousarray(mask))
+            return _cpp.contrast_enhancement_video(video_or_img, kernel_size, mask)
 
 
 def smooth_displacements(

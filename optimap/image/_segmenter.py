@@ -1,14 +1,14 @@
 import pathlib
 from collections import deque
 
-import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import numpy as np
+import skimage
 from matplotlib.widgets import Button, LassoSelector
 from mpl_pan_zoom import PanManager, zoom_factory
 from packaging import version
 from PIL import Image
-import skimage
 
 ASSETS_DIR = pathlib.Path(__file__).parent.parent / "assets"
 DRAW_SYMBOL = ASSETS_DIR / "draw_symbol.png"
@@ -263,7 +263,7 @@ class ImageSegmenter:
         self._mask_future.clear()
         self.mask = np.logical_not(self.mask)
         self._draw_mask()
-    
+
     def _largest_island(self, event=None) -> None:
         self._mask_history.append(self._mask.copy())
         self._mask_future.clear()

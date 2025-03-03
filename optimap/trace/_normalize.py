@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def normalize(array: np.ndarray, ymin=0, ymax=None, vmin=None, vmax=None, dtype=np.float32, clip=True):
     """Normalize an array (time-series or multiple-timeseries, 1D or 2D array) to a specified range and data type.
 

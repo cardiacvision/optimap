@@ -1,8 +1,8 @@
 import numpy as np
 
+from ..image import collage as _collage_images
 from ..image import resize as resize_image
 from ..utils import _print, print_bar
-from ..image import collage as _collage_images
 
 
 def resize(video, shape=None, scale=None, interpolation="cubic"):
@@ -156,8 +156,7 @@ def pad(video, width, mode="constant" , **kwargs):
     return video
 
 def collage(videos, ncols=6, padding=0, padding_value=0):
-    """
-    Creates a video collage from a list of videos with the same shape.
+    """Creates a video collage from a list of videos with the same shape.
 
     Arranges the frames of the videos in a grid, similar to the :py:func:`optimap.image.collage` function. See also :func:`optimap.video.export_videos` to export a list of video as a collage to a mp4 file and :func`optimap.trace.collage_positions` to create a collage of positions.
 
@@ -188,11 +187,11 @@ def collage(videos, ncols=6, padding=0, padding_value=0):
 
         collage = om.video.collage([video1, video2, video3], ncols=2, padding=5)
         om.video.show_video(collage)
-        
+
     """
     if not videos:
         raise ValueError("Input video list cannot be empty.")
-    
+
     shape = videos[0].shape
     for video in videos:
         if video.shape != shape:

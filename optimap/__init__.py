@@ -16,6 +16,7 @@ from ._version import __version__, __version_tuple__
 from .activation import compute_activation_map
 from .image import (
     background_mask,
+    export_image,
     foreground_mask,
     interactive_mask,
     invert_mask,
@@ -23,7 +24,6 @@ from .image import (
     load_mask,
     save_image,
     save_mask,
-    export_image,
     show_image,
     show_mask,
 )
@@ -37,19 +37,25 @@ from .trace import (
     show_positions,
     show_traces,
 )
-from .utils import is_verbose, print_bar, print_properties, set_verbose, download_example_data
+from .utils import (
+    download_example_data,
+    is_verbose,
+    print_bar,
+    print_properties,
+    set_verbose,
+)
 from .video import (
     export_video,
-    export_videos,
     export_video_with_overlay,
+    export_videos,
     load_metadata,
     load_video,
     save_image_sequence,
     save_video,
     show_video,
+    show_video_overlay,
     show_video_pair,
     show_videos,
-    show_video_overlay,
 )
 from .video import (
     play as play_video,

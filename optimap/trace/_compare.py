@@ -105,7 +105,7 @@ def compare_traces(videos, coords=None, labels=None, colors=None, size=5, ref_fr
     if x is not None and fps is not None:
         msg = "`x` and `fps` parameters cannot be passed at the same time"
         raise ValueError(msg)
-    
+
     max_len = max([video.shape[0] for video in videos])
     for i in range(len(videos)):
         if videos[i].shape[0] != max_len:

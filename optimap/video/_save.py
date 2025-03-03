@@ -9,6 +9,7 @@ import tifffile
 from scipy.io import savemat
 
 
+# ruff: noqa: A002
 def save_image_sequence(directory: Union[str, Path],
                         video: np.ndarray,
                         filepattern: str = "frame_{:03d}",
@@ -47,8 +48,8 @@ def save_image_sequence(directory: Union[str, Path],
     """
     if isinstance(video, (str, os.PathLike)):
         directory, video = video, directory
-        warnings.warn("The order of arguments for optimap.save_image_sequence() has changed. "
-                      "Please use save_image_sequence(directory, video) instead of save_image_sequence(video, directory).",
+        warnings.warn("The order of arguments for optimap.save_image_sequence() has changed. Please use "
+                      "save_image_sequence(directory, video) instead of save_image_sequence(video, directory).",
                       DeprecationWarning)
 
     if directory is not None:

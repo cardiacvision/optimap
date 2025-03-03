@@ -2,6 +2,7 @@
 
 from ..image import normalize
 from ._edit import (
+    collage,
     crop,
     flip_left_right,
     flip_up_down,
@@ -9,14 +10,13 @@ from ._edit import (
     resize,
     rotate_left,
     rotate_right,
-    collage
 )
 from ._export import (
     alpha_blend_videos,
     export_video,
-    export_videos,
     export_video_collage,
     export_video_with_overlay,
+    export_videos,
     get_default_ffmpeg_encoder,
     iter_alpha_blend_videos,
     set_default_ffmpeg_encoder,
@@ -35,11 +35,7 @@ from ._importers import (
     MiCAM_ULTIMA_Importer,
     MultiRecorderImporter,
 )
-from ._load import (
-    load_metadata,
-    load_video,
-    load_image_folder
-)
+from ._load import load_image_folder, load_metadata, load_video
 from ._play import (
     # deprecated
     play,
@@ -48,9 +44,9 @@ from ._play import (
     playn,
     # new names
     show_video,
+    show_video_overlay,
     show_video_pair,
     show_videos,
-    show_video_overlay
 )
 from ._player import InteractivePlayer
 from ._save import (
@@ -82,7 +78,7 @@ __all__ = [
     "playn",
     "play_with_overlay",
     "export_video_collage",
-    
+
     # new names
     "show_videos",
     "show_video",
