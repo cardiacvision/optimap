@@ -1,17 +1,20 @@
 (installing)=
 # Installing optimap
 
-`optimap` is available for Windows, Mac OSX, and Linux and can be installed using [`pip`](https://pip.pypa.io/), see below. You can find more detailed installation instructions in our [Installation Guide](#installation).
+`optimap` is a [Python](https://en.wikipedia.org/wiki/Python_programming_language) library for optical mapping analysis that supports Windows, Mac OSX, and Linux. This guide will help you get started with installation and basic usage. You can find more detailed installation instructions in our [Installation Guide](#installation).
 
-`optimap` requires Python 3.8 or later. To install [Python](https://en.wikipedia.org/wiki/Python_programming_language) we recommend installing the [Anaconda distribution](https://www.anaconda.com/download), which includes Python and many useful packages for scientific computing, or by installing [Python directly](https://code.visualstudio.com/docs/python/python-tutorial#_install-a-python-interpreter).
+`optimap` requires Python 3.8 or later. To install Python we recommend installing the [Anaconda distribution](https://www.anaconda.com/download), which includes Python and many useful packages for scientific computing, or by installing [Python directly](https://code.visualstudio.com/docs/python/python-tutorial#_install-a-python-interpreter).
 
 ```{tip}
-optimap relies heavily on [NumPy](https://numpy.org) and [Matplotlib](https://matplotlib.org). We recommend the [Scientific Python Lectures](https://lectures.scientific-python.org) and the [Python Data Science Handbook](https://jakevdp.github.io/PythonDataScienceHandbook/) for an introduction to Python and these libraries.
+optimap relies heavily on [NumPy](https://numpy.org) and [Matplotlib](https://matplotlib.org). 
+For an introduction to Python and these libraries, we recommend:
+- [Scientific Python Lectures](https://lectures.scientific-python.org)
+- [Python Data Science Handbook](https://jakevdp.github.io/PythonDataScienceHandbook/)
 ```
 
 #### Installation using pip (macOS, Windows, Linux)
 
-The easiest way to install optimap is using `pip` in the command line:
+The easiest way to install optimap is using [pip](https://packaging.python.org/en/latest/tutorials/installing-packages/) in the command line:
 
 ```bash
 pip install optimap
@@ -46,7 +49,7 @@ See [](#contributing) for more details.
 
 # Overview of optimap
 
-optimap consists of the following modules:
+optimap is organized into the following modules:
 
 ```{eval-rst}
 .. autosummary::

@@ -12,7 +12,7 @@
 
 ## Installation
 
-`optimap` is available for macOS, Windows and Linux, see the [Getting Started](https://cardiacvision.github.io/optimap/main/chapters/getting_started/) guide for more information.
+`optimap` supports macOS, Windows, and Linux. See the [Getting Started](https://cardiacvision.github.io/optimap/main/chapters/getting_started/) guide for more information.
 
 You can install `optimap` using [pip](https://packaging.python.org/en/latest/tutorials/installing-packages/):
 
