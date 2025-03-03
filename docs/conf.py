@@ -79,6 +79,7 @@ extensions = [
     "sphinx_remove_toctrees",
     "sphinx_design",
     "sphinx_codeautolink",
+    "sphinx_togglebutton",
 ]
 myst_enable_extensions = [
     "dollarmath",

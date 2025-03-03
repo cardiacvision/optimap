@@ -26,12 +26,22 @@ To update optimap to the latest version run
 pip install --upgrade optimap
 ```
 
-````{note}
-`pip install optimap` will install optimap with all recommended dependencies including [OpenCV](https://opencv.org/) and PySide6, which may not be desired in some advanced use cases. For example, if you need a custom version of OpenCV (e.g., with CUDA support for GPU-accelerated motion tracking) or a different Qt implementation use the following command to install optimap with minimal dependencies:
+````{admonition} Installing without Recommended Dependencies
+:class: note, dropdown
+
+`pip install optimap` will install optimap with all recommended dependencies including [OpenCV](https://opencv.org/) (`opencv-contrib-python`) and PySide6, which may not be desired in some advanced use cases. If you need a custom version of OpenCV (e.g., with CUDA support for GPU-accelerated motion tracking) or a different Qt implementation use the following command to install optimap with minimal dependencies:
 
 ```bash
 pip install --no-deps optimap
 pip install -r https://raw.githubusercontent.com/cardiacvision/optimap/refs/heads/main/requirements-core.txt
+```
+
+or using [pip-mark-installed](https://pypi.org/project/pip-mark-installed/):
+
+```bash
+pip install pip-mark-installed
+pip-mark-installed opencv-contrib-python PySide6
+pip install optimap
 ```
 ````
 
@@ -102,12 +112,11 @@ You could run the Python script in a terminal with `python3 basics.py` from the 
 (monochrome)=
 # Monochrome
 
-[Monochrome](https://github.com/sitic/monochrome/) is a separate project to view high-dynamic range monochromatic videos, such as those produced by optical mapping. It can be used as a standalone application or as a Python library. Monochrome is not required to use optimap, but it can be useful for viewing optical mapping data in addition to the functions provided by optimap.
+[Monochrome](https://github.com/sitic/monochrome/) is a separate project to view high-dynamic range monochromatic videos, such as those produced by optical mapping. It can be used as a standalone application or as a Python library. Monochrome is not required to use optimap, but it can be useful for viewing optical mapping data in addition to the functions provided by optimap. To view a video using Monochrome, you can use the following Python code:
 
-To install monochrome, run:
-
-```bash
-pip install monochrome
+```python
+import monochrome as mc
+mc.show(video)
 ```
 
 # Interactive Plots

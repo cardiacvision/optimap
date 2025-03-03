@@ -98,6 +98,7 @@ setup(
             "jupyter-cache",
             "sphinx-remove-toctrees",
             "sphinx-design",
+            "sphinx-togglebutton",
         ],
     },
 )
