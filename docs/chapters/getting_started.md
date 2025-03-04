@@ -1,7 +1,7 @@
 (installing)=
 # Installing optimap
 
-`optimap` is a [Python](https://en.wikipedia.org/wiki/Python_programming_language) library for optical mapping analysis that supports Windows, Mac OSX, and Linux. This guide will help you get started with installation and basic usage. You can find more detailed installation instructions in our [Installation Guide](#installation).
+`optimap` is a [Python](https://en.wikipedia.org/wiki/Python_programming_language) library for optical mapping analysis that supports Windows, Mac OSX, and Linux. This guide will help you get started with installation and basic usage.
 
 `optimap` requires Python 3.8 or later. To install Python we recommend installing the [Anaconda distribution](https://www.anaconda.com/download), which includes Python and many useful packages for scientific computing, or by installing [Python directly](https://code.visualstudio.com/docs/python/python-tutorial#_install-a-python-interpreter).
 
@@ -63,24 +63,19 @@ optimap is organized into the following modules:
 
 ```{eval-rst}
 .. autosummary::
+   optimap
    optimap.video
    optimap.image
    optimap.trace
    optimap.motion
+   optimap.activation
    optimap.phase
    optimap.utils
 ```
 
-Some of the most important functions are also imported into the top-level namespace:
+The most important functions are also imported into the top-level namespace `optimap`. Click on the module name to see the functions and classes it contains.
 
-```{eval-rst}
-.. autosummary::
-   optimap
-```
-
-for convenience.
-
-See the tutorials listed below for an introduction to the main features of optimap and the API reference for a complete list of functions and classes.
+See the tutorials listed below for a comprehensive introduction to optimap's main features. For a complete reference of all available functions and classes, consult the [📚 API documentation](/api).
 
 ```{toctree}
 :maxdepth: 2
@@ -94,30 +89,38 @@ See the tutorials listed below for an introduction to the main features of optim
 
 We highly recommend using [Visual Studio Code](https://code.visualstudio.com) for working with optimap. Visual Studio Code is a free and open-source editor with excellent support for Python and Jupyter notebooks.
 
-- Download and install [Visual Studio Code](https://code.visualstudio.com)
-- Install the Microsoft [Python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
-- Install the Microsoft [Jupyter extension](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter)
+To get started:
+1. Download and install [Visual Studio Code](https://code.visualstudio.com)
+2. Install the [Python extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python) by Microsoft
+3. Install the [Jupyter extension](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) by Microsoft
 
-In particular, we recommend using regular `.py` files with automatic code cells by typing `# %%`. This allows you to run code cells directly from the editor, as shown below:
+## Code Cells in VS Code
+
+VS Code allows you to create interactive code cells directly in Python files by typing `# %%`. This lets you run code segments individually, similar to Jupyter notebooks or MATLAB Sections:
 
 ![code cells](/_static/vscode-code-cells.png)
 
-See the [Visual Studio Code documentation](https://code.visualstudio.com/docs/python/jupyter-support-py) for more information. Code cells are also supported in other editors such as [PyCharm](https://www.jetbrains.com/pycharm/) and [Spyder](https://www.spyder-ide.org/).
-
-Purists who would like to run their `.py` scripts in the command line
-You could run the Python script in a terminal with `python3 basics.py` from the folder where the file is located. Alternatively, one can start Python in the command line (by typing in `python3.9` and pressing 'Enter') and type in the above command and press 'Enter'.
+For more details, see the [VS Code documentation on Jupyter support](https://code.visualstudio.com/docs/python/jupyter-support-py). Similar code cell functionality is also available in other editors like [PyCharm](https://www.jetbrains.com/pycharm/) and [Spyder](https://www.spyder-ide.org/).
 
 ![plot viewer](/_static/vscode-plot-viewer.gif)
 
-(monochrome)=
-# Monochrome
+## Command Line Usage
 
-[Monochrome](https://github.com/sitic/monochrome/) is a separate project to view high-dynamic range monochromatic videos, such as those produced by optical mapping. It can be used as a standalone application or as a Python library. Monochrome is not required to use optimap, but it can be useful for viewing optical mapping data in addition to the functions provided by optimap. To view a video using Monochrome, you can use the following Python code:
+If you prefer using the command line, you can:
+- Run scripts directly with `python3 your_script.py` from the script's directory
+- Start an interactive Python session by running `python3` and enter commands directly
+
+(monochrome)=
+# Monochrome Viewer
+
+[Monochrome](https://github.com/sitic/monochrome/) is a companion tool for viewing high-dynamic range monochromatic videos, commonly used in optical mapping. While not required for optimap, it provides additional visualization capabilities. To view a video in Monochrome use the following Python code:
 
 ```python
 import monochrome as mc
 mc.show(video)
 ```
+
+See the [Monochrome documentation](https://monochrome.readthedocs.io/) for details.
 
 # Interactive Plots
 
@@ -151,7 +154,7 @@ Alternatively, you can manually switch to the Qt backend by running the followin
 
 ```python
 import matplotlib.pyplot as plt
-plt.switch_backend('QtAgg')  # or 'QtCairo'
+plt.switch_backend("QtAgg")  # or "QtCairo"
 ```
 
 # How to cite
