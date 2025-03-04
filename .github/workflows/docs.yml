@@ -27,7 +27,7 @@ jobs:
             - name: Set up Python
               uses: actions/setup-python@v5
               with:
-                  python-version: 3.12
+                  python-version: 3.13
 
             - name: Install ffmpeg
               uses: FedericoCarboni/setup-ffmpeg@v3
@@ -42,7 +42,10 @@ jobs:
 
             - name: Install optimap
               run: python -m pip install .[docs]
-              
+
+            - name: Install sphinx-codeautolink fork
+              run: uv pip install -U https://github.com/sitic/sphinx-codeautolink.git
+
             - name: Cache excample file downloads
               uses: actions/cache@v4
               with:

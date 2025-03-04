@@ -3,3 +3,5 @@ example_data
 *.mp4
 *.tiff
 converted
+background_mask.png
+custom_mask.png
