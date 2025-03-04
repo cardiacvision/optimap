@@ -218,6 +218,8 @@ def retrieve_example_data(name, directory="./optimap_example_data", silent=False
 
 def download_example_data(name, directory="./optimap_example_data", silent=False):
     """Download example data if not already present.
+    
+    See :doc:`/tutorials/example_files` for list of files.
 
     Parameters
     ----------
