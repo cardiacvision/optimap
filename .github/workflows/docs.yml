@@ -36,7 +36,7 @@ jobs:
               uses: FedericoCarboni/setup-ffmpeg@v3
                   
             - name: Install ipywidgets
-              run: uv pip install ipywidgets
+              run: uv pip install --system ipywidgets
 
             - name: Checkout code
               uses: actions/checkout@v4
@@ -44,10 +44,10 @@ jobs:
                   fetch-depth: 0
 
             - name: Install optimap
-              run: uv pip install .[docs]
+              run: uv pip install --system .[docs]
 
             - name: Install sphinx-codeautolink fork
-              run: uv pip install -U https://github.com/sitic/sphinx-codeautolink.git
+              run: uv pip install --system -U https://github.com/sitic/sphinx-codeautolink.git
 
             - name: Cache excample file downloads
               uses: actions/cache@v4
