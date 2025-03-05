@@ -118,7 +118,8 @@ napoleon_numpy_docstring = True
 # napoleon_use_ivar = False
 # napoleon_use_param = False
 # napoleon_use_rtype = False
-# numpydoc_show_class_members = False
+numpydoc_show_class_members = False
+numpydoc_class_members_toctree = False
 
 bibtex_bibfiles = ['refs.bib']
 bibtex_default_style = 'unsrtalpha'
@@ -156,7 +157,7 @@ html_css_files = [
 ]
 html_title = "optimap"
 html_theme = "furo"
-html_favicon = "favicon.ico"
+html_favicon = "_static/favicon.ico"
 
 master_doc = "index"
 # thebe_config = {
@@ -172,6 +173,12 @@ html_theme_options = {
 remove_from_toctrees = [
     "tutorials/converted/*",
     "tutorials/index.md",
+]
+
+show_warning_types = True
+suppress_warnings = [
+    'myst.header',
+    'toc.not_included'
 ]
 
 # based on pandas/doc/source/conf.py
