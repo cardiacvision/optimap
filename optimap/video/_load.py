@@ -210,6 +210,7 @@ def load_video(path, start_frame=0, frames=None, step=1, use_mmap=False, **kwarg
     - .gsd, .gsh (SciMedia MiCAM 05)
     - .rsh, .rsm, .rsd (SciMedia MiCAM ULTIMA)
     - .npy (numpy array)
+    - .mp4, .avi, .mov, … (digital video files)
 
     Supported file types when loading a folder:
 
