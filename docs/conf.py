@@ -96,7 +96,11 @@ autodoc_default_options = {
 autodoc_member_order = 'bysource'
 autosummary_generate = True
 
-codeautolink_global_preface = "import optimap as om"
+codeautolink_global_preface = """
+import optimap as om
+import numpy as np
+import matplotlib.pyplot as plt
+"""
 
 nb_execution_mode = "cache"
 nb_execution_timeout = 600  # seconds
@@ -152,6 +156,7 @@ html_css_files = [
 ]
 html_title = "optimap"
 html_theme = "furo"
+html_favicon = "favicon.ico"
 
 master_doc = "index"
 # thebe_config = {

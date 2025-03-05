@@ -120,6 +120,8 @@ import monochrome as mc
 mc.show(video)
 ```
 
+[<center><img src="https://cardiacvision.github.io/optimap/main/_static/Monochrome-screenshot1.webp"></center>](https://github.com/sitic/monochrome/)
+
 See the [Monochrome documentation](https://monochrome.readthedocs.io/) for details.
 
 # Interactive Plots
