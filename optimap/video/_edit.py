@@ -127,9 +127,7 @@ def crop(video, width):
     -------
     {t, x-2*width, y-2*width} ndarray
     """
-    _print("cropping array ...")
     video = video[:, width:-width, width:-width]
-    print_bar()
     return video
 
 def pad(video, width, mode="constant" , **kwargs):

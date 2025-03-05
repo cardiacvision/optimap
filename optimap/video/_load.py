@@ -31,16 +31,11 @@ def load_numpy(filename, start_frame=0, end_frame=None, step=1, use_mmap=False):
 def load_tiff(filename, start_frame=0, end_frame=None, step=1, use_mmap=False):
     """Loads a video from a .tiff stack."""
     if use_mmap:
-        _print(f"loading video: {filename} with memory mapping ...")
         video = tifffile_memmap(filename, mode="r")
         video = video[start_frame:end_frame:step]
     else:
-        _print(f"loading video: {filename} ...")
         video = tifffile_imread(filename)
         video = video[start_frame:end_frame:step]
-    _print(
-        f"finished loading video '{filename}' with shape {video.shape} and dtype {video.dtype}"
-    )
     return video
 
 def load_image_folder(path, prefix="", start_frame=0, end_frame=None, step=1):
@@ -157,13 +152,8 @@ def load_MultiRecorder_metadata(filepath):
     return dat.get_metadata()
 
 def load_SciMedia_MiCAM05(filename, start_frame=0, frames=None, step=1):
-    _print(f"loading video: {filename} ...")
-
     dat = MiCAM05_Importer(filename)
     video = dat.load_video(start_frame=start_frame, frames=frames, step=step)
-
-    _print(f"finished loading video '{filename}' with shape {video.shape} and dtype {video.dtype}.")
-    _print(f"Experiment from {dat._meta['date']} acquired at {dat._meta['framerate']} fps.")
     return video
 
 def load_SciMedia_MiCAM05_metadata(filename):

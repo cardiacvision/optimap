@@ -26,9 +26,6 @@ def compute_phase(video, offset=-0.5):
     _print("computing phase video (using hilbert transform and assuming normalized video with values [0,1]) ... ")
     analytic_signal = hilbert(video + offset, axis=0)
     phase = np.angle(analytic_signal).astype(np.float32)
-    _print("minimum of phase: " + str(np.nanmin(phase)))
-    _print("maximum of phase: " + str(np.nanmax(phase)))
-    print_bar()
     return phase
 
 def phasefilter_angle_threshold(phase: np.ndarray, wx: int, wy: int, wt: int, tr_angle: float,

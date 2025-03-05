@@ -63,7 +63,6 @@ def normalize_pixelwise_slidingwindow(video: np.ndarray, window_size: int, ymin=
     {t, x, y} ndarray
         Normalized video.
     """
-    _print(f"normalizing video pixel-wise using sliding window of size {2*(window_size//2)+1} ...")
     if video.ndim != 3:
         msg = "ERROR: video has to be 3 dimensional"
         raise ValueError(msg)
