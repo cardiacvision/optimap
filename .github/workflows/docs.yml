@@ -48,9 +48,6 @@ jobs:
             - name: Install optimap
               run: uv pip install --system .[docs]
 
-            - name: Install sphinx-codeautolink fork
-              run: uv pip install --system -U https://github.com/sitic/sphinx-codeautolink.git
-
             - name: Cache excample file downloads
               uses: actions/cache@v4
               with:
