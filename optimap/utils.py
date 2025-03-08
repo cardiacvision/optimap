@@ -183,14 +183,10 @@ def interactive_backend(func):
 
     return wrapper
 
-@deprecated("Use download_example_data instead")
-def retrieve_example_data(name, directory="./optimap_example_data", silent=False):
-    return download_example_data(name, directory=directory, silent=silent)
-
 
 def download_example_data(name, known_hash=None, directory="./optimap_example_data", silent=False):
     """Download example data if not already present.
-    
+
     See :doc:`/tutorials/example_files` for list of files. Accepts also an URL to a file to download. See :func:`pooch.retrieve` for more information.
 
     If file is a zip file, it will be unzipped after download.
@@ -214,7 +210,7 @@ def download_example_data(name, known_hash=None, directory="./optimap_example_da
     if silent:
         silent = pooch.get_logger().level
         pooch.get_logger().setLevel("WARNING")
-    
+
     if name.startswith(("http://", "https://", "ftp://", "doi:")):
         url = name
         if url.startswith("doi:"):

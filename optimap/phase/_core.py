@@ -4,7 +4,7 @@ import numpy as np
 from scipy.signal import hilbert
 
 from .. import _cpp
-from ..utils import _print, print_bar
+from ..utils import _print
 from ..video import play
 
 
