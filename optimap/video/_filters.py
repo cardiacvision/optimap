@@ -66,6 +66,7 @@ def normalize_pixelwise_slidingwindow(video: np.ndarray, window_size: int, ymin=
     if video.ndim != 3:
         msg = "ERROR: video has to be 3 dimensional"
         raise ValueError(msg)
+    video = np.ascontiguousarray(video)
     return _cpp.normalize_pixelwise_slidingwindow(video, window_size // 2, ymin, ymax)
 
 

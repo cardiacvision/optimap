@@ -52,17 +52,21 @@ def phasefilter_angle_threshold(phase: np.ndarray, wx: int, wy: int, wt: int, tr
     {t, x, y} ndarray
         phase video with outliers removed
     """
+    phase = np.ascontiguousarray(phase)
     if mask is None:
         return _cpp.phasefilter_angle_threshold(phase, wx, wy, wt, tr_angle)
     else:
+        mask = np.ascontiguousarray(mask)
         return _cpp.phasefilter_angle_threshold(phase, wx, wy, wt, tr_angle, mask)
 
 
 def phasefilter_disc(phase: np.ndarray, wx: int, wy: int, wt: int, mask: Optional[np.ndarray] = None):
     """TODO: Docstring for phasefilter_disc."""
+    phase = np.ascontiguousarray(phase)
     if mask is None:
         return _cpp.phasefilter_disc(phase, wx, wy, wt)
     else:
+        mask = np.ascontiguousarray(mask)
         return _cpp.phasefilter_disc(phase, wx, wy, wt, mask)
 
 
@@ -90,9 +94,11 @@ def phasefilter_fillsmooth(phase: np.ndarray, wx: int, wy: int, wt: int, thresho
     {t, x, y} ndarray
         phase video with holes filled
     """
+    phase = np.ascontiguousarray(phase)
     if mask is None:
         return _cpp.phasefilter_fillsmooth(phase, wx, wy, wt, threshold)
     else:
+        mask = np.ascontiguousarray(mask)
         return _cpp.phasefilter_fillsmooth(phase, wx, wy, wt, threshold, mask)
 
 
