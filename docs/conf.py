@@ -134,6 +134,7 @@ intersphinx_mapping = {
     "scipy": ("https://docs.scipy.org/doc/scipy", None),
     "skimage": ("https://scikit-image.org/docs/stable", None),
     "monochrome": ("https://monochrome.readthedocs.io/stable", None),
+    "pooch": ("https://www.fatiando.org/pooch/latest", None),
 }
 
 # Add any paths that contain templates here, relative to this directory.
@@ -160,10 +161,7 @@ html_theme = "furo"
 html_favicon = "_static/favicon.ico"
 
 master_doc = "index"
-# thebe_config = {
-#     "repository_url": html_theme_options["repository_url"],
-#     "repository_branch": html_theme_options["repository_branch"],
-# }
+
 html_theme_options = {
     "source_repository": "https://github.com/cardiacvision/optimap/",
     "source_branch": "main",
