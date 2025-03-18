@@ -67,6 +67,8 @@ def smooth_displacements(
     np.ndarray
         {t, x, y, 2} smoothed optical flow array
     """
+    displacements = np.ascontiguousarray(displacements)
+    mask = np.ascontiguousarray(mask) if mask is not None else None
     return _cpp.flowfilter_smooth_spatiotemporal(displacements, wx, wy, wt, mask)
 
 
@@ -83,8 +85,8 @@ def estimate_displacements(video, ref_frame=0, show_progress=True, method=None):
     show_progress : bool, optional
         Show progress bar, by default None
     method : str, optional
-        Optical flow method to use (default: ``'farneback'`` if GPU is available, ``'farneback_cpu'`` otherwise),
-        by default None
+        Optical flow method, See :py:class:`FlowEstimator` class for list of available methods. By default ``None`` which means ``'farneback'`` if a CUDA GPU is
+        available and ``'farneback_cpu'`` otherwise.
 
     Returns
     -------
@@ -110,8 +112,8 @@ def estimate_reverse_displacements(video, ref_frame=0, show_progress=True, metho
     show_progress : bool, optional
         Show progress bar, by default None
     method : str, optional
-        Optical flow method to use, by default ``None`` which means ``'farneback'`` if a CUDA GPU is
-        available, or ``'farneback_cpu'`` otherwise
+        Optical flow method, See :py:class:`FlowEstimator` class for list of available methods. By default ``None`` which means ``'farneback'`` if a CUDA GPU is
+        available and ``'farneback_cpu'`` otherwise.
 
     Returns
     -------
@@ -163,8 +165,8 @@ def motion_compensate(
     show_progress : bool, optional
         Show progress bar, by default None
     method : str, optional
-        Optical flow method to use, by default ``None`` which means ``'farneback'`` if a CUDA GPU is
-        available, or ``'farneback_cpu'`` otherwise
+        Optical flow method, See :py:class:`FlowEstimator` class for list of available methods. By default ``None`` which means ``'farneback'`` if a CUDA GPU is
+        available and ``'farneback_cpu'`` otherwise.
 
     Returns
     -------
@@ -225,8 +227,8 @@ def reverse_motion_compensate(
     show_progress : bool, optional
         Show progress bar, by default None
     method : str, optional
-        Optical flow method to use, by default ``None`` which means ``'farneback'`` if a CUDA GPU is
-        available, or ``'farneback_cpu'`` otherwise
+        Optical flow method, See :py:class:`FlowEstimator` class for list of available methods. By default ``None`` which means ``'farneback'`` if a CUDA GPU is
+        available and ``'farneback_cpu'`` otherwise.
 
     Returns
     -------

@@ -17,15 +17,16 @@ class FlowEstimator:
 
     * ``'farneback_cpu'`` (CPU) or ``'farneback'`` (GPU): :cite:p:`Farneback2003`
     * ``'brox'`` (GPU): :cite:p:`Brox2004`
-    * ``'lk'`` (GPU): pyramidal Lucas-Kanade optical flow :cite:p:`Bouguet1999`
+    * ``'lk'`` (GPU): Pyramidal Lucas-Kanade optical flow :cite:p:`Bouguet1999`
     * ``'tvl1_cpu'`` (CPU) or ``'tvl1'`` (GPU): :cite:p:`Zach2007`
-    * ``'nvidia'``: NVIDIA Optical Flow SDK 1.0 (GPU)
-    * ``'nvidia2'``: NVIDIA Optical Flow SDK 2.0 (GPU)
+    * ``'DIS'``: Dense Inverse Search (DIS) optical flow algorithm (CPU) :cite:p:`Kroeger2016`
+    * ``'nvidia'`` NVIDIA Optical Flow SDK 1.0 (GPU)
+    * ``'nvidia2'`` NVIDIA Optical Flow SDK 2.0 (GPU)
 
     The functions :py:func:`estimate_displacements` and :py:func:`estimate_reverse_displacements` functions are wrappers
     around this class for convenience.
 
-    .. warning:: This class expects images with values in the range [0,1]. Except for the ``'brox'`` method, all images are internally converted to uint8 before calculating the optical flow. This is because the OpenCV CUDA optical flow methods only support uint8 images. This may lead to unexpected results if the images are not in the range [0,1].
+    .. warning:: This class expects either uint8 images or floating point images with values in the range [0,1]. Except for the ``'brox'`` method, all images are internally converted to uint8 before calculating the optical flow. This is because the OpenCV CUDA optical flow methods only support uint8 images. This may lead to unexpected results if the images are not in the range [0,1].
     """  # noqa: E501
 
     #: parameters for Farneback optical flow
@@ -36,6 +37,8 @@ class FlowEstimator:
     lk_params = {}
     #: parameters for Brox optical flow
     brox_params = {}
+    #: parameters for DIS optical flow
+    dis_params = { "preset": cv2.DISOPTICAL_FLOW_PRESET_MEDIUM }
 
     def __init__(self):
         self.cuda_supported = cv2.cuda.getCudaEnabledDeviceCount() > 0  #: whether CUDA is supported
@@ -45,6 +48,7 @@ class FlowEstimator:
             self.default_method = "farneback_cpu"
 
     def _get_cv2_estimator(self, method: str, img_shape=None):
+        method = method.lower()
         if method == "farneback":
             return cv2.cuda_FarnebackOpticalFlow.create(**self.farneback_params)
         elif method == "farneback_cpu":
@@ -57,6 +61,8 @@ class FlowEstimator:
             return cv2.cuda_DensePyrLKOpticalFlow.create(**self.lk_params)
         elif method == "brox":
             return cv2.cuda_BroxOpticalFlow.create(**self.brox_params)
+        elif method == "dis":
+            return cv2.DISOpticalFlow_create(**self.dis_params)
         elif method == "nvidia":
             if img_shape is None:
                 msg = "shape must be specified for nvidia optical flow method"
@@ -119,20 +125,19 @@ class FlowEstimator:
     def _as_uint8(imgs: Union[np.ndarray, list]):
         if isinstance(imgs, list):
             imgs = np.array(imgs)
+        if imgs.dtype == np.uint8:
+            return imgs
+        elif imgs.min() < 0 or imgs.max() > 1:
+            warnings.warn(
+                "WARNING: image values are not in range [0,1], which may lead to unexpected motion tracking"
+            )
         return (imgs * 255).astype(np.uint8)
 
     @staticmethod
     def _check_and_convert(imgs: Union[np.ndarray, list], method: str):
         if method == "brox":
             return imgs
-
-        if isinstance(imgs, list):
-            imgs = np.array(imgs)
-        if imgs.min() < 0 or imgs.max() > 1:
-            warnings.warn(
-                "WARNING: image values are not in range [0,1], which may lead to unexpected motion tracking"
-            )
-        return (imgs * 255).astype(np.uint8)
+        return FlowEstimator._as_uint8(imgs)
 
     def _estimate(
         self,
@@ -144,6 +149,7 @@ class FlowEstimator:
     ):
         if method is None:
             method = self.default_method
+        method = method.lower()
 
         if len(vid1) != len(vid2):
             msg = f"Error: arrays have unequal length: {len(vid1)=} != {len(vid2)=}"
@@ -156,7 +162,7 @@ class FlowEstimator:
         img_shape = vid1[0].shape
         flows = np.zeros((Nt, *img_shape, 2), dtype=np.float32)
         estimator = self._get_cv2_estimator(method, img_shape)
-        uses_gpu = method not in ["farneback_cpu", "tvl1_cpu"]
+        uses_gpu = method not in ["farneback_cpu", "tvl1_cpu", "dis"]
         description = "calculating flows"
         if uses_gpu:
             description += " (GPU)"
@@ -175,7 +181,7 @@ class FlowEstimator:
         vid1 = self._check_and_convert(vid1, method)
         vid2 = self._check_and_convert(vid2, method)
 
-        if method in ["farneback_cpu", "tvl1_cpu", "nvidia"]:
+        if method in ["farneback_cpu", "tvl1_cpu", "dis", "nvidia"]:
             # Methods which don't need GpuMat, note that `nvidia` still runs on GPU
             for i, (img1, img2) in enumerate(
                 tqdm(
