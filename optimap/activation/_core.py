@@ -1,7 +1,25 @@
 import numpy as np
 
 from ..image import show_image
-from ..utils import _print, print_bar
+from ..utils import _print
+
+
+def find_crossings(signal, threshold=0.5, inverted=False):
+    """
+    Finds the indices where a 1D signal crosses a threshold from above to below (`inverted=False`) or from below to above (`inverted=True`).
+    This is useful for detecting events in time series data.
+
+    Args:
+        signal (np.ndarray): The 1D signal.
+        threshold (float): The threshold value.
+
+    Returns:
+        np.ndarray: An array of indices where the signal crosses the threshold from above to below.
+    """
+    above_threshold = signal > threshold
+    change = 1 if inverted else -1
+    crossing_indices = np.where(np.diff(above_threshold.astype(int)) == change)[0]
+    return crossing_indices
 
 
 def compute_activation_map(video,
@@ -69,7 +87,6 @@ def compute_activation_map(video,
 
     _print(f"minimum of activation_map: {np.nanmin(amap)}")
     _print(f"maximum of activation_map: {np.nanmax(amap)}")
-    print_bar()
 
     if show:
         cbar_label = "Activation Time [ms]" if fps is not None else "Activation Time [frames]"
