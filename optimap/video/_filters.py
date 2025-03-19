@@ -137,6 +137,34 @@ def temporal_difference(array: np.ndarray, n: int, fill_value: float = 0, center
     return diff
 
 
+def mean_filter(video: np.ndarray, size_temporal: int = 1, size_spatial: int = 1, mode: str = "nearest"):
+    """Mean filter a video to smooth it (also known as uniform filter).
+    
+    The mean filter is optionally applied in space and/or time to smooth the video. Uses :func:`scipy.ndimage.uniform_filter`.
+
+    Parameters
+    ----------
+    video : {t, x, y} ndarray
+        Video to filter.
+    size_temporal : int
+        Size of the temporal kernel.
+    size_spatial : int
+        Size of the spatial kernel.
+    mode : str
+        The mode parameter determines how the input array is extended when the filter overlaps a border.
+        See :func:`scipy.ndimage.uniform_filter` for details. Default is 'nearest'.
+
+    Returns
+    -------
+    {t, x, y} ndarray
+        Filtered video.
+    """
+    if video.ndim != 3:
+        msg = "ERROR: video has to be 3 dimensional"
+        raise ValueError(msg)
+    return ndimage.uniform_filter(video, size=(size_temporal, size_spatial, size_spatial), mode=mode)
+
+
 def evolve_jitter_filter(video, framerate=500.0, threshold=0.004):
     """Jitter removal filter for Photometrics Evolve 128 camera.
 

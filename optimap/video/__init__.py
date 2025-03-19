@@ -29,6 +29,7 @@ from ._filters import (
     normalize_pixelwise_slidingwindow,
     smooth_spatiotemporal,
     temporal_difference,
+    mean_filter
 )
 from ._importers import (
     MiCAM05_Importer,
@@ -99,6 +100,7 @@ __all__ = [
     "normalize_pixelwise_slidingwindow",
     "smooth_spatiotemporal",
     "temporal_difference",
+    "mean_filter",
 
     "evolve_jitter_filter",
 
