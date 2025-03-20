@@ -13,7 +13,7 @@ if _find_spec("cv2") is None:
 
 from . import activation, image, motion, phase, trace, utils, video
 from ._version import __version__, __version_tuple__
-from .activation import compute_activation_map
+from .activation import compute_activation_map, show_activation_map
 from .image import (
     background_mask,
     export_image,
@@ -114,6 +114,7 @@ __all__ = [
 
     "compute_phase",
     "compute_activation_map",
+    "show_activation_map",
 
     "download_example_data",
     "set_verbose",
