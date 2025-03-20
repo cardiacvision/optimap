@@ -4,6 +4,7 @@ from pathlib import Path
 
 import numpy as np
 import pymatreader
+import scipy.io
 import skimage.io as sio
 import skvideo.io
 from tifffile import imread as tifffile_imread
@@ -109,7 +110,13 @@ def load_MATLAB(filename, fieldname=None, start_frame=0, end_frame=None, step=1)
         Steps between frames. If greater than 1, it will skip frames. Defaults to 1.
     """
     variable_names = [fieldname] if fieldname is not None else None
-    data = pymatreader.read_mat(filename, variable_names=variable_names)
+
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=scipy.io.matlab.MatReadWarning)
+        try:
+            data = scipy.io.loadmat(filename, variable_names=variable_names)
+        except NotImplementedError as e:
+            data = pymatreader.read_mat(filename, variable_names=variable_names)
 
     if fieldname is not None:
         video = data[fieldname]
@@ -142,6 +149,28 @@ def load_MATLAB(filename, fieldname=None, start_frame=0, end_frame=None, step=1)
 
     return video[start_frame:end_frame:step]
 
+def load_MATLAB_metadata(filename):
+    """Loads metadata from a MATLAB .mat file.
+
+    Parameters
+    ----------
+    filename : str or pathlib.Path
+        Path to .mat file
+
+    Returns
+    -------
+    dict
+        Dictionary containing the metadata
+    """
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=scipy.io.matlab.MatReadWarning)
+        try:
+            data = scipy.io.loadmat(filename, squeeze_me=True)
+        except NotImplementedError as e:
+            data = pymatreader.read_mat(filename)
+    fields = [key for key in data.keys() if not key.startswith("__")]
+    fields = [key for key in fields if not isinstance(data[key], np.ndarray)]
+    return {field: data[field] for field in fields}
 
 def load_MultiRecorder(filepath, start_frame=0, frames=None, step=1, use_mmap=False):
     dat = MultiRecorderImporter(filepath)
@@ -276,6 +305,7 @@ def load_metadata(filename):
 
     Supported file types:
 
+    - .mat (MATLAB)
     - .gsd, .gsh (SciMedia MiCAM 05)
     - .rsh, .rsm, .rsd (SciMedia MiCAM ULTIMA)
     - .dat (MultiRecorder)
@@ -305,6 +335,8 @@ def load_metadata(filename):
         return load_SciMedia_MiCAMULTIMA_metadata(filename)
     elif suffix in [".dat"]:
         return load_MultiRecorder_metadata(filename)
+    elif suffix in [".mat"]:
+        return load_MATLAB_metadata(filename)
     else:
-        msg = f"Unable to find videoloader for file extension {suffix} (for file '{filename}')"
+        msg = f"Unable to find metadata loader for file extension {suffix} (for file '{filename}')"
         raise ValueError(msg)
