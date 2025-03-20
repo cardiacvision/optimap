@@ -74,17 +74,26 @@ def detect_background_threshold(image):
     float or int
         Background threshold.
     """
-    # TODO: fix histogram binning for float images properly
-
+    # im2hist doesn't handle all image types well. Convert to some reasonable type and value range if needed.
     scale = 1
-    if image.dtype in [np.float32, np.float64]:
-        max_val = image.max()
-        if max_val < 5:
-            scale = 4095
-            image = image * 4095
+    if image.dtype in [np.uint8, np.uint16]:
+        pass
+    elif image.dtype in [np.float32, np.float64]:
+        max_val = np.nanmax(image)
+        if max_val <= 2:
+            scale = 4095 / max_val
+            image = image * scale
+    else:
+        image = image.astype(np.float32)
+        max_val = np.nanmax(image)
+        scale = 65535 / max_val
+        image = image * scale
+
     n, x = im2hist(image, zero_extents=True)
-    threshold = GHT(n, x)[0]
-    return threshold / scale
+    threshold = GHT(n, x)[0] / scale
+    if scale != 1 and np.issubdtype(image.dtype, np.integer):
+        threshold = int(threshold)
+    return threshold
 
 
 def background_mask(image, threshold=None, show=True, return_threshold=False, **kwargs):
