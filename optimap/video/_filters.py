@@ -162,7 +162,17 @@ def mean_filter(video: np.ndarray, size_temporal: int = 1, size_spatial: int = 1
     if video.ndim != 3:
         msg = "ERROR: video has to be 3 dimensional"
         raise ValueError(msg)
-    return ndimage.uniform_filter(video, size=(size_temporal, size_spatial, size_spatial), mode=mode)
+    nans = np.isnan(video)
+    if np.any(nans):
+        # ndimage.uniform_filter doesn't handle NaNs, so we need to do it
+        # TODO: Use ndimage.vectorized_filter when it is released (https://github.com/scipy/scipy/pull/22575)
+        # or `nan_policy` when https://github.com/scipy/scipy/pull/17393 if it is ever merged
+        video = video.copy()
+        for i in range(video.shape[0]):
+            video[i][np.isnan(video[i])] = np.nanmean(video[i])
+    filtered = ndimage.uniform_filter(video, size=(size_temporal, size_spatial, size_spatial), mode=mode)
+    filtered[nans] = np.nan
+    return filtered
 
 
 def evolve_jitter_filter(video, framerate=500.0, threshold=0.004):
