@@ -69,6 +69,7 @@ def show_activation_map(activation_map,
                         title="",
                         cmap="turbo",
                         show_contours=False,
+                        show_map=True,
                         show_colorbar=True,
                         colorbar_title="Activation Time",
                         ax=None,
@@ -98,6 +99,8 @@ def show_activation_map(activation_map,
         Title for the plot, by default ""
     show_contours : bool, optional
         Whether to overlay contour lines on the activation map, by default True
+    show_map : bool, optional
+        Whether to display the activation map, by default True
     show_colorbar : bool, optional
         Whether to display a colorbar, by default True
     colorbar_title : str, optional
@@ -131,12 +134,18 @@ def show_activation_map(activation_map,
         show = True
     else:
         show = False
-    show_image(activation_map, vmin=vmin, vmax=vmax, cmap=cmap, title=title, show_colorbar=show_colorbar, colorbar_title=colorbar_title, ax=ax)
+
+    if show_map:
+        show_image(activation_map, vmin=vmin, vmax=vmax, cmap=cmap, title=title, show_colorbar=show_colorbar, colorbar_title=colorbar_title, ax=ax)
 
     if show_contours:
-        contours = ax.contour(activation_map, levels=contour_levels, linestyles=contour_linestyles, colors="black", **contour_args)
+        contours_kwargs = {"levels": contour_levels, "linestyles": contour_linestyles, "colors": "black"}
+        contours_kwargs.update(contour_args)
+        contours = ax.contour(activation_map, **contours_kwargs)
 
-        contours.clabel(fontsize=contour_fontsize, fmt=contour_fmt, **contour_label_args)
+        contour_label_kwargs = {"fontsize": contour_fontsize, "fmt": contour_fmt}
+        contour_label_kwargs.update(contour_label_args)
+        contours.clabel(**contour_label_kwargs)
     if show:
         plt.show()
     return ax
