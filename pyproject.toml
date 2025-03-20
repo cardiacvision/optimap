@@ -40,6 +40,8 @@ ignore = [
     "PLW0603",  # global statement
     "D401",
     "D205",
+    "W293",  # blank line contains whitespace
+    "W291",  # trailing whitespace
 ]
 
 [tool.ruff.lint.pydocstyle]
