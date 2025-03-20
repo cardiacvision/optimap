@@ -45,6 +45,9 @@ FILE_HASHES = {
     # used in overview tutorial
     "VF_Rabbit_1_rwarped_normalized_f16.npy":
         "sha256:ce2365213037c97f5fd25b9ef5468da3be0d3e5edfda2372c6eee3dc5334c402",
+    # used in activation map tutorial
+    "mouse_41_120ms_control_MiCAM_monochrome.mp4":
+        "sha256:a3b06ddebb87c9990be2190215e341393d20e55b30cc6172baab457272d10420",
     # used in mask tutorial
     "VF_Rabbit_1_warped_mask.npy":
         "sha256:3f5d8402c8251f3cb8e8d235b459264ff7e7e2cf2b81f08129f0897baa262db6",

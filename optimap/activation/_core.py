@@ -1,11 +1,12 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+from ..trace import show_traces
 from ..image import show_image
 from ..utils import _print
 
 
-def find_crossings(signal, threshold=0.5, inverted=False, min_duration=8):
+def find_activations(signal, threshold=0.5, inverted=False, min_duration=8, fps=None, show=True, ax=None):
     """
     Finds the indices where a 1D signal crosses a threshold from below to above (`inverted=False`) or from above to below (`inverted=True`).
     This is useful for detecting events in time series data.
@@ -25,7 +26,10 @@ def find_crossings(signal, threshold=0.5, inverted=False, min_duration=8):
     -------
         np.ndarray: An array of indices where the signal crosses the threshold in the specified direction.
     """
-    if signal.ndim != 1:
+    if signal.ndim == 3:
+        # mean signal over the spatial dimensions
+        signal = np.nanmean(signal, axis=(1, 2))
+    elif signal.ndim != 1:
         raise ValueError("signal must be 1-dimensional")
     above_threshold = signal > threshold
     change = -1 if inverted else 1
@@ -33,7 +37,7 @@ def find_crossings(signal, threshold=0.5, inverted=False, min_duration=8):
     def crossing_filter(idx):
         if idx - min_duration // 2 < 0 or idx + min_duration // 2 >= len(signal):
             return False
-        if inverted:
+        if not inverted:
             if (not above_threshold[idx - min_duration // 2]) and above_threshold[idx + min_duration // 2]:
                 return True
         else:
@@ -43,6 +47,19 @@ def find_crossings(signal, threshold=0.5, inverted=False, min_duration=8):
     if min_duration > 0:
         # filter crossings based on duration
         crossing_indices = np.array([crossing for crossing in crossing_indices if crossing_filter(crossing)])
+
+    if ax is None:
+        _, ax = plt.subplots()
+        show = True if show is None else show
+    else:
+        show = False if show is None else show
+    ax = show_traces(signal, fps=fps, ax=ax)
+    fps = fps if fps is not None else 1
+    for crossing in crossing_indices:
+        ax.axvline(crossing / fps, color='red', linestyle='--')
+    if show:
+        plt.show()
+
     return crossing_indices
 
 
@@ -51,7 +68,7 @@ def show_activation_map(activation_map,
                         vmax=None,
                         title="",
                         cmap="turbo",
-                        show_contour=True,
+                        show_contours=False,
                         show_colorbar=True,
                         colorbar_title="Activation Time",
                         ax=None,
@@ -62,11 +79,11 @@ def show_activation_map(activation_map,
                         contour_args={},
                         contour_label_args={}):
     """Display an activation/isochrone map with optional contours.
-    
+
     This function visualizes activation maps (also known as isochrone maps) which show the timing 
     of activation across a 2D spatial region. It can display the activation map as a color-coded image 
     with optional contour lines to highlight isochrones.
-    
+
     Parameters
     ----------
     activation_map : 2D ndarray
@@ -79,7 +96,7 @@ def show_activation_map(activation_map,
         Colormap to use for the activation map, by default "turbo"
     title : str, optional
         Title for the plot, by default ""
-    show_contour : bool, optional
+    show_contours : bool, optional
         Whether to overlay contour lines on the activation map, by default True
     show_colorbar : bool, optional
         Whether to display a colorbar, by default True
@@ -99,12 +116,12 @@ def show_activation_map(activation_map,
         Additional keyword arguments for matplotlib's contour function, by default {}
     contour_label_args : dict, optional
         Additional keyword arguments for contour label formatting, by default {}
-        
+
     Returns
     -------
     matplotlib.axes.Axes
         The axes containing the plot
-    
+
     See Also
     --------
     compute_activation_map : For creating activation maps from video data
@@ -116,7 +133,7 @@ def show_activation_map(activation_map,
         show = False
     show_image(activation_map, vmin=vmin, vmax=vmax, cmap=cmap, title=title, show_colorbar=show_colorbar, colorbar_title=colorbar_title, ax=ax)
 
-    if show_contour:
+    if show_contours:
         contours = ax.contour(activation_map, levels=contour_levels, linestyles=contour_linestyles, colors="black", **contour_args)
 
         contours.clabel(fontsize=contour_fontsize, fmt=contour_fmt, **contour_label_args)
@@ -194,5 +211,5 @@ def compute_activation_map(video,
         cbar_label = "Activation Time [ms]" if fps is not None else "Activation Time [frames]"
         contour_fmt = " %1.0f ms " if fps is not None else " %1.0f frames "
         title="Activation Map"
-        show_activation_map(amap, contour=True, title=title,colorbar_title=cbar_label,  contour_fmt=contour_fmt, **kwargs)
+        show_activation_map(amap, title=title,colorbar_title=cbar_label,  contour_fmt=contour_fmt, **kwargs)
     return amap
