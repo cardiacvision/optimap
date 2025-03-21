@@ -61,14 +61,16 @@ def _compare_traces_plot(videos, coords, size=5, labels=None, colors=None, x=Non
     
     if axs is None:
         fig, axs = plt.subplots(nrows=len(coords), ncols=1, sharex=True, figsize=(5, 2.5*len(coords)))
+        if len(coords) == 1:
+            axs = [axs]
         show = True
     else:
+        if len(coords) == 1 and isinstance(axs, plt.Axes):
+            axs = [axs]
         if len(axs) < len(coords):
             raise ValueError("Number of axes is smaller than number of coordinates")
         fig = axs[0].figure
         show = False
-    if len(coords) == 1:
-        axs = [axs]
     for i, traces in enumerate(all_traces):
         for j in range(traces.shape[1]):
             axs[i].plot(x, traces[:, j], color=colors[j])
