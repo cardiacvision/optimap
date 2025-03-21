@@ -35,6 +35,7 @@ def _compare_traces_interactive(videos, labels=None, size=5, ref_frame=0, colors
             axs[1].plot(x, traces[:, i], color=colors[i])
         axs[1].set_xlabel(x_label)
         axs[1].set_ylabel("Intensity")
+        axs[1].set_title(f"({pos[0]}, {pos[1]})")
         if labels:
             axs[1].legend(labels, ncols=len(labels))
         fig.canvas.draw()
@@ -42,7 +43,7 @@ def _compare_traces_interactive(videos, labels=None, size=5, ref_frame=0, colors
     klicker.on_point_added(on_point_added)
     plt.show(block=True)
 
-def _compare_traces_plot(videos, coords, size=5, labels=None, colors=None, x=None, x_label=None):
+def _compare_traces_plot(videos, coords, size=5, labels=None, colors=None, x=None, x_label=None, axs=None):
     """Plot traces from multiple videos at given coordinates."""
     if len(coords) == 0:
         print("No coordinates given")
@@ -57,22 +58,30 @@ def _compare_traces_plot(videos, coords, size=5, labels=None, colors=None, x=Non
             traces.append(extract_traces(video, coord, size))
         traces = np.array(traces).T
         all_traces.append(traces)
-
-    fig, ax = plt.subplots(nrows=len(coords), ncols=1, sharex=True, figsize=(5, 2.5*len(coords)))
+    
+    if axs is None:
+        fig, axs = plt.subplots(nrows=len(coords), ncols=1, sharex=True, figsize=(5, 2.5*len(coords)))
+        show = True
+    else:
+        if len(axs) < len(coords):
+            raise ValueError("Number of axes is smaller than number of coordinates")
+        fig = axs[0].figure
+        show = False
     if len(coords) == 1:
-        ax = [ax]
+        axs = [axs]
     for i, traces in enumerate(all_traces):
         for j in range(traces.shape[1]):
-            ax[i].plot(x, traces[:, j], color=colors[j])
-        ax[i].set_title(f"({coords[i][0]}, {coords[i][1]})")
+            axs[i].plot(x, traces[:, j], color=colors[j])
+        axs[i].set_title(f"({coords[i][0]}, {coords[i][1]})")
         # ax[i].set_ylabel("Intensity")
-    ax[-1].set_xlabel(x_label)
+        axs[i].set_xlim(x[0], x[-1])
+    axs[-1].set_xlabel(x_label)
     if labels:
         fig.legend(labels, loc="outside upper center", ncols=len(labels))
-    plt.xlim(x[0], x[-1])
-    plt.show()
+    if show:
+        plt.show()
 
-def compare_traces(videos, coords=None, labels=None, colors=None, size=5, ref_frame=0, fps=None, x=None):
+def compare_traces(videos, coords=None, labels=None, colors=None, size=5, ref_frame=0, fps=None, x=None, axs=None):
     """Compare traces of multiple videos.
 
     If ``coords`` is given, traces are plotted at the given coordinates.
@@ -100,6 +109,10 @@ def compare_traces(videos, coords=None, labels=None, colors=None, size=5, ref_fr
         ``x`` and ``fps`` cannot be passed at the same time.
     x : 1D array, optional
         X-axis values, by default None
+    axs : list of matplotlib.axes.Axes, optional
+        Axes to plot on, by default None
+        If not passed, a new figure is created.
+        Only used if coords is not None.
     """
     colors = colors or [None] * len(videos)
     if x is not None and fps is not None:
@@ -136,4 +149,5 @@ def compare_traces(videos, coords=None, labels=None, colors=None, size=5, ref_fr
                                     labels=labels,
                                     colors=colors,
                                     x=x,
-                                    x_label=x_label)
+                                    x_label=x_label,
+                                    axs=axs)
