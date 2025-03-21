@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
 from ..utils import _print, interactive_backend
 from ._core import extract_traces, show_traces
@@ -48,8 +49,8 @@ def select_traces(video, size=5, ref_frame=0, x=None, fps=None):
         Video to select traces from
     size : int
         Size parameter for trace
-    ref_frame : int
-        Reference frame of the first video to show
+    ref_frame : int or np.ndarray
+        Reference frame of the first video to show. If an integer, the frame is taken from the video. If an array, the array is used.
     x : 1D array, optional
         X-axis values, by default None. See :py:func:`show_traces` for details.
     fps : float, optional
@@ -65,8 +66,10 @@ def select_traces(video, size=5, ref_frame=0, x=None, fps=None):
     _print(
         "Click positions on the image, close the window to finish. Right click a point to remove it."
     )
-
-    image = video[ref_frame]
+    if isinstance(ref_frame, np.ndarray):
+        image = ref_frame
+    else:
+        image = video[ref_frame]
 
     fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(14, 7))
 
