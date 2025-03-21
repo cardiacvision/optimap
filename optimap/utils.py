@@ -50,6 +50,8 @@ FILE_HASHES = {
         "sha256:a8d18ab6fb6e69f8a804da1ac470e82a2249fc72ce1d23532676a231d53e54bc",
     "mouse_41_120ms_control_MiCAM_monochrome.mp4":
         "sha256:a3b06ddebb87c9990be2190215e341393d20e55b30cc6172baab457272d10420",
+    "mouse_41_120ms_control_iDS_mask.png":
+        "sha256:3646c27b9fe05099d19903790c1bed3b3ff3690ea965ded41299e3243f206a78",
     # used in mask tutorial
     "VF_Rabbit_1_warped_mask.npy":
         "sha256:3f5d8402c8251f3cb8e8d235b459264ff7e7e2cf2b81f08129f0897baa262db6",

@@ -21,7 +21,7 @@ def show_activations(signal, activations, fps=None, ax=None):
     return ax
 
 
-def find_activations(signal, threshold=0.5, fractions=False, min_duration=8, inverted=False, fps=None, show=True, ax=None):
+def find_activations(signal, threshold=0.5, interpolate=False, inverted=False, min_duration=8, fps=None, show=True, ax=None):
     """
     Finds the indices where a 1D signal crosses a threshold from below to above (`inverted=False`) or from above to below (`inverted=True`).
     This is useful for detecting events in time series data.
@@ -32,6 +32,8 @@ def find_activations(signal, threshold=0.5, fractions=False, min_duration=8, inv
             The 1D signal.
         threshold: float
             The threshold value.
+        interpolate: bool
+            If True, use linear interpolation to find the exact crossing point.
         inverted: bool
             If True, find crossings from above to below the threshold.
         min_duration: int
@@ -47,7 +49,7 @@ def find_activations(signal, threshold=0.5, fractions=False, min_duration=8, inv
     elif signal.ndim == 2:
         # signal is a trace (T, N)
         return [
-            find_activations(signal[:, i], threshold=threshold, fractions=fractions, min_duration=min_duration, inverted=inverted, show=False) for i in range(signal.shape[1])
+            find_activations(signal[:, i], threshold=threshold, interpolate=interpolate, min_duration=min_duration, inverted=inverted, show=False) for i in range(signal.shape[1])
         ]
     elif signal.ndim != 1:
         raise ValueError("Error: signal is not a video or trace.")
@@ -70,7 +72,7 @@ def find_activations(signal, threshold=0.5, fractions=False, min_duration=8, inv
         # filter crossings based on duration
         crossing_indices = np.array([crossing for crossing in crossing_indices if crossing_filter(crossing)])
 
-    if fractions and len(crossing_indices) > 0:
+    if interpolate and len(crossing_indices) > 0:
         # linear interpolation to find the exact crossing point
         crossing_indices = crossing_indices + (threshold - signal[crossing_indices]) / (signal[crossing_indices + 1] - signal[crossing_indices])
 
@@ -169,6 +171,8 @@ def show_activation_map(activation_map,
 def compute_activation_map(video,
                            threshold=0.5,
                            inverted=False,
+                           interpolate=False,
+                           min_duration=0,
                            fps=None,
                            set_nan_for_inactive=True,
                            show=True,
@@ -189,45 +193,53 @@ def compute_activation_map(video,
     inverted : bool, optional
         If True, the function will compute the time/frame when pixel intensity falls below the threshold,
         rather than surpassing it. Defaults to False.
+    interpolate : bool, optional
+        If True, use linear interpolation to find the exact crossing point between frames. Defaults to False.
+    min_duration : int, optional
+        Minimum duration of the activation in frames. If set to 0, all activations are considered. Defaults to 0.
     fps : float, optional
         If provided, the resulting activation map will represent times in milliseconds based on this frame rate,
         otherwise, it will be in frames.
     set_nan_for_inactive : bool, optional
-        If True, pixels that never reach the activation threshold will be set to NaN. Defaults to True.
+        If True, pixels that never reach the activation threshold or meet all the criteria will be set to NaN. If False, set to np.inf. Defaults to True.
     show : bool, optional
         If True, the resulting activation map will be displayed. Defaults to True.
-    cmap : str, optional
-        Colormap to use for displaying the activation map. Defaults to 'jet'.
+    **kwargs : dict
+        Additional arguments passed to show_activation_map().
 
     Returns
     -------
     activation_map : ndarray
-        2D image
+        2D image of activation times
     """
     _print(f"computing activation map with {threshold=}")
     if video.ndim != 3:
         msg = "video must be 3-dimensional"
         raise ValueError(msg)
+    
+    _, height, width = video.shape
+    amap = np.full((height, width), np.nan, dtype=np.float32)
+    for x in range(width):
+        for y in range(height):
+            if np.isnan(video[:, y, x]).any():
+                continue
+            # Get the first activation for each pixel (if any)
+            pixel_activations = find_activations(
+                video[:, y, x],
+                threshold=threshold,
+                interpolate=interpolate,
+                min_duration=min_duration,
+                inverted=inverted,
+                show=False
+            )
+            if len(pixel_activations) > 0:
+                amap[y, x] = pixel_activations[0]
+            else:
+                amap[y, x] = np.nan if set_nan_for_inactive else np.inf
 
-    if inverted:
-        amap = np.nanargmax(video < threshold, axis=0)
-    else:
-        amap = np.nanargmax(video > threshold, axis=0)
-
-    amap = amap.astype(np.float32)
     if fps is not None:
+        # Convert from frames to milliseconds
         amap = amap * 1000.0 / fps
-
-    if set_nan_for_inactive:
-        # set all pixels to NaN that never reach threshold
-        if inverted:
-            never_activated = (amap == 0) & (video[0] > threshold)
-        else:
-            never_activated = (amap == 0) & (video[0] < threshold)
-        amap[never_activated] = np.nan
-
-    # set masked pixels to NaN
-    amap[np.isnan(video[0])] = np.nan
 
     _print(f"minimum of activation_map: {np.nanmin(amap)}")
     _print(f"maximum of activation_map: {np.nanmax(amap)}")
@@ -235,6 +247,8 @@ def compute_activation_map(video,
     if show:
         cbar_label = "Activation Time [ms]" if fps is not None else "Activation Time [frames]"
         contour_fmt = " %1.0f ms " if fps is not None else " %1.0f frames "
-        title="Activation Map"
-        show_activation_map(amap, title=title,colorbar_title=cbar_label,  contour_fmt=contour_fmt, **kwargs)
+        title = "Activation Map"
+        show_activation_map(amap, title=title, colorbar_title=cbar_label, contour_fmt=contour_fmt, **kwargs)
     return amap
+
+# %%
