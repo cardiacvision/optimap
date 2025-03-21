@@ -63,7 +63,7 @@ jobs:
             - name: Build docs
               run: |
                 mkdir -p .jupyter_cache  # otherwise jcache will ask for confirmation
-                jcache notebook -p .jupyter_cache list
+                jcache notebook -p .jupyter_cache list || true
                 python -m sphinx -b dirhtml --doctree-dir docs/doctrees docs docs/_build
               env:
                 TQDM_DISABLE: "true"
