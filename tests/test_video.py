@@ -151,3 +151,18 @@ def test_collage():
     video_diff_frames = np.random.rand(12, 50, 50).astype(np.float32)  # Different num frames
     with pytest.raises(ValueError):
         om.video.collage([video1, video_diff_frames])
+
+def test_mean_filter():
+    video = np.zeros((10, 128, 128), dtype=np.float32)
+    out = om.video.mean_filter(video, size_spatial=5)
+    assert out.shape == video.shape
+    assert out.dtype == np.float32
+    assert np.all(out == 0)
+
+    video[:, 10, 10] = np.nan
+    out = om.video.mean_filter(video, size_spatial=5)
+    assert np.isnan(out[:, 10, 10]).all()
+    out[:, 10, 10] = 0
+    assert not np.isnan(out).any()
+    assert np.all(out == 0)
+
