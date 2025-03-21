@@ -6,7 +6,22 @@ from ..image import show_image
 from ..utils import _print
 
 
-def find_activations(signal, threshold=0.5, inverted=False, min_duration=8, fps=None, show=True, ax=None):
+def show_activations(signal, activations, fps=None, ax=None):
+    if ax is None:
+        _, ax = plt.subplots()
+        show = True
+    else:
+        show = False
+    ax = show_traces(signal, fps=fps, ax=ax)
+    fps = fps if fps is not None else 1
+    for activation in activations:
+        ax.axvline(activation / fps, color="red", linestyle="--")
+    if show:
+        plt.show()
+    return ax
+
+
+def find_activations(signal, threshold=0.5, fractions=False, min_duration=8, inverted=False, fps=None, show=True, ax=None):
     """
     Finds the indices where a 1D signal crosses a threshold from below to above (`inverted=False`) or from above to below (`inverted=True`).
     This is useful for detecting events in time series data.
@@ -29,37 +44,38 @@ def find_activations(signal, threshold=0.5, inverted=False, min_duration=8, fps=
     if signal.ndim == 3:
         # mean signal over the spatial dimensions
         signal = np.nanmean(signal, axis=(1, 2))
+    elif signal.ndim == 2:
+        # signal is a trace (T, N)
+        return [
+            find_activations(signal[:, i], threshold=threshold, fractions=fractions, min_duration=min_duration, inverted=inverted, show=False) for i in range(signal.shape[1])
+        ]
     elif signal.ndim != 1:
-        raise ValueError("signal must be 1-dimensional")
-    above_threshold = signal > threshold
-    change = -1 if inverted else 1
-    crossing_indices = np.where(np.diff(above_threshold.astype(int)) == change)[0]
+        raise ValueError("Error: signal is not a video or trace.")
+    
+    if inverted:
+        condition = signal > threshold
+    else:
+        condition = signal < threshold
+    crossing_indices = np.where(np.diff(condition.astype(int)) == -1)[0]
+
     def crossing_filter(idx):
-        if idx - min_duration // 2 < 0 or idx + min_duration // 2 >= len(signal):
-            return False
-        if not inverted:
-            if (not above_threshold[idx - min_duration // 2]) and above_threshold[idx + min_duration // 2]:
-                return True
-        else:
-            if above_threshold[idx - min_duration // 2] and (not above_threshold[idx + min_duration // 2]):
-                return True
-        return False
+        for i in range(idx - min_duration // 2, idx):
+            if i >= 0 and not condition[i]:
+                return False
+        for i in range(idx + 1, idx + min_duration // 2 + 1):
+            if i < len(signal) and condition[i]:
+                return False
+        return True
     if min_duration > 0:
         # filter crossings based on duration
         crossing_indices = np.array([crossing for crossing in crossing_indices if crossing_filter(crossing)])
 
-    if ax is None:
-        _, ax = plt.subplots()
-        show = True if show is None else show
-    else:
-        show = False if show is None else show
-    ax = show_traces(signal, fps=fps, ax=ax)
-    fps = fps if fps is not None else 1
-    for crossing in crossing_indices:
-        ax.axvline(crossing / fps, color='red', linestyle='--')
-    if show:
-        plt.show()
+    if fractions and len(crossing_indices) > 0:
+        # linear interpolation to find the exact crossing point
+        crossing_indices = crossing_indices + (threshold - signal[crossing_indices]) / (signal[crossing_indices + 1] - signal[crossing_indices])
 
+    if show:
+        show_activations(signal, crossing_indices, fps=fps, ax=ax)
     return crossing_indices
 
 
