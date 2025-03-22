@@ -306,8 +306,62 @@ def smooth_gaussian(image, sigma, **kwargs):
 
     if image.ndim == 3:  # RGB(A) image
         sigma = (sigma, sigma, 0)
+    
+    if np.isnan(image).any():
+        # Scipy' gaussian_filter does not support NaN values, so we assume some
+        # mean-neighborhood-value at each nan-point. This is not ideal, but works
+        # for most cases.
+        gauss = image.copy()
+        gauss[np.isnan(gauss)] = 0
+        gauss = ndimage.gaussian_filter(
+                gauss, sigma=sigma, mode='constant', cval=0)
 
-    return ndimage.gaussian_filter(image, sigma=sigma, **kwargs)
+        norm = np.ones(shape=image.shape)
+        norm[np.isnan(image)] = 0
+        norm = ndimage.gaussian_filter(
+                norm, sigma=sigma, mode='constant', cval=0)
+        
+        norm = np.where(norm==0, 1, norm)
+        gauss = gauss / norm
+        gauss[np.isnan(image)] = np.nan
+        return gauss
+    else:
+        return ndimage.gaussian_filter(image, sigma=sigma, **kwargs)
+
+def mean_filter(image, size, mode: str = "nearest", **kwargs):
+    """Smooth an image or mask using a mean filter.
+
+    Uses :func:`scipy.ndimage.uniform_filter` internally with ``mode='nearest'``.
+
+    Parameters
+    ----------
+    image : {X, Y} np.ndarray
+        Image or mask to smooth
+    size : int
+        Size of the mean filter kernel
+    mode : str
+        The mode parameter determines how the input array is extended when the filter overlaps a border.
+        See :func:`scipy.ndimage.uniform_filter` for details. Default is 'nearest'.
+    **kwargs : dict, optional
+        passed to :func:`scipy.ndimage.uniform_filter`
+    
+    Returns
+    -------
+    np.ndarray
+        Smoothed image
+    """
+    nans = np.isnan(image)
+    if np.any(nans):
+        # ndimage.uniform_filter doesn't handle NaNs, so we need to do it
+        # TODO: Use ndimage.vectorized_filter when it is released (https://github.com/scipy/scipy/pull/22575)
+        # or `nan_policy` when https://github.com/scipy/scipy/pull/17393 if it is ever merged
+        image = image.copy()
+        image[nans] = np.nanmean(image)
+    if image.ndim == 3:  # RGB(A) image
+        size = (size, size, 0)
+    filtered = ndimage.uniform_filter(image, size=size, mode=mode, **kwargs)
+    filtered[nans] = np.nan
+    return filtered
 
 
 def collage(images, ncols=6, padding=0, padding_value=0):

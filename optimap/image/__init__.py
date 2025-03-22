@@ -9,6 +9,7 @@ from ._core import (
     save_mask,
     show_image,
     smooth_gaussian,
+    mean_filter,
 )
 from ._edit import (
     crop,
@@ -55,6 +56,7 @@ __all__ = [
     "normalize",
     "collage",
     "smooth_gaussian",
+    "mean_filter",
 
     "interactive_mask",
     "foreground_mask",
