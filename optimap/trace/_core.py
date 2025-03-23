@@ -168,6 +168,53 @@ def show_positions(positions, image=None, size=None, color=None, cmap="gray", vm
         plt.show()
     return ax
 
+def show_positions_and_traces(video_or_traces, positions, image=0, size=5, colors=None, figsize=(10, 2.5), fps=None, vmin=None, vmax=None, cmap="gray", **kwargs):
+    """Show positions and traces of a video.
+    
+    Parameters
+    ----------
+    video_or_traces: 3D video array or 2D/1D trace array
+        Video to extract traces from or traces to plot
+    positions : list of tuples
+        List of positions to overlay
+    image : 2D array or int, optional
+        Image to overlay positions on, by default 0
+        If an integer is passed, the image is taken from the video.
+    size : float or array-like, shape (n, ), optional
+        Size parameter for :func:`extract_traces`, by default 5
+    colors : list of str, optional
+        Colors for the positions/traces, by default None
+    figsize : tuple, optional
+        Size of the figure, by default (10, 2.5)
+    fps : float, optional
+        Show traces in seconds, see :func:`show_traces`
+    vmin : float, optional
+        Minimum value for the colormap, by default None
+    vmax : float, optional
+        Maximum value for the colormap, by default None
+    cmap : str, optional
+        Colormap to use for image, by default 'gray'
+    kwargs : dict, optional
+        Additional arguments to pass to :func:`show_traces`
+    """
+
+    if video_or_traces.ndim == 3:
+        # If video is passed, extract traces
+        traces = extract_traces(video_or_traces, positions, size=size)
+        
+        if not isinstance(image, np.ndarray):
+            image = video_or_traces[image]
+    else:
+        traces = video_or_traces
+        if not isinstance(image, np.ndarray):
+            raise ValueError("If traces are passed, image must be a 2D array")
+    
+    fig, axs = plt.subplot_mosaic('ABB', figsize=figsize)
+    show_positions(positions, image, ax=axs['A'], color=colors, vmin=vmin, vmax=vmax, cmap=cmap)
+    show_traces(traces, fps=fps, colors=colors, ax=axs['B'], **kwargs)
+    plt.tight_layout()
+    plt.show()
+    return axs
 
 def show_traces(traces, x=None, fps=None, colors=None, labels=None, ax=None, **kwargs):
     """Plot one or more traces.

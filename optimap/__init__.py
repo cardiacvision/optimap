@@ -36,6 +36,7 @@ from .trace import (
     select_traces,
     show_positions,
     show_traces,
+    show_positions_and_traces,
 )
 from .utils import (
     download_example_data,
@@ -85,6 +86,7 @@ __all__ = [
     "show_mask",
     "show_positions",
     "show_traces",
+    "show_positions_and_traces",
     "play_video",
     "show_video",
     "show_video_pair",

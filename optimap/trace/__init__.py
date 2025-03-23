@@ -9,6 +9,7 @@ from ._core import (
     show_positions,
     show_trace,
     show_traces,
+    show_positions_and_traces,
 )
 from ._detrend import detrend_timeseries
 from ._interactive import select_positions, select_traces
@@ -24,6 +25,7 @@ __all__ = [
     "show_positions",
     "show_trace",
     "show_traces",
+    "show_positions_and_traces",
 
     "normalize",
 
