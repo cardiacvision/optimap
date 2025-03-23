@@ -43,7 +43,14 @@ def _compare_traces_interactive(videos, labels=None, size=5, ref_frame=0, colors
     klicker.on_point_added(on_point_added)
     plt.show(block=True)
 
-def _compare_traces_plot(videos, coords, size=5, labels=None, colors=None, x=None, x_label=None, axs=None):
+def _compare_traces_plot(videos, coords, size=5,
+                         labels=None,
+                         colors=None,
+                         title=None,
+                         legend_loc="outside upper center",
+                         x=None,
+                         x_label=None,
+                         axs=None):
     """Plot traces from multiple videos at given coordinates."""
     if len(coords) == 0:
         print("No coordinates given")
@@ -74,16 +81,22 @@ def _compare_traces_plot(videos, coords, size=5, labels=None, colors=None, x=Non
     for i, traces in enumerate(all_traces):
         for j in range(traces.shape[1]):
             axs[i].plot(x, traces[:, j], color=colors[j])
-        axs[i].set_title(f"({coords[i][0]}, {coords[i][1]})")
+        if len(coords) > 1:
+            axs[i].set_title(f"({coords[i][0]}, {coords[i][1]})")
+        else:
+            axs[i].set_title(title)
+            title=None
         # ax[i].set_ylabel("Intensity")
         axs[i].set_xlim(x[0], x[-1])
     axs[-1].set_xlabel(x_label)
+    fig.suptitle(title)
     if labels:
-        fig.legend(labels, loc="outside upper center", ncols=len(labels))
+        fig.legend(labels, ncols=len(labels), loc=legend_loc)
     if show:
+        plt.tight_layout()
         plt.show()
 
-def compare_traces(videos, coords=None, labels=None, colors=None, size=5, ref_frame=0, fps=None, x=None, axs=None):
+def compare_traces(videos, coords=None, labels=None, colors=None, size=5, ref_frame=0, fps=None, title=None, legend_loc="outside upper center", x=None, axs=None):
     """Compare traces of multiple videos.
 
     If ``coords`` is given, traces are plotted at the given coordinates.
@@ -109,6 +122,10 @@ def compare_traces(videos, coords=None, labels=None, colors=None, size=5, ref_fr
         Sampling rate of the traces (frames per second), by default None.
         If passed x-axis is shown in seconds.
         ``x`` and ``fps`` cannot be passed at the same time.
+    title : str, optional
+        Title of the plot, by default None
+    legend_loc : str, optional
+        Location of the legend, by default "outside upper center"
     x : 1D array, optional
         X-axis values, by default None
     axs : list of matplotlib.axes.Axes, optional
@@ -149,7 +166,9 @@ def compare_traces(videos, coords=None, labels=None, colors=None, size=5, ref_fr
                                     coords,
                                     size=size,
                                     labels=labels,
+                                    title=title,
                                     colors=colors,
+                                    legend_loc=legend_loc,
                                     x=x,
                                     x_label=x_label,
                                     axs=axs)
