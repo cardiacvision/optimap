@@ -9,10 +9,10 @@ from ._core import (
 )
 
 __all__ = [
-    "compute_activation_map",
     "find_activations",
-    "show_activation_map",
+    "compute_activation_map",
     "show_activations",
+    "show_activation_map",
     "find_activations_threshold",
     "find_activations_dvdt",
 ]

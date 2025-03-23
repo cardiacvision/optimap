@@ -139,14 +139,14 @@ def find_activations_dvdt(signal, falling_edge=False, single_activation=False, w
     action potentials or other biological activation events.
 
     For rising signals, the function finds where the positive derivative is maximized.
-    For falling signals (set `falling_edge=True`), it finds where the negative derivative is maximized.
+    For falling signals (set ``falling_edge=True``), it finds where the negative derivative is maximized.
 
-    If `single_activation` is set to True, the timepoint of the maximum derivative is returned.
+    If ``single_activation`` is set to True, the timepoint of the maximum derivative is returned.
     Otherwise, the function detects peaks in the derivative signal which correspond to activation times.
-    The parameters `prominence`, `height`, and `min_distance`  are used to control the peak detection process, see :func:`scipy.signal.find_peaks` for details.
+    The parameters ``prominence``, ``height``, and ``min_distance``  are used to control the peak detection process, see :func:``scipy.signal.find_peaks`` for details.
 
-    The function uses Savitzky-Golay filter to smooth the derivative calculation. If `falling_edge` is set to True,
-    it detects the maximum negative derivative (for negative polarity signals). The `window_size` parameter controls
+    The function uses Savitzky-Golay filter to smooth the derivative calculation. If ``falling_edge`` is set to True,
+    it detects the maximum negative derivative (for negative polarity signals). The ``window_size`` parameter controls
     length of the moving window applied in the Savitzky-Golay filter, see :func:`scipy.signal.savgol_filter` for details.
 
     
@@ -236,9 +236,9 @@ def find_activations_threshold(signal, threshold=0.5, interpolate=False, falling
     This is useful for computing local activation times or detecting events in a time series.
 
     By default, it detects when the signal rises above the threshold, but can also
-    detect when it falls below the threshold if `falling_edge=True`.
+    detect when it falls below the threshold if ``falling_edge=True``.
 
-    The function returns the **closest** frame index where the signal crosses the threshold. If `interpolate` is set to True, the function will return the exact crossing point using linear interpolation.
+    The function returns the **closest** frame index where the signal crosses the threshold. If ``interpolate`` is set to True, the function will return the exact crossing point using linear interpolation.
 
     Parameters
     ----------
@@ -261,7 +261,7 @@ def find_activations_threshold(signal, threshold=0.5, interpolate=False, falling
 
     Returns
     -------
-        np.ndarray: An array of indices where the signal crosses the threshold in the specified direction.
+        np.ndarray
     """
     if signal.ndim > 1:
         raise NotImplementedError("signal input has to be 1D")
@@ -302,14 +302,15 @@ def find_activations(signal, method="maximum_derivative", interpolate=False, fal
     A versatile function that identifies when activation events occur in time series data.
     
     Two different methods are available:
-    1. **`method='maximum_derivative'`**: Computes activation times based the peaks in the temporal derivative of the signal $dv/dt$. See :func:`activation.find_activations_dvdt` for details.
-    2. **`method='threshold_crossing'`**: Computes activation times based on the signal crossing a specified threshold in desired direction. See :func:`activation.find_activations_threshold` for details.
+
+    #. **maximum_derivative**: Computes activation times based the peaks in the temporal derivative of the signal :math:`dV/dt`. See :func:`optimap.activation.find_activations_dvdt` for details.
+    #. **threshold_crossing**: Computes activation times based on the signal crossing a specified threshold in desired direction. See :func:`optimap.activation.find_activations_threshold` for details.
 
     The function can handle 1D signals, 2D traces (T, N), or 3D videos (averaged over all spatial dimensions to compute 1D signal).
 
-    If `falling_edge` is set to True, it expects *negative activation* (i.e., the signal falls below the threshold).
+    If ``falling_edge`` is set to True, it expects *negative activation* (i.e., the signal falls below the threshold).
 
-    By default, the function returns the _closest_ frame index to the condition. If `interpolate` is set to True, the function will return a fractional frame using interpolation.
+    By default, the function returns the _closest_ frame index to the condition. If ``interpolate`` is set to True, the function will return a fractional frame using interpolation.
 
     Parameters
     ----------
@@ -322,17 +323,17 @@ def find_activations(signal, method="maximum_derivative", interpolate=False, fal
         interpolate: bool
             If True, use linear interpolation to find the exact crossing point.
         threshold: float
-            If `method='threshold_crossing'`, the threshold value.
+            If ``method='threshold_crossing'``, the threshold value.
         min_duration: int
-            If `method='threshold_crossing'`, the minimum duration of the crossing in frames. If set to 0, all crossings are returned.
+            If ``method='threshold_crossing'``, the minimum duration of the crossing in frames. If set to 0, all crossings are returned.
         prominence: float
-            If `method='maximum_derivative'`, the required prominence of peaks. If None, it will be calculated automatically based on the signal's derivative statistics.
+            If ``method='maximum_derivative'``, the required prominence of peaks. If None, it will be calculated automatically based on the signal's derivative statistics.
         height: float
-            If `method='maximum_derivative'`, the minimum height of peaks. Default is None.
+            If ``method='maximum_derivative'``, the minimum height of peaks. Default is None.
         min_distance: int
-            If `method='maximum_derivative'`, the minimum distance between detected peaks in frames. Default is 10.
+            If ``method='maximum_derivative'``, the minimum distance between detected peaks in frames. Default is 10.
         window_size: int
-            If `method='maximum_derivative'`, the size of the window used for derivative calculation. Default is 5.
+            If ``method='maximum_derivative'``, the size of the window used for derivative calculation. Default is 5.
         show: bool
             If True, the resulting activation times will be displayed.
         fps: float
@@ -344,7 +345,8 @@ def find_activations(signal, method="maximum_derivative", interpolate=False, fal
 
     Returns
     -------
-        np.ndarray: An 1D array of indices.
+    activations : ndarray
+        Detected activation times.
     """
     if signal.ndim == 3:
         # mean signal over the spatial dimensions
@@ -410,13 +412,13 @@ def show_activation_map(activation_map,
     show_colorbar : bool, optional
         Whether to display a colorbar, by default True
     colorbar_title : str, optional
-        Title for the colorbar, by default "Activation Time [ms]" if `fps` is provided, otherwise "Activation Time [frames]"
+        Title for the colorbar, by default "Activation Time [ms]" if ``fps`` is provided, otherwise "Activation Time [frames]"
     ax : matplotlib.axes.Axes, optional
         Axes to plot on. If None, a new figure and axes is created, by default None
     contour_fontsize : int or float, optional
         Font size for contour labels, by default None (auto-determined)
     contour_fmt : str, optional
-        Format string for contour labels e.g. `' %1.0f ms '`, by default None. See :func:`matplotlib.pyplot.clabel` for details.
+        Format string for contour labels e.g. ``' %1.0f ms '``, by default None. See :func:`matplotlib.pyplot.clabel` for details.
     contour_levels : array-like, optional
         Specific contour levels to draw, by default None (auto-determined). See :func:`matplotlib.pyplot.contour` for details.
     contour_linestyles : str or list of str, optional
@@ -477,14 +479,16 @@ def compute_activation_map(video,
 
     The activation map is a 2D image where each pixel represents the time (in terms of frame index) at which the pixel is considered activated.
 
-    The activation time is determined based on the specified method, which can be either "threshold_crossing" or "maximum_derivative".
-    - "threshold_crossing": The activation time is the first frame where the pixel intensity surpasses a specified threshold.
-    - "maximum_derivative": The activation time is the first frame where the maximum derivative of the pixel intensity occurs.
+    The activation time is determined by  :func:`find_activations` based on the specified method, which can be either "threshold_crossing" or "maximum_derivative".
 
-    For negative polarity signals (i.e. inverted action potentials), set `falling_edge=True`.
-    The activation map is return in terms of discrete frame indices, if `interpolate=True` fractions of frames are returned.
+    * ``threshold_crossing``: The activation time is the first frame where the pixel intensity surpasses a specified threshold.
+    * ``maximum_derivative``: The activation time is the where the maximum of the temporal derivative of the pixel intensity occurs.
 
-    If `normalize_time=True` (default), the minimum activation time across all pixels will be subtracted from the activation times.
+    .. note::
+        For the ``threshold_crossing`` method the video should be normalized to the range [0, 1]. This is not required for the ``maximum_derivative`` method.
+
+    For negative polarity signals (i.e. inverted action potentials), set ``falling_edge=True``.
+    The activation map is return in terms of discrete frame indices, if ``interpolate=True`` fractions of frames are returned. If ``normalize_time=True`` (default), the minimum activation time across all pixels will be subtracted from the activation times.
     
     See :func:`find_activations` for further details and :func:`show_activation_map` for plotting.
 
@@ -500,7 +504,7 @@ def compute_activation_map(video,
     interpolate : bool, optional
         If True, use linear interpolation to find the exact crossing point between frames. Defaults to False.
     threshold : float, optional
-        Intensity threshold for `threshold_crossing` method at which a pixel is considered activated. Defaults to 0.5.
+        Intensity threshold for ``threshold_crossing`` method at which a pixel is considered activated. Defaults to 0.5.
     normalize_time : bool, optional
         If True, the minimum activation time across all pixels will be subtracted from the activation times. Defaults to True.
     set_nan_for_inactive : bool, optional
