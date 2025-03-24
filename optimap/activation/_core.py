@@ -42,7 +42,7 @@ def show_activations(signal, activations, fps=None, ax=None, linecolor="red", li
     find_activations : For detecting activation times in signals
     """
     if ax is None:
-        _, ax = plt.subplots()
+        _, ax = plt.subplots(figsize=(3.2, 4.8))
         show = True
     else:
         show = False
