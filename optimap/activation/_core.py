@@ -42,7 +42,7 @@ def show_activations(signal, activations, fps=None, ax=None, linecolor="red", li
     find_activations : For detecting activation times in signals
     """
     if ax is None:
-        _, ax = plt.subplots(figsize=(3.2, 4.8))
+        _, ax = plt.subplots(figsize=(6.4, 4.8 / 2))
         show = True
     else:
         show = False
@@ -437,6 +437,9 @@ def show_activation_map(activation_map,
     --------
     compute_activation_map : For creating activation maps from video data
     """
+    if activation_map.ndim != 2:
+        raise ValueError("activation_map must be 2D array")
+    
     if ax is None:
         _, ax = plt.subplots()
         show = True
