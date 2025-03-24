@@ -8,6 +8,8 @@ from ._core import (
     show_activations,
 )
 
+from ._cv import compute_cv
+
 __all__ = [
     "find_activations",
     "compute_activation_map",
@@ -15,4 +17,6 @@ __all__ = [
     "show_activation_map",
     "find_activations_threshold",
     "find_activations_dvdt",
+
+    "compute_cv",
 ]
