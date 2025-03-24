@@ -4,10 +4,11 @@ import numpy as np
 from ..utils import _print, interactive_backend
 from ._core import extract_traces, show_traces
 from ._point_clicker import PointClicker
+from ..image import show_image
 
 
 @interactive_backend
-def select_positions(image, as_integers=True):
+def select_positions(image, title="Click to select positions", as_integers=True, **kwargs):
     """Interactive selection of positions on an image.
     Click on the image to select a position. Right click to remove a position. Close the window to finish.
 
@@ -17,6 +18,8 @@ def select_positions(image, as_integers=True):
         Image to select positions from
     as_integers : bool, optional
         Return pixel coordinates if True, by default True
+    kwargs : dict, optional
+        Additional keyword arguments for :py:func:`optimap.show_image`
 
     Returns
     -------
@@ -31,8 +34,8 @@ def select_positions(image, as_integers=True):
         image = image[0]
 
     fig, ax = plt.subplots()
-    ax.imshow(image, cmap="gray")
-    ax.set_title("Click to select positions")
+    show_image(image, ax=ax, **kwargs)
+    ax.set_title(title)
     klicker = PointClicker(ax, as_integer=as_integers)
     plt.show(block=True)
 
