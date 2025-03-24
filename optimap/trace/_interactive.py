@@ -8,14 +8,20 @@ from ..image import show_image
 
 
 @interactive_backend
-def select_positions(image, title="Click to select positions", as_integers=True, **kwargs):
+def select_positions(image, title="Click to select positions", num_points=None, as_integers=True, **kwargs):
     """Interactive selection of positions on an image.
     Click on the image to select a position. Right click to remove a position. Close the window to finish.
+
+    If ``num_points`` is specified, the window will close automatically once that many points have been selected.
 
     Parameters
     ----------
     image : 2D array
         Image to select positions from
+    title : str, optional
+        Title for the figure, by default "Click to select positions"
+    num_points : int, optional
+        Number of points to select before automatically closing, by default None
     as_integers : bool, optional
         Return pixel coordinates if True, by default True
     kwargs : dict, optional
@@ -26,9 +32,6 @@ def select_positions(image, title="Click to select positions", as_integers=True,
     list of tuples
         List of selected positions
     """
-    _print(
-        "Click positions on the image, close the window to finish. Right click a point to remove it."
-    )
 
     if image.ndim == 3:
         image = image[0]
@@ -37,6 +40,15 @@ def select_positions(image, title="Click to select positions", as_integers=True,
     show_image(image, ax=ax, **kwargs)
     ax.set_title(title)
     klicker = PointClicker(ax, as_integer=as_integers)
+    
+    if num_points:
+        # Add callback to close the figure when the desired number of points is reached
+        def check_points(pos):
+            if len(klicker.get_positions()) >= num_points:
+                plt.close(fig)
+                
+        klicker.on_point_added(check_points)
+    
     plt.show(block=True)
 
     return klicker.get_positions()
