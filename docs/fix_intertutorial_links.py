@@ -28,17 +28,22 @@ def update_markdown_links(nb, mapping, nb_path):
     to have the link text be "Tutorial <number>" if the file’s stem appears
     in the mapping.
     """
-    intertutorial_pattern = re.compile(r'\[[^\]]*\]\(([^)^/]+\.ipynb)\)')
+    intertutorial_pattern = re.compile(r'\[([^\]]*)\]\(([^)^/]+\.ipynb)\)')
     other_links_pattern = re.compile(r'\[([^\]]*)\]\((?!(?:[^)/]+\.ipynb))([^)]+)\)')
     for cell in nb.cells:
         if cell.cell_type == "markdown":
             def repl(match):
-                target = match.group(1)
+                name = match.group(1)
+                target = match.group(2)
                 # Use only the file name stem for matching.
                 key = Path(target).stem
                 if key in mapping:
-                    return f"[Tutorial {mapping[key]}]({target})"
+                    link_name = f"Tutorial {mapping[key]}"
+                    if link_name != name:
+                        print(f"Updating link text from '{name}' to '{link_name}' in file {nb_path.name}")
+                    return f"[{link_name}]({target})"
                 else:
+                    print(f"Found unmatched link: [{name}]({target}) in file {nb_path.name}")
                     return match.group(0)
             cell.source = intertutorial_pattern.sub(repl, cell.source)
             
@@ -67,10 +72,7 @@ def main():
     for nb_path in tutorials_dir.glob("*.ipynb"):
         nb = nbformat.read(nb_path, as_version=4)
         new_nb = update_markdown_links(nb, mapping, nb_path)
-        if new_nb != nb:
-            # Only write the notebook back if it has changed.
-            nbformat.write(new_nb, nb_path)
-            print(f"Updated links in {nb_path.name}")
+        nbformat.write(new_nb, nb_path)
         # print(f"Processed {nb_path.name}")
 
 if __name__ == "__main__":
