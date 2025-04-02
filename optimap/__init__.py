@@ -1,16 +1,5 @@
 """optimap - An open-source Python toolbox for processing optical mapping and fluorescence imaging data."""
 
-# Check for OpenCV before importing anything else
-from importlib.util import find_spec as _find_spec # noqa: I001
-if _find_spec("cv2") is None:
-    opencv_not_found_error = "\n\n" \
-        "ERROR: Unable to import OpenCV, which we require. " \
-        "Please install it, e.g. with `pip install opencv-python`. " \
-        "See https://cardiacvision.github.io/optimap/main/chapters/getting_started/ for details."  \
-        "\n\n"
-    raise ImportError(opencv_not_found_error)
-
-
 from . import activation, image, motion, phase, trace, utils, video
 from ._version import __version__, __version_tuple__
 from .activation import (
