@@ -4,10 +4,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.linalg
 
-from ._core import show_activation_map
+from ..image import show_image, smooth_gaussian
 from ..trace import select_positions
 from ..utils import interactive_backend
-from ..image import show_image
+from ._core import show_activation_map
 
 
 @interactive_backend
@@ -87,7 +87,7 @@ def compute_cv(activation_map, positions=None, fps=None, space_scale=None, show=
     pos2 = positions[:, 1]
     distance = np.linalg.norm(np.array(pos1) - np.array(pos2))
     time_diff = np.abs(activation_map[pos1[:, 1], pos1[:, 0]] - activation_map[pos2[:, 1], pos2[:, 0]])
-    time_diff[time_diff == 0] = np.nan  # Avoid division by zero
+    time_diff[time_diff < 1e-6] = np.nan  # Avoid division by zero
     cv = distance / time_diff
 
     time_unit = "frame"
@@ -127,13 +127,6 @@ def compute_velocity_field_bayly(activation_map, window_size=None, min_points_ra
 
     is fitted to the activation times in a square window around that point. The velocity vector is then computed as the gradient of the fitted polynomial at the center of the window.
 
-    % The conduction velocity vectors are highly dependent on the goodness of
-    % fit of the polynomial surface.  In the Balyly paper, a 2nd order polynomial 
-    % surface is used.  We found this polynomial to be insufficient and thus increased
-    % the order to 3.  MATLAB's intrinsic fitting functions might do a better
-    % job fitting the data and should be more closely examined if velocity
-    % vectors look incorrect.
-
     Parameters
     ----------
     activation_map : np.ndarray
@@ -158,7 +151,7 @@ def compute_velocity_field_bayly(activation_map, window_size=None, min_points_ra
     rows, cols = activation_map.shape
     if window_size is None:
         window_size = min(rows, cols) // 10
-        window_size += window_size % 2
+        window_size += window_size % 2 == 0
     if not isinstance(window_size, int) or window_size < 3 or window_size % 2 == 0:
         raise ValueError("window_size must be an odd integer >= 3.")
 
@@ -214,7 +207,7 @@ def compute_velocity_field_bayly(activation_map, window_size=None, min_points_ra
             velocity_field[r, c, 1] = Ty / denom
     return velocity_field
 
-def compute_velocity_field_circle(activation_map, radius, num_angles=180, angle_window_deg=30, smooth_sigma_deg=10.0, min_valid_speeds_ratio=0.25):
+def compute_velocity_field_circle(activation_map, radius=5, num_angles=180, angle_window_deg=30, smooth_sigma_deg=10.0, min_valid_speeds_ratio=0.25):
     """
     Calculates a velocity vector field from a 2D activation map using the circle method :cite:t:`SilesParedes2022`.
 
@@ -224,8 +217,8 @@ def compute_velocity_field_circle(activation_map, radius, num_angles=180, angle_
     ----------
     activation_map : np.ndarray
         2D NumPy array (rows, cols) of local activation times (LAT). NaN values indicate masked areas.
-    radius : float
-        Radius of the circle used for LAT comparisons, in pixels.
+    radius : float, optional.
+        Radius of the circle used for LAT comparisons, in pixels. Defaults to 5px.
     num_angles : int, optional
         Number of diameters (angles from 0 to pi) to sample around the circle. Defaults to 180.
     angle_window_deg : float, optional
@@ -244,17 +237,12 @@ def compute_velocity_field_circle(activation_map, radius, num_angles=180, angle_
     np.ndarray
         Array of shape (rows, cols, 2) where the last dimension contains the x and y components of the velocity vector at each point.
     """
-    # --- Input Validation ---
     if not isinstance(activation_map, np.ndarray) or activation_map.ndim != 2:
         raise ValueError("activation_map must be a 2D NumPy array.")
     if not isinstance(radius, (int, float)) or radius <= 0:
         raise ValueError("radius must be a positive number.")
-    if not isinstance(num_angles, int) or num_angles <= 2:
-        raise ValueError("num_angles must be an integer greater than 2.")
     if not isinstance(angle_window_deg, (int, float)) or not 0 < angle_window_deg < 180:
         raise ValueError("angle_window_deg must be between 0 and 180 degrees.")
-    if smooth_sigma_deg is not None and (not isinstance(smooth_sigma_deg, (int, float)) or smooth_sigma_deg < 0):
-        raise ValueError("smooth_sigma_deg must be a non-negative number or None.")
     if not isinstance(min_valid_speeds_ratio, float) or not 0 < min_valid_speeds_ratio <= 1:
          raise ValueError("min_valid_speeds_ratio must be a float between 0 and 1.")
 
@@ -282,7 +270,6 @@ def compute_velocity_field_circle(activation_map, radius, num_angles=180, angle_
     else:
         sigma_pts = 0
 
-    # --- Iterate through pixels ---
     # Define calculation bounds considering the radius
     r_min, r_max = int(np.ceil(radius)), int(rows - np.ceil(radius))
     c_min, c_max = int(np.ceil(radius)), int(cols - np.ceil(radius))
@@ -293,7 +280,7 @@ def compute_velocity_field_circle(activation_map, radius, num_angles=180, angle_
             if np.isnan(activation_map[r, c]):
                 continue
 
-            # --- Get LATs on circumference using interpolation ---
+            # Get LATs on circumference
             r1 = r + radius * sin_thetas
             c1 = c + radius * cos_thetas
             r2 = r - radius * sin_thetas # Opposite point: angle + pi
@@ -301,32 +288,25 @@ def compute_velocity_field_circle(activation_map, radius, num_angles=180, angle_
             coords_1 = np.vstack((r1, c1)) # Shape (2, num_angles)
             coords_2 = np.vstack((r2, c2))
 
-            # Use bilinear interpolation (order=1), handle boundaries with NaN
-            with warnings.catch_warnings(): # Suppress map_coordinates boundary warnings
+            # Use bilinear interpolation, handle boundaries with NaN
+            with warnings.catch_warnings():
                  warnings.simplefilter("ignore", UserWarning)
-                 lat1 = scipy.ndimage.map_coordinates(activation_map, coords_1, order=1, mode='constant', cval=np.nan, prefilter=False)
-                 lat2 = scipy.ndimage.map_coordinates(activation_map, coords_2, order=1, mode='constant', cval=np.nan, prefilter=False)
+                 lat1 = scipy.ndimage.map_coordinates(activation_map, coords_1, order=1, mode="constant", cval=np.nan, prefilter=False)
+                 lat2 = scipy.ndimage.map_coordinates(activation_map, coords_2, order=1, mode="constant", cval=np.nan, prefilter=False)
 
-            # --- Calculate instantaneous speeds (pixels/time_unit) ---
+            # Instantaneous speeds
             delta_lat = lat1 - lat2
-            valid_mask = ~np.isnan(delta_lat) & (np.abs(delta_lat) > epsilon)
-
-            if np.sum(valid_mask) < min_valid_speeds_count:
-                continue # Not enough valid points around the circle
-
-            distance_pixels = 2.0 * radius # Diameter in pixels
-            speeds = np.full(num_angles, np.nan, dtype=np.float32)
-            speeds[valid_mask] = distance_pixels / delta_lat[valid_mask]
+            delta_lat[delta_lat < epsilon] = np.nan
+            speeds = 2.0 * radius / delta_lat
             abs_speeds = np.abs(speeds)
+            if np.sum(~np.isnan(speeds)) < min_valid_speeds_count:
+                continue  # Not enough valid points around the circle
 
-            # --- Find Propagation Direction ---
-            # Smooth the *absolute* speeds to find the minimum robustly
+            # Find propagation direction
             if sigma_pts > 0:
-                smoothed_abs_speeds = scipy.ndimage.gaussian_filter1d(abs_speeds, sigma=sigma_pts, mode='wrap')
+                smoothed_abs_speeds = scipy.ndimage.gaussian_filter1d(abs_speeds, sigma=sigma_pts, mode="wrap")
             else:
                 smoothed_abs_speeds = abs_speeds
-
-            # Find index of minimum absolute speed (handle potential all-NaNs)
             try:
                 idx_min_abs_speed = np.nanargmin(smoothed_abs_speeds)
             except ValueError:
@@ -334,75 +314,158 @@ def compute_velocity_field_circle(activation_map, radius, num_angles=180, angle_
 
             # Propagation angle is orthogonal to the direction of min absolute speed
             angle_normal = thetas[idx_min_abs_speed] # radians
-            original_speed_at_min = speeds[idx_min_abs_speed] # Use unsmoothed speed sign
-            if np.isnan(original_speed_at_min): continue # Safety check
-
-            if original_speed_at_min >= 0: # Wave moves from point 2 to point 1 along normal
+            original_speed_at_min = speeds[idx_min_abs_speed]
+            if np.isnan(original_speed_at_min):
+                continue
+            elif original_speed_at_min >= 0: # Wave moves from point 2 to point 1 along normal
                 angle_prop = angle_normal + np.pi / 2.0
             else: # Wave moves from point 1 to point 2 along normal
                 angle_prop = angle_normal - np.pi / 2.0
+            angle_prop = angle_prop % (2 * np.pi)
 
-            angle_prop = angle_prop % (2 * np.pi) # Normalize angle to [0, 2*pi)
-
-            # --- Calculate Average Speed Magnitude with Cosine Correction ---
-            # Shift the *unsmoothed* absolute speeds so estimated prop direction is centered
-            # Equivalent to MATLAB: circshift(abs(CV_f), -loc - L/4) where L/4 shifts by 90 deg
+            # Compute average speed in the angle_window_deg window
             shift_amount = (-idx_min_abs_speed - num_angles // 2) % num_angles
             abs_speeds_oriented = np.roll(abs_speeds, shift_amount)
-
-            # Define the window slice around the center (index num_angles // 2)
-            center_idx = num_angles // 2
-            # Handle wrapping for the slice indices using modulo arithmetic
-            indices_to_avg = np.mod(np.arange(center_idx - w_indices, center_idx + w_indices + 1), num_angles)
-
-            # Extract the absolute speeds within the window & apply cosine correction
-            window_abs_speeds = abs_speeds_oriented[indices_to_avg]
+            window_abs_speeds = abs_speeds_oriented[num_angles // 2 - w_indices:num_angles // 2 + w_indices + 1]
             corrected_speeds = window_abs_speeds / cos_relative_avg_angles
 
             avg_speed_mag = np.nanmean(corrected_speeds)
             if np.isnan(avg_speed_mag) or avg_speed_mag < 0:
                 continue
 
-            vx = avg_speed_mag * np.cos(angle_prop)
-            vy = avg_speed_mag * np.sin(angle_prop)
-
-            velocity_field[r, c, 0] = vx
-            velocity_field[r, c, 1] = vy
-
+            velocity_field[r, c, 0] = avg_speed_mag * np.cos(angle_prop)
+            velocity_field[r, c, 1] = avg_speed_mag * np.sin(angle_prop)
     return velocity_field
 
-def compute_velocity_field(activation_map, method='bayly', **kwargs):
-    if method == 'bayly':
-        return compute_velocity_field_bayly(activation_map, **kwargs)
-    elif method == 'circle':
-        return compute_velocity_field_circle(activation_map, **kwargs)
-    else:
-        raise ValueError(f"Method '{method}' is not supported. Available methods: 'bayly'.")
+def compute_velocity_field_gradient(activation_map, sigma=2, outlier_percentage=0.01):
+    r"""Compute a velocity field based on the gradient of the activation map.
 
-def compute_local_cv(activation_map, method='bayly', fps=None, space_scale=None, show=True, vmin=0, vmax=None, **kwargs):
-    """
-    Computes the local conduction velocity (CV) from an activation map using a specified method.
+    This method estimates the velocity field by:
+    1. Smoothing the input activation map using a Gaussian filter to reduce noise.
+    2. Computing the spatial gradient :math:`\\nabla T = [T_x, T_y]` of the smoothed
+       activation time map :math:`T(x, y)`.
+    3. Optionally remove outlier vectors based on gradient magnitude.
+
+    Note: The result represents local velocity in pixels/frame.
 
     Parameters
     ----------
     activation_map : np.ndarray
-        2D NumPy array where each element represents the activation time at that spatial location (grid point).
-        NaN values can be used to indicate no activation.
+        2D NumPy array (rows, cols) where each pixel represents the local
+        activation time (LAT). NaN values can be present.
+    sigma : float, optional
+        Standard deviation for the Gaussian smoothing applied to the
+        activation map before gradient calculation. Larger values increase
+        smoothing. Defaults to 2.0.
+    outlier_percentage : float or None, optional
+        The percentage of gradient vectors to filter out as outliers, based on
+        their magnitude. Specifically, vectors whose gradient magnitude exceeds
+        the `(100 - outlier_percentage)` percentile are set to NaN.
+        For example, `outlier_percentage=0.1` removes the 0.1% of vectors with
+        the largest magnitudes. Set to `None` or `0` to disable outlier removal.
+        Defaults to 1.0.
+
+    Returns
+    -------
+    np.ndarray
+        3D NumPy array of shape (rows, cols, 2).
+
+    See Also
+    --------
+    compute_velocity_field : General function calling different methods.
+    """
+    if not isinstance(activation_map, np.ndarray) or activation_map.ndim != 2:
+        raise ValueError("activation_map must be a 2D NumPy array.")
+    if not isinstance(sigma, (int, float)) or sigma < 0:
+        raise ValueError("sigma must be a non-negative number.")
+    
+    activation_map = smooth_gaussian(activation_map, sigma=sigma)
+    dy, dx = np.gradient(activation_map)
+    velocity_field = np.stack((dx, dy), axis=-1)
+
+    if outlier_percentage is not None:
+        gradient_magnitude = np.linalg.norm(velocity_field, axis=-1)
+        threshold = np.nanpercentile(gradient_magnitude, 100 - outlier_percentage)
+        velocity_field[gradient_magnitude > threshold] = np.nan
+    return velocity_field
+
+def compute_velocity_field(activation_map, method="bayly", **kwargs):
+    r"""Computes the velocity field from an isochronal activation map.
+
+    This function serves as a wrapper to call different algorithms for computing
+    the velocity field, which represents the direction and magnitude (speed)
+    of activation wavefront propagation at each point in the map.
+
+    Available methods:
+      * ``'bayly'``: Uses local second-order polynomial fitting to estimate the
+        gradient of activation time and derive velocity. Use `window_size` parameter to ...
+        See :func:`compute_velocity_field_bayly` and :cite:t:`Bayly1998`.
+      * ``'circle'``: Employs activation time differences across diameters of a
+        local circle to determine velocity. Use `radius` parameter to ... See :func:`compute_velocity_field_circle` and :cite:t:`SilesParedes2022`.
+      * ``'gradient'``: Calculates velocity directly from the smoothed spatial
+        gradient of the activation map (:math:`\\vec{v} = \\nabla T / |\\nabla T|^2`).
+        Simple and fast, but can be sensitive to noise and sharp gradients.
+        See :func:`compute_velocity_field_gradient`.
+    
+    Parameters
+    ----------
+    activation_map : np.ndarray
+        2D NumPy array where each pixel represents the activation time.
     method : str
-        The method to use for computing the local CV. Currently only 'bayly' is supported.
+        Method to compute the velocity field. Options are: ['bayly', 'circle', 'gradient'].
+    **kwargs : dict
+        Additional parameters for the selected method.
+    
+    Parameters
+    ----------
+    activation_map : np.ndarray
+        2D NumPy array where each pixel represents the activation time.
+    method : str
+        Method to compute the velocity field. Options are: ['bayly', 'circle', 'gradient'].
+    **kwargs : dict
+        Additional parameters for the selected method.
+    
+    Returns
+    -------
+    np.ndarray
+        3D NumPy array of shape (rows, cols, 2)
+    """
+    if method == "bayly":
+        return compute_velocity_field_bayly(activation_map, **kwargs)
+    elif method == "circle":
+        return compute_velocity_field_circle(activation_map, **kwargs)
+    elif method == "gradient":
+        return compute_velocity_field_gradient(activation_map, **kwargs)
+    else:
+        raise ValueError(f"Method '{method}' is not supported. Available methods: 'bayly'.")
+
+def compute_cv_map(activation_map, method="bayly", fps=None, space_scale=None, show=True, vmin=0, vmax=None, **kwargs):
+    """
+    Computes the local conduction velocity (CV) map from an activation map.
+
+    Parameters
+    ----------
+    activation_map : np.ndarray
+        2D NumPy array where each pixel represents the activation time. NaN values mean no activation.
+    method : str
+        The method to use for computing the CV cmp. Currently only 'bayly' is supported.
     fps : float
         Frames per second. If provided, converts time units from frames to seconds.
     space_scale : float
         Spatial scale in mm/px. If provided, converts spatial units from pixels to cm.
     show : bool
-        Whether to display a plot showing the activation map and computed local CV.
+        Whether to display a plot showing the activation map and computed CV map.
 
     Returns
     -------
     np.ndarray
         Array of shape (rows, cols, 2) where the last dimension contains the x and y components of the local CV at each point.
-    """
 
+    See Also
+    --------
+    compute_cv: Computes the conduction velocity between pairs of points.
+    compute_velocity_field : Computes the velocity field from an activation map.
+    """
     velocity_field = compute_velocity_field(activation_map, method=method, **kwargs)
     cv = np.linalg.norm(velocity_field, axis=-1)
 
@@ -418,5 +481,5 @@ def compute_local_cv(activation_map, method='bayly', fps=None, space_scale=None,
 
     if show:
         title = f"Mean CV: {np.nanmean(cv):.2f} {space_unit}/{time_unit}"
-        show_image(cv, title=title, cmap="turbo", vmin=vmin, vmax=vmax)
+        show_image(cv, title=title, cmap="turbo", vmin=vmin, vmax=vmax, show_colorbar=True, colorbar_title=f"CV [{space_unit}/{time_unit}]")
     return cv

@@ -7,8 +7,14 @@ from ._core import (
     show_activation_map,
     show_activations,
 )
-
-from ._cv import compute_cv, compute_local_cv, compute_velocity_field_bayly
+from ._cv import (
+    compute_cv,
+    compute_cv_map,
+    compute_velocity_field,
+    compute_velocity_field_bayly,
+    compute_velocity_field_circle,
+    compute_velocity_field_gradient,
+)
 
 __all__ = [
     "find_activations",
@@ -17,9 +23,13 @@ __all__ = [
     "show_activation_map",
 
     "compute_cv",
-    "compute_local_cv",
-    "compute_velocity_field_bayly",
+    "compute_cv_map",
+    "compute_velocity_field",
 
     "find_activations_threshold",
     "find_activations_dvdt",
+
+    "compute_velocity_field_gradient",
+    "compute_velocity_field_bayly",
+    "compute_velocity_field_circle",
 ]
