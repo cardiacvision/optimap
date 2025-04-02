@@ -337,12 +337,12 @@ def compute_velocity_field_circle(activation_map, radius=5, num_angles=180, angl
             velocity_field[r, c, 1] = avg_speed_mag * np.sin(angle_prop)
     return velocity_field
 
-def compute_velocity_field_gradient(activation_map, sigma=2, outlier_percentage=0.01):
+def compute_velocity_field_gradient(activation_map, sigma=2, outlier_percentage=0):
     r"""Compute a velocity field based on the gradient of the activation map.
 
     This method estimates the velocity field by:
     1. Smoothing the input activation map using a Gaussian filter to reduce noise.
-    2. Computing the spatial gradient :math:`\\nabla T = [T_x, T_y]` of the smoothed
+    2. Computing the velocity field :math:`\\nabla T / |\\nabla T|^2` of the smoothed
        activation time map :math:`T(x, y)`.
     3. Optionally remove outlier vectors based on gradient magnitude.
 
@@ -363,7 +363,7 @@ def compute_velocity_field_gradient(activation_map, sigma=2, outlier_percentage=
         the `(100 - outlier_percentage)` percentile are set to NaN.
         For example, `outlier_percentage=0.1` removes the 0.1% of vectors with
         the largest magnitudes. Set to `None` or `0` to disable outlier removal.
-        Defaults to 1.0.
+        Defaults to 0.
 
     Returns
     -------
@@ -380,13 +380,17 @@ def compute_velocity_field_gradient(activation_map, sigma=2, outlier_percentage=
         raise ValueError("sigma must be a non-negative number.")
     
     activation_map = smooth_gaussian(activation_map, sigma=sigma)
-    dy, dx = np.gradient(activation_map)
-    velocity_field = np.stack((dx, dy), axis=-1)
+    velocity_field = np.full(activation_map.shape + (2,), np.nan, dtype=np.float32)
 
-    if outlier_percentage is not None:
-        gradient_magnitude = np.linalg.norm(velocity_field, axis=-1)
-        threshold = np.nanpercentile(gradient_magnitude, 100 - outlier_percentage)
-        velocity_field[gradient_magnitude > threshold] = np.nan
+    dy, dx = np.gradient(activation_map)
+    gradient_magnitude_sq = dx**2 + dy**2
+    gradient_magnitude_sq[gradient_magnitude_sq < 1e-6] = np.nan
+    velocity_field[..., 0] = dx / gradient_magnitude_sq
+    velocity_field[..., 1] = dy / gradient_magnitude_sq
+
+    if outlier_percentage is not None and outlier_percentage > 0:
+        threshold = np.nanpercentile(gradient_magnitude_sq, outlier_percentage)
+        velocity_field[gradient_magnitude_sq < threshold] = np.nan
     return velocity_field
 
 def compute_velocity_field(activation_map, method="bayly", **kwargs):
