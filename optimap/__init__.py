@@ -13,7 +13,14 @@ if _find_spec("cv2") is None:
 
 from . import activation, image, motion, phase, trace, utils, video
 from ._version import __version__, __version_tuple__
-from .activation import compute_activation_map, show_activation_map, find_activations
+from .activation import (
+    compute_activation_map,
+    compute_cv,
+    compute_cv_map,
+    compute_velocity_field,
+    find_activations,
+    show_activation_map,
+)
 from .image import (
     background_mask,
     export_image,
@@ -27,7 +34,7 @@ from .image import (
     show_image,
     show_mask,
 )
-from .motion import motion_compensate
+from .motion import motion_compensate, reverse_motion_compensate
 from .phase import compute_phase
 from .trace import (
     compare_traces,
@@ -35,8 +42,8 @@ from .trace import (
     select_positions,
     select_traces,
     show_positions,
-    show_traces,
     show_positions_and_traces,
+    show_traces,
 )
 from .utils import (
     download_example_data,
@@ -102,27 +109,36 @@ __all__ = [
     "export_videos",
     "export_video_with_overlay",
 
+    # trace module
     "extract_traces",
     "compare_traces",
     "select_positions",
     "select_traces",
 
+    # motion module
     "motion_compensate",
+    "reverse_motion_compensate",
 
     "interactive_mask",
     "background_mask",
     "foreground_mask",
     "invert_mask",
 
-    "compute_phase",
+    # activation module
+    "find_activations",
     "compute_activation_map",
     "show_activation_map",
-    "find_activations",
+    "compute_cv",
+    "compute_cv_map",
+    "compute_velocity_field",
 
+    # phase module
+    "compute_phase",
+
+    # utils module
     "download_example_data",
     "set_verbose",
     "is_verbose",
     "print_bar",
     "print_properties",
-    "detect_apd"
 ]

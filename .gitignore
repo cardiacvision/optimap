@@ -1,4 +1,5 @@
 _build
+docs/doctrees
 optimap/_version.py
 *.whl
 public
