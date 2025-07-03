@@ -21,7 +21,7 @@ if add_openmp_flags_if_available(cpp_module):
 core_requirements = [
     "matplotlib",
     "mpl-pan-zoom",
-    "numpy",
+    "numpy<2.3.0",  # sckit-video is incompatible with numpy 2.3.0, TODO: replace scikit-video
     "packaging",
     "Pillow>=10.0.1",  # not a strict requirement, but it makes importing 16-bit PNGs more consistent
     "pooch",
