@@ -20,7 +20,6 @@ archs = ["auto64"]  # 64-bit only
 skip = "pp* *musllinux*"  # disable PyPy, musl-based wheels
 test-requires = ["pytest"]
 test-command = "pytest {project}/tests"
-manylinux-x86_64-image = "quay.io/pypa/manylinux_2_28_x86_64"  # TODO: temporary, remove after upgrade of cibuildwheel
 
 [tool.ruff]
 line-length = 120
