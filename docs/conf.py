@@ -106,6 +106,7 @@ nb_execution_mode = "cache"
 nb_execution_timeout = 600  # seconds
 nb_execution_excludepatterns = ['tutorials/converted/*']
 nb_execution_cache_path = str(Path(__file__).parent.parent / ".jupyter_cache")
+nb_execution_raise_on_error = True
 
 # add_module_names = False
 # napoleon_google_docstring = False
@@ -175,8 +176,11 @@ remove_from_toctrees = [
 
 show_warning_types = True
 suppress_warnings = [
+    # 'docutils',
+    # 'autosummary',
     'myst.header',
-    'toc.not_included'
+    'autosectionlabel.*',
+    # 'toc.not_included'
 ]
 
 # based on pandas/doc/source/conf.py
