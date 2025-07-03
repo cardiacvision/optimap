@@ -308,7 +308,7 @@ def smooth_gaussian(image, sigma, **kwargs):
         sigma = (sigma, sigma, 0)
     
     if np.isnan(image).any():
-        # Scipy' gaussian_filter does not support NaN values, so we assume some
+        # Scipy's gaussian_filter does not support NaN values, so we assume some
         # mean-neighborhood-value at each nan-point. This is not ideal, but works
         # for most cases.
         gauss = image.copy()

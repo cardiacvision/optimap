@@ -402,12 +402,11 @@ def compute_velocity_field(activation_map, method="bayly", **kwargs):
 
     Available methods:
       * ``'bayly'``: Uses local second-order polynomial fitting to estimate the
-        gradient of activation time and derive velocity. Use `window_size` parameter to ...
-        See :func:`compute_velocity_field_bayly` and :cite:t:`Bayly1998`.
+        gradient of activation time and derive velocity. Use `window_size` parameter to control smoothing size. See :func:`compute_velocity_field_bayly` and :cite:t:`Bayly1998`.
       * ``'circle'``: Employs activation time differences across diameters of a
-        local circle to determine velocity. Use `radius` parameter to ... See :func:`compute_velocity_field_circle` and :cite:t:`SilesParedes2022`.
+        local circle to determine velocity. Use `radius` parameter to control smoothing size. See :func:`compute_velocity_field_circle` and :cite:t:`SilesParedes2022`.
       * ``'gradient'``: Calculates velocity directly from the smoothed spatial
-        gradient of the activation map (:math:`\\vec{v} = \\nabla T / |\\nabla T|^2`).
+        gradient of the activation map (:math:`\vec{v} = \nabla T / |\nabla T|^2`).
         Simple and fast, but can be sensitive to noise and sharp gradients.
         See :func:`compute_velocity_field_gradient`.
     
@@ -443,7 +442,7 @@ def compute_velocity_field(activation_map, method="bayly", **kwargs):
     else:
         raise ValueError(f"Method '{method}' is not supported. Available methods: 'bayly'.")
 
-def compute_cv_map(activation_map, method="bayly", fps=None, space_scale=None, show=True, vmin=0, vmax=None, **kwargs):
+def compute_cv_map(activation_map, method="bayly", fps=None, space_scale=None, show=True, title=None, vmin=0, vmax=None, **kwargs):
     """
     Computes the local conduction velocity (CV) map from an activation map.
 
@@ -484,6 +483,6 @@ def compute_cv_map(activation_map, method="bayly", fps=None, space_scale=None, s
         space_unit = "cm"
 
     if show:
-        title = f"Mean CV: {np.nanmean(cv):.2f} {space_unit}/{time_unit}"
+        title = f"Mean CV: {np.nanmean(cv):.2f} {space_unit}/{time_unit}" if title is None else title
         show_image(cv, title=title, cmap="turbo", vmin=vmin, vmax=vmax, show_colorbar=True, colorbar_title=f"CV [{space_unit}/{time_unit}]")
     return cv

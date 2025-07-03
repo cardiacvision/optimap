@@ -52,6 +52,11 @@ FILE_HASHES = {
         "sha256:a3b06ddebb87c9990be2190215e341393d20e55b30cc6172baab457272d10420",
     "mouse_41_120ms_control_iDS_mask.png":
         "sha256:3646c27b9fe05099d19903790c1bed3b3ff3690ea965ded41299e3243f206a78",
+    # used in CV tutorial
+    "doi:10.5281/zenodo.5557829/mouse_41_150ms_control_iDS.mat":
+        "sha256:4ca46e1d8379137e27776dfea05ba0b8a97f99a93e67d19bfa20298dbc5b9ba6",
+    "doi:10.5281/zenodo.5557829/mouse_41_150ms_4AP_iDS.mat":
+        "sha256:1d37d5a033531f5c64181753f5e30e46a40eb4aaa3caecfcc1330cb1e61ed18e",
     # used in mask tutorial
     "VF_Rabbit_1_warped_mask.npy":
         "sha256:3f5d8402c8251f3cb8e8d235b459264ff7e7e2cf2b81f08129f0897baa262db6",
