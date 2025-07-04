@@ -207,7 +207,7 @@ def compute_velocity_field_bayly(activation_map, window_size=None, min_points_ra
             velocity_field[r, c, 1] = Ty / denom
     return velocity_field
 
-def compute_velocity_field_circle(activation_map, radius=5, num_angles=180, angle_window_deg=30, smooth_sigma_deg=10.0, min_valid_speeds_ratio=0.25):
+def compute_velocity_field_circle(activation_map, radius=5, sigma=1, num_angles=180, angle_window_deg=30, min_valid_speeds_ratio=0.25):
     """
     Calculates a velocity vector field from a 2D activation map using the circle method :cite:t:`SilesParedes2022`.
 
@@ -219,15 +219,13 @@ def compute_velocity_field_circle(activation_map, radius=5, num_angles=180, angl
         2D NumPy array (rows, cols) of local activation times (LAT). NaN values indicate masked areas.
     radius : float, optional.
         Radius of the circle used for LAT comparisons, in pixels. Defaults to 5px.
+    sigma : float, optional
+        Standard deviation for Gaussian smoothing applied to the absolute speeds on the circular kernel before finding the direction of propagation.
     num_angles : int, optional
         Number of diameters (angles from 0 to pi) to sample around the circle. Defaults to 180.
     angle_window_deg : float, optional
         Total angular window width (in degrees) centered around the estimated propagation direction,
         used for averaging speeds. Defaults to 30 degrees.
-    smooth_sigma_deg : float or None, optional
-        Standard deviation (in degrees) for Gaussian smoothing applied to the absolute speeds before
-        finding the minimum, used to robustly determine the propagation direction.
-        Set to None or 0 to disable smoothing. Defaults to 10.0.
     min_valid_speeds_ratio : float, optional
         Minimum fraction of valid (non-NaN) instantaneous speeds required out of `num_angles`
         to compute a velocity vector at a point. Defaults to 0.25.
@@ -264,19 +262,10 @@ def compute_velocity_field_circle(activation_map, radius=5, num_angles=180, angl
     # Prevent division by ~zero if window includes near pi/2 relative angle
     cos_relative_avg_angles[np.abs(cos_relative_avg_angles) < epsilon] = np.sign(cos_relative_avg_angles[np.abs(cos_relative_avg_angles) < epsilon]) * epsilon
 
-    # Smoothing parameter (convert degrees to points)
-    if smooth_sigma_deg is not None and smooth_sigma_deg > epsilon:
-        sigma_pts = smooth_sigma_deg / np.rad2deg(angle_step_rad)
-    else:
-        sigma_pts = 0
-
-    # Define calculation bounds considering the radius
     r_min, r_max = int(np.ceil(radius)), int(rows - np.ceil(radius))
     c_min, c_max = int(np.ceil(radius)), int(cols - np.ceil(radius))
-
     for r in range(r_min, r_max):
         for c in range(c_min, c_max):
-            # Skip if the center point itself is invalid
             if np.isnan(activation_map[r, c]):
                 continue
 
@@ -287,8 +276,6 @@ def compute_velocity_field_circle(activation_map, radius=5, num_angles=180, angl
             c2 = c - radius * cos_thetas
             coords_1 = np.vstack((r1, c1)) # Shape (2, num_angles)
             coords_2 = np.vstack((r2, c2))
-
-            # Use bilinear interpolation, handle boundaries with NaN
             with warnings.catch_warnings():
                  warnings.simplefilter("ignore", UserWarning)
                  lat1 = scipy.ndimage.map_coordinates(activation_map, coords_1, order=1, mode="constant", cval=np.nan, prefilter=False)
@@ -296,15 +283,23 @@ def compute_velocity_field_circle(activation_map, radius=5, num_angles=180, angl
 
             # Instantaneous speeds
             delta_lat = lat1 - lat2
-            delta_lat[delta_lat < epsilon] = np.nan
             speeds = 2.0 * radius / delta_lat
             abs_speeds = np.abs(speeds)
             if np.sum(~np.isnan(speeds)) < min_valid_speeds_count:
                 continue  # Not enough valid points around the circle
 
             # Find propagation direction
-            if sigma_pts > 0:
-                smoothed_abs_speeds = scipy.ndimage.gaussian_filter1d(abs_speeds, sigma=sigma_pts, mode="wrap")
+            if sigma > 0:
+                # Scipy's gaussian_filter does not support NaN values, do the same trick as for video smoothing
+                smoothed_abs_speeds = abs_speeds.copy()
+                smoothed_abs_speeds[np.isnan(abs_speeds)] = 0
+                smoothed_abs_speeds = scipy.ndimage.gaussian_filter1d(smoothed_abs_speeds, sigma=sigma, mode="wrap")
+
+                norm = np.ones_like(smoothed_abs_speeds, dtype=np.float32)
+                norm[np.isnan(abs_speeds)] = 0
+                norm = scipy.ndimage.gaussian_filter1d(norm, sigma=sigma, mode="wrap")
+                smoothed_abs_speeds /= np.where(norm==0, 1, norm)
+                smoothed_abs_speeds[np.isnan(abs_speeds)] = np.nan
             else:
                 smoothed_abs_speeds = abs_speeds
             try:
@@ -312,29 +307,18 @@ def compute_velocity_field_circle(activation_map, radius=5, num_angles=180, angl
             except ValueError:
                 continue
 
-            # Propagation angle is orthogonal to the direction of min absolute speed
-            angle_normal = thetas[idx_min_abs_speed] # radians
-            original_speed_at_min = speeds[idx_min_abs_speed]
-            if np.isnan(original_speed_at_min):
-                continue
-            elif original_speed_at_min >= 0: # Wave moves from point 2 to point 1 along normal
-                angle_prop = angle_normal + np.pi / 2.0
-            else: # Wave moves from point 1 to point 2 along normal
-                angle_prop = angle_normal - np.pi / 2.0
-            angle_prop = angle_prop % (2 * np.pi)
-
             # Compute average speed in the angle_window_deg window
             shift_amount = (-idx_min_abs_speed - num_angles // 2) % num_angles
             abs_speeds_oriented = np.roll(abs_speeds, shift_amount)
             window_abs_speeds = abs_speeds_oriented[num_angles // 2 - w_indices:num_angles // 2 + w_indices + 1]
             corrected_speeds = window_abs_speeds / cos_relative_avg_angles
 
+            angle = thetas[idx_min_abs_speed] # radians
+            if speeds[idx_min_abs_speed] < 0:
+                angle += np.pi
             avg_speed_mag = np.nanmean(corrected_speeds)
-            if np.isnan(avg_speed_mag) or avg_speed_mag < 0:
-                continue
-
-            velocity_field[r, c, 0] = avg_speed_mag * np.cos(angle_prop)
-            velocity_field[r, c, 1] = avg_speed_mag * np.sin(angle_prop)
+            velocity_field[r, c, 0] = avg_speed_mag * np.cos(angle)
+            velocity_field[r, c, 1] = avg_speed_mag * np.sin(angle)
     return velocity_field
 
 def compute_velocity_field_gradient(activation_map, sigma=2, outlier_percentage=0):
