@@ -142,6 +142,10 @@ def compute_velocity_field_bayly(activation_map, window_size=None, min_points_ra
     -------
     np.ndarray
         Array of shape (rows, cols, 2) where the last dimension contains the x and y components of the velocity vector at each point.
+
+    See Also
+    --------
+    compute_velocity_field : General function calling different methods.
     """
     if not isinstance(activation_map, np.ndarray) or activation_map.ndim != 2:
         raise ValueError("activation_map must be a 2D NumPy array.")
@@ -234,6 +238,10 @@ def compute_velocity_field_circle(activation_map, radius=5, sigma=1, num_angles=
     -------
     np.ndarray
         Array of shape (rows, cols, 2) where the last dimension contains the x and y components of the velocity vector at each point.
+
+    See Also
+    --------
+    compute_velocity_field : General function calling different methods.
     """
     if not isinstance(activation_map, np.ndarray) or activation_map.ndim != 2:
         raise ValueError("activation_map must be a 2D NumPy array.")
@@ -325,12 +333,13 @@ def compute_velocity_field_gradient(activation_map, sigma=2, outlier_percentage=
     r"""Compute a velocity field based on the gradient of the activation map.
 
     This method estimates the velocity field by:
-    1. Smoothing the input activation map using a Gaussian filter to reduce noise.
-    2. Computing the velocity field :math:`\\nabla T / |\\nabla T|^2` of the smoothed
-       activation time map :math:`T(x, y)`.
-    3. Optionally remove outlier vectors based on gradient magnitude.
 
-    Note: The result represents local velocity in pixels/frame.
+    #. Smoothing the input activation map using a Gaussian filter to reduce noise.
+    #. Computing the velocity field :math:`\nabla T / |\nabla T|^2` of the smoothed activation time map :math:`T(x, y)`.
+    #. Optionally remove outlier vectors based on gradient magnitude.
+
+    .. note::
+        The resulting local velocity field is in pixels/frame.
 
     Parameters
     ----------
@@ -352,7 +361,7 @@ def compute_velocity_field_gradient(activation_map, sigma=2, outlier_percentage=
     Returns
     -------
     np.ndarray
-        3D NumPy array of shape (rows, cols, 2).
+        Array of shape (rows, cols, 2) where the last dimension contains the x and y components of the velocity vector at each point.
 
     See Also
     --------
