@@ -25,6 +25,8 @@ def _largest_mask_component(mask: np.ndarray) -> np.ndarray:
     """Identify and return the largest connected component (island) in a given binary mask."""
     labels = skimage.measure.label(mask)
     label_count = np.bincount(labels.ravel())
+    if len(label_count) <= 1:  # no foreground component
+        return np.zeros(mask.shape, dtype=bool)
     largest_label = label_count[1:].argmax() + 1
     new_mask = labels == largest_label
     return new_mask
@@ -32,9 +34,6 @@ def _largest_mask_component(mask: np.ndarray) -> np.ndarray:
 
 class ImageSegmenter:
     """Manually segment an image with the lasso selector."""
-
-    _mask_history = deque()
-    _mask_future = deque()
 
     def __init__(  # type: ignore
         self,
@@ -99,10 +98,13 @@ class ImageSegmenter:
         **kwargs : dict
             All other kwargs will passed to the imshow command for the image
         """
-        if image.ndim != 2 and image.shape[-1] != 3:
-            msg = "Image must be an image, got shape {image.shape}"
+        if image.ndim != 2 and not (image.ndim == 3 and image.shape[-1] in (3, 4)):
+            msg = f"Image must be an image, got shape {image.shape}"
             raise ValueError(msg)
 
+        # undo/redo history, per instance
+        self._mask_history = deque()
+        self._mask_future = deque()
         self._img = image
         if default_tool == "draw":
             self._erasing = False

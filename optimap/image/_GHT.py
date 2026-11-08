@@ -82,17 +82,20 @@ def GHT(n, x=None, nu=0, tau=0, kappa=0, omega=0.5):
 
 def im2hist(im, zero_extents=False):
     # Convert an image to grayscale, bin it, and optionally zero out the first and last bins.
-    if im.dtype in [np.float32, np.float64]:
-        max_val = im.max()  # TODO: fix histogram binning for float images properly
-        if max_val < 5:
-            msg = "TODO: fix histogram binning for float images"
+    # Non-finite values (NaN, inf) are ignored.
+    if np.issubdtype(im.dtype, np.floating):
+        max_val = np.nanmax(np.where(np.isfinite(im), im, np.nan))
+        if not np.isfinite(max_val) or max_val < 5:
+            msg = "Float images need to be scaled to a larger value range before computing the histogram"
             raise NotImplementedError(msg)
+        max_val = int(np.ceil(max_val))
     else:
         max_val = np.iinfo(im.dtype).max
     x = np.arange(max_val + 1)
     e = np.arange(-0.5, max_val + 1.5)
     assert len(im.shape) in [2, 3]
     im_bw = np.amax(im[..., :3], -1) if len(im.shape) == 3 else im
+    im_bw = im_bw[np.isfinite(im_bw)] if np.issubdtype(im_bw.dtype, np.floating) else im_bw
     n = np.histogram(im_bw, e)[0]
     if zero_extents:
         n[0] = 0

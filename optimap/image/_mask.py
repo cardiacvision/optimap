@@ -75,23 +75,36 @@ def detect_background_threshold(image):
         Background threshold.
     """
     # im2hist doesn't handle all image types well. Convert to some reasonable type and value range if needed.
+    image = np.asarray(image)
+    input_dtype = image.dtype
     scale = 1
-    if image.dtype in [np.uint8, np.uint16]:
+    offset = 0
+    if input_dtype in [np.uint8, np.uint16]:
         pass
-    elif image.dtype in [np.float32, np.float64]:
-        max_val = np.nanmax(image)
-        if max_val <= 2:
-            scale = 4095 / max_val
-            image = image * scale
     else:
-        image = image.astype(np.float32)
-        max_val = np.nanmax(image)
-        scale = 65535 / max_val
-        image = image * scale
+        image = image.astype(np.float32 if input_dtype != np.float64 else np.float64)
+        finite = np.isfinite(image)
+        if not np.any(finite):
+            msg = "Unable to detect background threshold, image contains no finite values"
+            raise ValueError(msg)
+        min_val = np.min(image[finite])
+        max_val = np.max(image[finite])
+        if min_val < 0:
+            # shift to non-negative values, im2hist bins start at 0
+            offset = -min_val
+            max_val = max_val - min_val
+        if max_val == 0:
+            return min_val
+        if np.issubdtype(input_dtype, np.floating):
+            if max_val < 5:
+                scale = 4095 / max_val
+        else:
+            scale = 65535 / max_val
+        image = (image + offset) * scale
 
     n, x = im2hist(image, zero_extents=True)
-    threshold = GHT(n, x)[0] / scale
-    if scale != 1 and np.issubdtype(image.dtype, np.integer):
+    threshold = GHT(n, x)[0] / scale - offset
+    if scale != 1 and np.issubdtype(input_dtype, np.integer):
         threshold = int(threshold)
     return threshold
 
@@ -185,7 +198,7 @@ def show_mask(mask, image=None, title="", alpha=0.3, color="red", cmap="gray", a
     title : str, optional
         Title of the image, by default ""
     alpha : float, optional
-        Alpha value of the mask, by default 0.5
+        Alpha value of the mask, by default 0.3
     color : str, optional
         Color of the True values of the mask, by default 'red'
     cmap : str, optional
@@ -201,7 +214,7 @@ def show_mask(mask, image=None, title="", alpha=0.3, color="red", cmap="gray", a
     if mask.ndim != 2:
         msg = f"Mask must be an image, got shape {mask.shape}"
         raise ValueError(msg)
-    if image is not None and image.ndim != 2 and image.shape[-1] != 3:
+    if image is not None and image.ndim != 2 and image.shape[-1] not in (3, 4):
         msg = f"Image must be an image, got shape {image.shape}"
         raise ValueError(msg)
     mask = mask.astype(bool)
@@ -256,7 +269,8 @@ def disc_mask(shape, center, radius):
     shape : tuple
         Shape of the mask.
     center : tuple
-        Center of the circle in (x, y) format. TODO: check if this is correct, or if it should be (y, x)?
+        Center of the circle in array index order ``(row, col)``, i.e. ``mask[center[0], center[1]]`` is the
+        center pixel.
     radius : float
         Radius of the circle.
 
