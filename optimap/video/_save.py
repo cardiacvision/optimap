@@ -80,7 +80,7 @@ def save_tiff_folder(directory, video, filepattern="frame_{:03d}"):
     filepattern : str
         File pattern of the images, by default ``'frame_{:03d}'``
     """
-    save_image_sequence(directory, video, filepattern=filepattern, suffix=".tiff")
+    save_image_sequence(directory, video, filepattern=filepattern, format=".tiff")
 
 
 def save_tiff(filename, video, photometric="minisblack", **kwargs):
@@ -99,12 +99,12 @@ def save_tiff(filename, video, photometric="minisblack", **kwargs):
     """
     if isinstance(video, (str, os.PathLike)):
         filename, video = video, filename
-        warnings.warn("The order of arguments for optimap.save_video() has changed. "
-                      "Please use save_video(filename, video) instead of save_video(video, filename).",
+        warnings.warn("The order of arguments for optimap.video.save_tiff() has changed. "
+                      "Please use save_tiff(filename, video) instead of save_tiff(video, filename).",
                       DeprecationWarning)
 
     filename = Path(filename)
-    if filename.suffix.lower() not in [".tif, .tiff"]:
+    if filename.suffix.lower() not in [".tif", ".tiff"]:
         filename = filename.with_suffix(".tiff")
     print(f"saving video to tiff stack {filename}")
     tifffile.imwrite(filename, video, photometric=photometric, **kwargs)
@@ -122,7 +122,7 @@ def save_matlab(array, filename, fieldname="video", appendmat=True):
     fieldname : str, optional
         Name of the field to save the array to, by default ``'video'``
     appendmat : bool, optional
-        Whether to append to an existing file, by default ``True``
+        Whether to append the ``.mat`` extension to the filename if it is missing, by default ``True``
     """
     savemat(filename, {fieldname: array}, appendmat=appendmat)
 

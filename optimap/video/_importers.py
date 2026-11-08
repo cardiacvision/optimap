@@ -15,10 +15,9 @@ class MultiRecorderImporter:
     _header_size = 1024
     _skip_per_frame = 0
     _endian = "<"
-    _meta = {}
-
 
     def __init__(self, filepath, is_8bit=False):
+        self._meta = {}
         self.filepath = Path(filepath)
         if not self.filepath.exists():
             msg = f"File {self.filepath} not found"
@@ -38,6 +37,9 @@ class MultiRecorderImporter:
             msg = "Recorded video file contains no frames."
             raise ValueError(msg)
 
+        if start_frame < 0 or start_frame >= self._Nt:
+            msg = f"start_frame {start_frame} out of range, file contains {self._Nt} frames"
+            raise ValueError(msg)
         if frames is not None:
             nframes = frames
             if nframes > self._Nt - start_frame:
@@ -171,7 +173,6 @@ class MiCAM05_Importer:
     _Nx, _Ny, _Nt = 0, 0, 0
     _dtype = np.uint16
     _gsd_header_size = 970
-    _meta = {}
 
     def __init__(self, filepath):
         filepath = Path(filepath)
@@ -243,9 +244,9 @@ class MiCAM_ULTIMA_Importer:
     _rskp = 0  # right skip
     _blk = 0  # frames per block
     _dtype = np.uint16
-    _meta = {}
 
     def __init__(self, filepath):
+        self._meta = {}
         filepath = Path(filepath)
         self.rsh = filepath.with_suffix(".rsh")
         self.rsm = filepath.with_suffix(".rsm")
@@ -315,17 +316,16 @@ class MiCAM_ULTIMA_Importer:
         background = np.fromfile(self.rsm, dtype="<u2")
         background = background.reshape((self._Nx, self._Ny))[np.newaxis, :, self._lskp:self._rskp]
 
-        imgs = None
+        if not self.rsd_list:
+            msg = f"No .rsd data files listed in '{self.rsh}'"
+            raise ValueError(msg)
+        imgs = []
         for file in self.rsd_list:
             img = np.fromfile(file, dtype="<i2")
             img = img.reshape(self._blk, self._Nx, self._Ny)[..., self._lskp:self._rskp]
             img = background + img
-            img = img.astype(np.uint16)
-            if imgs is None:
-                imgs = img
-            else:
-                imgs = np.concatenate([imgs, img])
-        return imgs[start_frame:end_frame:step]
+            imgs.append(img.astype(np.uint16))
+        return np.concatenate(imgs)[start_frame:end_frame:step]
 
     def get_metadata(self):
         """Returns the metadata dictionary."""

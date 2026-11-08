@@ -114,14 +114,24 @@ def load_MATLAB(filename, fieldname=None, start_frame=0, end_frame=None, step=1)
         warnings.filterwarnings("ignore", category=scipy.io.matlab.MatReadWarning)
         try:
             data = scipy.io.loadmat(filename, variable_names=variable_names)
-        except NotImplementedError as e:
+        except NotImplementedError:
             data = pymatreader.read_mat(filename, variable_names=variable_names)
 
+    def time_axis_first(video):
+        if video.ndim == 3 and video.shape[-1] > video.shape[0] and video.shape[-1] > video.shape[1]:
+            # Assume the last dimension is the time dimension
+            video = np.moveaxis(video, -1, 0)
+        return video
+
     if fieldname is not None:
-        video = data[fieldname]
-        if not isinstance(video, np.ndarray) and video.ndim in [2, 3]:
-            msg = f"Field '{fieldname}' in file '{filename}' is not a numpy array"
+        if fieldname not in data:
+            msg = f"Field '{fieldname}' not found in file '{filename}'"
             raise ValueError(msg)
+        video = data[fieldname]
+        if not isinstance(video, np.ndarray) or video.ndim not in [2, 3]:
+            msg = f"Field '{fieldname}' in file '{filename}' is not a 2D or 3D numpy array"
+            raise ValueError(msg)
+        return time_axis_first(video)[start_frame:end_frame:step]
 
     fields = [key for key in data.keys() if not key.startswith("__")]
     npyfields = [key for key in fields if isinstance(data[key], np.ndarray)]
@@ -131,20 +141,14 @@ def load_MATLAB(filename, fieldname=None, start_frame=0, end_frame=None, step=1)
         msg = f"No video files found in file '{filename}'. Fields: {fields}"
         raise ValueError(msg)
     elif len(npyfields) == 1:
-        video = data[npyfields[0]]
-        if video.ndim == 3 and video.shape[-1] > video.shape[0] and video.shape[-1] > video.shape[1]:
-            # Assume the last dimension is the channel dimension
-            video = np.moveaxis(video, -1, 0)
+        video = time_axis_first(data[npyfields[0]])
     else:
         if "cmosData" in fields and "bgimage" in fields:
             # Rhythm data format from Efimov lab
             video = -np.moveaxis(data["cmosData"], -1, 0)
         else:
             warnings.warn(f"Multiple fields found in file '{filename}': {fields}. Loading field '{npyfields[0]}'", UserWarning)
-            video = data[npyfields[0]]
-            if video.ndim == 3 and video.shape[-1] > video.shape[0] and video.shape[-1] > video.shape[1]:
-                # Assume the last dimension is the channel dimension
-                video = np.moveaxis(video, -1, 0)
+            video = time_axis_first(data[npyfields[0]])
 
     return video[start_frame:end_frame:step]
 
@@ -165,7 +169,7 @@ def load_MATLAB_metadata(filename):
         warnings.filterwarnings("ignore", category=scipy.io.matlab.MatReadWarning)
         try:
             data = scipy.io.loadmat(filename, squeeze_me=True)
-        except NotImplementedError as e:
+        except NotImplementedError:
             data = pymatreader.read_mat(filename)
     fields = [key for key in data.keys() if not key.startswith("__")]
     fields = [key for key in fields if not isinstance(data[key], np.ndarray)]
