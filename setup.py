@@ -44,8 +44,7 @@ recommended_requirements = [
 
 # Update requirements-core.txt if needed
 core_reqs_fn = Path(__file__).parent / "requirements-core.txt"
-core_reqs_fn.write_text("\n".join(core_requirements))
-if (core_reqs_fn.read_text().strip().splitlines() != core_requirements):
+if not core_reqs_fn.exists() or core_reqs_fn.read_text().strip().splitlines() != core_requirements:
     core_reqs_fn.write_text("\n".join(core_requirements))
 
 setup(

@@ -5,7 +5,7 @@ from scipy.signal import hilbert
 
 from .. import _cpp
 from ..utils import _print
-from ..video import play
+from ..video import show_video
 
 
 def compute_phase(video, offset=-0.5):
@@ -104,4 +104,4 @@ def phasefilter_fillsmooth(phase: np.ndarray, wx: int, wy: int, wt: int, thresho
 
 def play_phase(video, skip_frame = 1, title="phase"):
     """Play a phase video using matplotlib."""
-    return play(video, skip_frame, title, vmin=-np.pi, vmax=np.pi, cmap="hsv")
+    return show_video(video, skip_frame=skip_frame, title=title, vmin=-np.pi, vmax=np.pi, cmap="hsv")

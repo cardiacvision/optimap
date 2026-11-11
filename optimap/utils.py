@@ -238,9 +238,10 @@ def download_example_data(name, known_hash=None, directory="./optimap_example_da
     str
         Path to the file.
     """
+    logger = pooch.get_logger()
+    previous_level = logger.level
     if silent:
-        silent = pooch.get_logger().level
-        pooch.get_logger().setLevel("WARNING")
+        logger.setLevel("WARNING")
 
     if name.startswith(("http://", "https://", "ftp://", "doi:")):
         url = name
@@ -260,17 +261,17 @@ def download_example_data(name, known_hash=None, directory="./optimap_example_da
             warnings.warn(f"WARNING: Example file '{name}' is not known. Attempting to download it anyway.", UserWarning)
 
     is_zip = Path(name).suffix == ".zip"
-    path = pooch.retrieve(
-        url=url,
-        known_hash=known_hash,
-        fname=name,
-        path=directory,
-        processor=pooch.Unzip(extract_dir=Path(name).stem) if is_zip else None,
-        progressbar=not silent,
-    )
-
-    if silent:
-        pooch.get_logger().setLevel(silent)
+    try:
+        path = pooch.retrieve(
+            url=url,
+            known_hash=known_hash,
+            fname=name,
+            path=directory,
+            processor=pooch.Unzip(extract_dir=Path(name).stem) if is_zip else None,
+            progressbar=not silent,
+        )
+    finally:
+        logger.setLevel(previous_level)
 
     if is_zip:
         path = Path(path[0]).parent

@@ -65,7 +65,6 @@ __all__ = [
     # submodules
     "motion",
     "phase",
-    "plot",
     "utils",
     "video",
     "image",

@@ -13,7 +13,9 @@ def detect_phase_singularities(phase: np.ndarray, separate_by_charge=False):
     """Detect phase singularities in a phase map video using :cite:p:`Iyer2001` method.
     Unlike :cite:p:`Iyer2001`, the phase integral used here is only over four pixels.
 
-    TODO: verify if positions are (x, y) or (y, x)
+    Positions are returned in array index order ``(row, col)`` and are located at the center between four pixels,
+    e.g. ``(10.5, 20.5)``. Use ``[(x, y) for (y, x) in positions]`` to convert them to ``(x, y)`` coordinates for
+    plotting with matplotlib.
 
     Parameters
     ----------
@@ -46,10 +48,7 @@ def detect_phase_singularities(phase: np.ndarray, separate_by_charge=False):
         dy = _normalize(phi[:, 1:] - phi[:, :-1])
 
         # Use an integral around one node (i.e. through 4 pixels)
-        summed = dx[:, 1:]
-        summed += -dy[1:, :]
-        summed += -dx[:, :-1]
-        summed += dy[:-1, :]
+        summed = dx[:, 1:] - dy[1:, :] - dx[:, :-1] + dy[:-1, :]
 
         # Find phase singularities
         abs_summed = abs(summed)

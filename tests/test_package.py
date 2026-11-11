@@ -9,3 +9,9 @@ def test_verbose():
     assert om.is_verbose() is True
     om.set_verbose(False)
     assert om.is_verbose() is False
+
+
+def test_star_import():
+    namespace = {}
+    exec("from optimap import *", namespace)
+    assert "load_video" in namespace
