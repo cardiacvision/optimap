@@ -235,7 +235,7 @@ def download_example_data(name, known_hash=None, directory="./optimap_example_da
         remote_path = urllib.parse.quote(f"optimap-{name}", safe="")
         # The CMS server only allows files with a certain extensions to be uploaded.
         # We use .webm as dummy extension to upload the files, and rename them after download.
-        url = f"https://cardiacvision.ucsf.edu/sites/g/files/tkssra6821/f/{remote_path}_.webm"
+        url = f"https://cardiacvision.ucsf.edu/sites/g/files/tkssra16431/files/{remote_path}_.webm"
         known_hash = FILE_HASHES.get(name, None) if known_hash is None else known_hash
         if known_hash is None:
             warnings.warn(f"WARNING: Example file '{name}' is not known. Attempting to download it anyway.", UserWarning)
