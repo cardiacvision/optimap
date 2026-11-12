@@ -21,7 +21,9 @@ if add_openmp_flags_if_available(cpp_module):
 core_requirements = [
     "matplotlib",
     "mpl-pan-zoom",
-    "numpy<2.3.0",  # sckit-video is incompatible with numpy 2.3.0, TODO: replace scikit-video
+    # Keep the scikit-video compatibility cap where these NumPy wheels exist.
+    "numpy<2.3.0; python_version < '3.14'",
+    "numpy<3; python_version >= '3.14'",
     "packaging",
     "Pillow>=10.0.1",  # not a strict requirement, but it makes importing 16-bit PNGs more consistent
     "pooch",
@@ -64,17 +66,18 @@ setup(
         "Operating System :: MacOS",
         "Operating System :: POSIX :: Linux",
         "Operating System :: Microsoft :: Windows",
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3.13",
+        "Programming Language :: Python :: 3.14",
+        "Programming Language :: Python :: 3.15",
         "Topic :: Scientific/Engineering :: Image Processing",
         "Topic :: Scientific/Engineering :: Physics",
         "Topic :: Scientific/Engineering :: Medical Science Apps."
     ],
-    python_requires=">=3.8",
+    python_requires=">=3.9",
     packages=find_packages(),
     package_data={"optimap": ["assets/*.png"]},
     install_requires=core_requirements + recommended_requirements,

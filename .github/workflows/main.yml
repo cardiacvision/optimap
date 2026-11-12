@@ -27,11 +27,10 @@ jobs:
         with:
           enable-cache: false
 
-      # cibuildwheel 4 drops Python 3.8; keep the latest compatible 3.x release.
       - name: Build wheels
-        uses: pypa/cibuildwheel@v3.4.1
+        uses: pypa/cibuildwheel@v4.3.5
         env:
-          CIBW_BUILD: "cp38-manylinux_x86_64 cp310-macosx* cp311-win_amd64 cp313-manylinux_x86_64" #  Speed up CI by only building a subset of wheels
+          CIBW_BUILD: "cp39-manylinux_x86_64 cp310-macosx* cp311-win_amd64 cp315-manylinux_x86_64" #  Speed up CI by only building a subset of wheels
           CIBW_BUILD_FRONTEND: "build[uv]"
 
       - name: Upload artifact

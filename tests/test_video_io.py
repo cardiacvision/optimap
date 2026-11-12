@@ -141,7 +141,7 @@ def test_ffmpeg_defaults():
 @pytest.mark.skipif(skvideo._HAS_FFMPEG == 0, reason="ffmpeg not installed")
 def test_export_video(tmpdir):
     video = np.random.random((10, 4, 6)).astype(np.float32)
-    filename = tmpdir / "test.mp4"
+    filename = Path(tmpdir / "test.mp4")
     om.export_video(filename, video, vmin=0, vmax=1)
     assert Path(filename).exists()
     assert Path(filename).is_file()
@@ -201,7 +201,7 @@ def test_interactive_player_save(tmpdir):
 @pytest.mark.skipif(skvideo._HAS_FFMPEG == 0, reason="ffmpeg not installed")
 def test_mp4_import(tmpdir):
     video = np.random.random((100, 4, 6)).astype(np.float32)
-    filename = tmpdir / "test.mp4"
+    filename = Path(tmpdir / "test.mp4")
     om.export_video(filename, video, vmin=0, vmax=1, fps=10)
 
     video2 = om.load_video(filename, as_grey=True)

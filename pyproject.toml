@@ -3,10 +3,9 @@ requires = [
     "setuptools>=42",
     "wheel",
     "setuptools_scm>=6.2",
-    "pybind11>=2.12,<3",
+    "pybind11>=3.1,<4",
     "extension-helpers",
-    "oldest-supported-numpy; python_version<='3.8'",
-    "numpy>=2.0,<3; python_version>'3.8'",
+    "numpy>=2.0,<3",
 ]
 
 build-backend = "setuptools.build_meta"
@@ -16,18 +15,28 @@ write_to = "optimap/_version.py"
 fallback_version = "0.1.0"
 
 [tool.cibuildwheel]
-# Match the Python versions advertised in setup.py; newer versions need dependency updates.
-build = "cp3{8,9,10,11,12,13}-*"
+# Build standard CPython wheels for all supported Python versions.
+build = "cp3{9,10,11,12,13,14,15}-*"
 archs = ["auto64"]  # 64-bit only
-skip = "pp* *musllinux*"  # disable PyPy, musl-based wheels
+skip = "*musllinux*"  # disable musl-based wheels; PyPy is not enabled
 # The PyPI scikit-video release still uses removed NumPy aliases. Keep this
 # workaround in wheel tests until the video backend is replaced.
 test-requires = [
     "pytest",
-    "numpy<1.24; python_version < '3.10'",
-    "scikit-video @ https://github.com/scikit-video/scikit-video/archive/refs/tags/v1.3.0.tar.gz ; python_version >= '3.10'",
+    "https://github.com/scikit-video/scikit-video/archive/refs/tags/v1.3.0.tar.gz",
 ]
 test-command = "pytest {project}/tests"
+test-environment = { MPLBACKEND = "Agg" }
+
+[[tool.cibuildwheel.overrides]]
+select = "cp39-*"
+test-requires = ["pytest", "numpy<1.24"]
+
+# PyPI does not yet provide CPython 3.15 wheels for these dependencies.
+# Install only these two nightly wheels before resolving the wheel's other deps.
+[[tool.cibuildwheel.overrides]]
+select = "cp315-*"
+before-test = 'uv pip install --no-deps --only-binary=:all: --index-url=https://pypi.anaconda.org/scientific-python-nightly-wheels/simple "h5py>=3.17.0.dev0" "scikit-image>=0.27.0rc2.dev0"'
 
 [tool.ruff]
 line-length = 120

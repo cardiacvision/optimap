@@ -1,6 +1,7 @@
 matplotlib
 mpl-pan-zoom
-numpy
+numpy<2.3.0; python_version < '3.14'
+numpy<3; python_version >= '3.14'
 packaging
 Pillow>=10.0.1
 pooch

@@ -3,7 +3,7 @@
 
 `optimap` is a [Python](https://en.wikipedia.org/wiki/Python_programming_language) library for optical mapping analysis that supports Windows, Mac OSX, and Linux. This guide will help you get started with installation and basic usage.
 
-`optimap` requires Python 3.8 or later. To install Python we recommend installing the [Anaconda distribution](https://www.anaconda.com/download), which includes Python and many useful packages for scientific computing, or by installing [Python directly](https://code.visualstudio.com/docs/python/python-tutorial#_install-a-python-interpreter).
+`optimap` requires Python 3.9 or later. To install Python we recommend installing the [Anaconda distribution](https://www.anaconda.com/download), which includes Python and many useful packages for scientific computing, or by installing [Python directly](https://code.visualstudio.com/docs/python/python-tutorial#_install-a-python-interpreter).
 
 ```{tip}
 optimap relies heavily on [NumPy](https://numpy.org) and [Matplotlib](https://matplotlib.org). 
