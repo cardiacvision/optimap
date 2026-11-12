@@ -57,7 +57,7 @@ convert_notebooks()
 # -- Project information -----------------------------------------------------
 
 project = 'optimap'
-copyright = '2025, Jan Lebert, Jan Christoph'
+copyright = '2026, Jan Lebert, Jan Christoph'
 author = 'Jan Lebert, Jan Christoph'
 
 
