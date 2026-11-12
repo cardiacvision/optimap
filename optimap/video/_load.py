@@ -6,12 +6,11 @@ import numpy as np
 import pymatreader
 import scipy.io
 import skimage.io as sio
-import skvideo.io
 from tifffile import imread as tifffile_imread
 from tifffile import memmap as tifffile_memmap
 
 from ..utils import _print
-from ._export import _fix_ffmpeg_location
+from ._ffmpeg import read_video
 from ._importers import MiCAM05_Importer, MiCAM_ULTIMA_Importer, MultiRecorderImporter
 
 
@@ -198,23 +197,10 @@ def load_SciMedia_MiCAMULTIMA_metadata(filename):
     return importer.get_metadata()
 
 def load_encoded_video(filename, start_frame=0, end_frame=None, step=1, as_grey=True):
-    _fix_ffmpeg_location()
-    if end_frame is None:
-        num_frames = 0
-    else:
-        num_frames = end_frame
-    try:
-        data = skvideo.io.vread(
-            str(filename),
-            num_frames=num_frames,
-            as_grey=as_grey
-        )
-    except AttributeError as e:
-        raise AttributeError("Error during video load. Make sure you've updated scikit-video using 'pip install --upgrade --no-deps --force-reinstall git+https://github.com/scikit-video/scikit-video.git'") from e
-    data = data[start_frame:end_frame:step]
-    if as_grey:
-        data = data[..., 0]
-    return data
+    # only limit decoding for positive indices, the slice below handles everything else
+    num_frames = end_frame if end_frame is not None and end_frame > 0 else None
+    data = read_video(filename, num_frames=num_frames, as_grey=as_grey)
+    return data[start_frame:end_frame:step]
 
 def load_video(path, start_frame=0, frames=None, step=1, use_mmap=False, **kwargs):
     """Loads a video from a file or folder, automatically detecting the file type.

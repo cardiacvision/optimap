@@ -1,11 +1,13 @@
 import mimetypes
+import shutil
 from pathlib import Path
 
 import numpy as np
 import pytest
-import skvideo
 
 import optimap as om
+
+requires_ffmpeg = pytest.mark.skipif(shutil.which("ffmpeg") is None, reason="ffmpeg not installed")
 
 
 def test_npy_video(tmpdir):
@@ -138,7 +140,7 @@ def test_ffmpeg_defaults():
     om.video.set_default_ffmpeg_encoder("libx264")
 
 
-@pytest.mark.skipif(skvideo._HAS_FFMPEG == 0, reason="ffmpeg not installed")
+@requires_ffmpeg
 def test_export_video(tmpdir):
     video = np.random.random((10, 4, 6)).astype(np.float32)
     filename = Path(tmpdir / "test.mp4")
@@ -148,7 +150,7 @@ def test_export_video(tmpdir):
     assert mimetypes.guess_type(filename)[0] == "video/mp4"
 
 
-@pytest.mark.skipif(skvideo._HAS_FFMPEG == 0, reason="ffmpeg not installed")
+@requires_ffmpeg
 def test_export_video_uneven(tmpdir):
     om.video.set_default_ffmpeg_encoder("libx264")
     video = np.random.random((10, 15, 21)).astype(np.float32)
@@ -158,7 +160,7 @@ def test_export_video_uneven(tmpdir):
     assert mimetypes.guess_type(filename)[0] == "video/mp4"
 
 
-@pytest.mark.skipif(skvideo._HAS_FFMPEG == 0, reason="ffmpeg not installed")
+@requires_ffmpeg
 def test_export_video_overlay(tmpdir):
     video = np.random.random((10, 4, 4)).astype(np.float32)
     overlay = np.random.random((10, 4, 4)).astype(np.float32)
@@ -172,7 +174,7 @@ def test_export_video_overlay(tmpdir):
     assert mimetypes.guess_type(filename)[0] == "video/mp4"
 
 
-@pytest.mark.skipif(skvideo._HAS_FFMPEG == 0, reason="ffmpeg not installed")
+@requires_ffmpeg
 def test_export_videos(tmpdir):
     videos = [np.random.random((10, 4, 4)).astype(np.float32) for _ in range(4)]
     filename = Path(tmpdir / "test.mp4")
@@ -182,7 +184,7 @@ def test_export_videos(tmpdir):
     assert mimetypes.guess_type(filename)[0] == "video/mp4"
 
 
-@pytest.mark.skipif(skvideo._HAS_FFMPEG == 0, reason="ffmpeg not installed")
+@requires_ffmpeg
 def test_interactive_player_save(tmpdir):
     import matplotlib.pyplot as plt
     video = np.zeros((100, 32, 32), dtype=np.float32)
@@ -198,7 +200,7 @@ def test_interactive_player_save(tmpdir):
     assert fn.is_file() and fn.stat().st_size > 0
 
 
-@pytest.mark.skipif(skvideo._HAS_FFMPEG == 0, reason="ffmpeg not installed")
+@requires_ffmpeg
 def test_mp4_import(tmpdir):
     video = np.random.random((100, 4, 6)).astype(np.float32)
     filename = Path(tmpdir / "test.mp4")

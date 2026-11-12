@@ -21,15 +21,12 @@ if add_openmp_flags_if_available(cpp_module):
 core_requirements = [
     "matplotlib",
     "mpl-pan-zoom",
-    # Keep the scikit-video compatibility cap where these NumPy wheels exist.
-    "numpy<2.3.0; python_version < '3.14'",
-    "numpy<3; python_version >= '3.14'",
+    "numpy",
     "packaging",
     "Pillow>=10.0.1",  # not a strict requirement, but it makes importing 16-bit PNGs more consistent
     "pooch",
     "pymatreader",
     "scikit-image",
-    "scikit-video",
     "scipy",
     "seasonal",
     "static_ffmpeg",

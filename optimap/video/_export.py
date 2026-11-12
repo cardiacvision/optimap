@@ -5,15 +5,13 @@ from typing import Iterable, List, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
-import skvideo
-import skvideo.io
-import static_ffmpeg.run
 from matplotlib.colors import Normalize, to_rgba
 from scipy.special import comb
 from tqdm import tqdm
 
 from ..image import collage as collage_images
 from ..utils import deprecated
+from ._ffmpeg import FFmpegWriter
 
 FFMEG_DEFAULTS = {
     "libx264": {
@@ -33,21 +31,6 @@ FFMEG_DEFAULTS = {
     },
 }
 DEFAULT_FFMPEG_ENCODER = "libx264"
-
-
-def _fix_ffmpeg_location():
-    """Make skvideo use static ffmpeg if system ffmpeg not found."""
-    if not skvideo._HAS_FFMPEG:
-        # ffmpeg not found, download static binary for it
-        ffmpeg, _  = static_ffmpeg.run.get_or_fetch_platform_executables_else_raise()
-        skvideo.setFFmpegPath(str(Path(ffmpeg).parent))
-        assert skvideo._HAS_FFMPEG
-
-        # fix global variables
-        skvideo.io.ffmpeg._HAS_FFMPEG = skvideo._HAS_FFMPEG
-        skvideo.io.ffmpeg._FFMPEG_PATH = skvideo._FFMPEG_PATH
-        skvideo.io.ffmpeg._FFMPEG_SUPPORTED_DECODERS = skvideo._FFMPEG_SUPPORTED_DECODERS
-        skvideo.io.ffmpeg._FFMPEG_SUPPORTED_ENCODERS = skvideo._FFMPEG_SUPPORTED_ENCODERS
 
 
 def _ffmpeg_defaults(encoder: str = "libx264"):
@@ -97,15 +80,6 @@ def set_ffmpeg_defaults(encoder: str, params: dict):
         The ffmpeg parameters to use. E.g. {'-c:v': 'libx264', '-crf': '15', '-preset': 'slower'}.
     """
     FFMEG_DEFAULTS[encoder] = params
-
-
-class FFmpegWriter(skvideo.io.FFmpegWriter):
-    """Wrapper around `skvideo.io.FFmpegWriter` which downloads static binaries if ffmpeg is not installed."""
-
-    def __init__(self, *args, **kwargs):
-        _fix_ffmpeg_location()
-
-        super().__init__(*args, **kwargs)
 
 
 def export_video(
@@ -179,27 +153,25 @@ def export_video(
     if skip_frames != 1:
         video = video[::skip_frames]
 
-    writer = FFmpegWriter(
+    with FFmpegWriter(
         filename,
         inputdict={"-r": f"{fps}"},
         outputdict=_ffmpeg_defaults(ffmpeg_encoder),
-    )
+    ) as writer:
+        for frame in tqdm(video, desc="exporting video", disable=not progress_bar):
+            if frame.ndim == 2:
+                frame = cmap(norm(frame))
 
-    for frame in tqdm(video, desc="exporting video", disable=not progress_bar):
-        if frame.ndim == 2:
-            frame = cmap(norm(frame))
+            if frame.dtype != np.uint8:
+                frame = (frame * 255).astype(np.uint8)
 
-        if frame.dtype != np.uint8:
-            frame = (frame * 255).astype(np.uint8)
+            # pad odd-sized frames to even dimension, otherwise ffmpeg will error
+            if frame.shape[0] % 2 == 1:
+                frame = np.pad(frame, ((0, 1), (0, 0), (0, 0)), mode=pad_mode)
+            if frame.shape[1] % 2 == 1:
+                frame = np.pad(frame, ((0, 0), (0, 1), (0, 0)), mode=pad_mode)
 
-        # pad odd-sized frames to even dimension, otherwise ffmpeg will error
-        if frame.shape[0] % 2 == 1:
-            frame = np.pad(frame, ((0, 1), (0, 0), (0, 0)), mode=pad_mode)
-        if frame.shape[1] % 2 == 1:
-            frame = np.pad(frame, ((0, 0), (0, 1), (0, 0)), mode=pad_mode)
-
-        writer.writeFrame(frame)
-    writer.close()
+            writer.writeFrame(frame)
     print(f"video exported to {filename}")
 
 
@@ -319,17 +291,16 @@ def export_videos(
         padding_color = np.array(to_rgba(padding_color))
         padding_color = (padding_color * 255).astype(np.uint8)
 
-    writer = FFmpegWriter(
+    with FFmpegWriter(
         filename,
         inputdict={"-r": f"{fps}"},
         outputdict=_ffmpeg_defaults(ffmpeg_encoder),
-    )
-    for t in tqdm(range(0, Nt, skip_frames), desc="exporting video", disable=not progress_bar):
-        frames = [transform_frame(video[t], cmap, vmin, vmax)
-                  for video, cmap, vmin, vmax in zip(videos, cmaps, vmins, vmaxs)]
-        frame = collage_images(frames, padding=padding, padding_value=padding_color, ncols=ncols)
-        writer.writeFrame(frame)
-    writer.close()
+    ) as writer:
+        for t in tqdm(range(0, Nt, skip_frames), desc="exporting video", disable=not progress_bar):
+            frames = [transform_frame(video[t], cmap, vmin, vmax)
+                      for video, cmap, vmin, vmax in zip(videos, cmaps, vmins, vmaxs)]
+            frame = collage_images(frames, padding=padding, padding_value=padding_color, ncols=ncols)
+            writer.writeFrame(frame)
     print(f"Video exported to {filename}")
 
 
@@ -551,33 +522,31 @@ def export_video_with_overlay(
     if ffmpeg_encoder is None:
         ffmpeg_encoder = DEFAULT_FFMPEG_ENCODER
 
-    writer = FFmpegWriter(
+    with FFmpegWriter(
         filename,
         inputdict={"-r": f"{fps}"},
         outputdict=_ffmpeg_defaults(ffmpeg_encoder),
-    )
-
-    for frame in tqdm(
-        iter_alpha_blend_videos(
-            base=base,
-            overlay=overlay,
-            alpha=alpha,
-            skip_frames=skip_frames,
-            cmap_base=cmap_base,
-            cmap_overlay=cmap_overlay,
-            vmin_base=vmin_base,
-            vmax_base=vmax_base,
-            vmin_overlay=vmin_overlay,
-            vmax_overlay=vmax_overlay,
-        ),
-        desc="exporting video",
-        total=len(base[::skip_frames]),
-        disable=not progress_bar
-    ):
-        if frame.dtype != np.uint8:
-            frame = (frame * 255).astype(np.uint8)
-        writer.writeFrame(frame)
-    writer.close()
+    ) as writer:
+        for frame in tqdm(
+            iter_alpha_blend_videos(
+                base=base,
+                overlay=overlay,
+                alpha=alpha,
+                skip_frames=skip_frames,
+                cmap_base=cmap_base,
+                cmap_overlay=cmap_overlay,
+                vmin_base=vmin_base,
+                vmax_base=vmax_base,
+                vmin_overlay=vmin_overlay,
+                vmax_overlay=vmax_overlay,
+            ),
+            desc="exporting video",
+            total=len(base[::skip_frames]),
+            disable=not progress_bar
+        ):
+            if frame.dtype != np.uint8:
+                frame = (frame * 255).astype(np.uint8)
+            writer.writeFrame(frame)
     print(f"video exported to {filename}")
 
 

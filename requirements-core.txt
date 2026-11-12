@@ -1,13 +1,11 @@
 matplotlib
 mpl-pan-zoom
-numpy<2.3.0; python_version < '3.14'
-numpy<3; python_version >= '3.14'
+numpy
 packaging
 Pillow>=10.0.1
 pooch
 pymatreader
 scikit-image
-scikit-video
 scipy
 seasonal
 static_ffmpeg
