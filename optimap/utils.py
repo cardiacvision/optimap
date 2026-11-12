@@ -155,6 +155,23 @@ def deprecated(reason):
     return decorator
 
 
+def _keep_qt_event_loop_running(ipython):
+    """Keep processing Qt events in the Jupyter kernel after an interactive window was closed.
+
+    Otherwise the (hidden) Qt window is never cleaned up and the kernel process stops responding to
+    GUI events, which on macOS results in a spinning beachball / frozen window.
+    """
+    if not INTERACTIVE_BACKEND.lower().startswith("qt"):
+        return
+    kernel = getattr(ipython, "kernel", None)
+    if kernel is None or getattr(kernel, "eventloop", None) is not None:
+        return
+    try:
+        ipython.enable_gui("qt")
+    except Exception as e:
+        _print(f"Failed to enable Qt event loop integration: {e}")
+
+
 def interactive_backend(func):
     """Function decorator to change backend temporarily in Ipython session.
 
@@ -184,13 +201,15 @@ def interactive_backend(func):
                   "Automatic backend switching has been disabled.")
             disable_interactive_backend_switching()
 
-        result = func(*args, **kwargs)
-
-        # Switch back
-        if ipython is not None and "inline" in current_backend:
-            _print("Switching matplotlib backend to inline")
-            plt.switch_backend(current_backend)
-            ipython.run_line_magic("matplotlib", "inline")
+        try:
+            result = func(*args, **kwargs)
+        finally:
+            # Switch back
+            if ipython is not None and "inline" in current_backend:
+                _print("Switching matplotlib backend to inline")
+                plt.switch_backend(current_backend)
+                ipython.run_line_magic("matplotlib", "inline")
+                _keep_qt_event_loop_running(ipython)
         return result
 
     return wrapper
