@@ -25,37 +25,39 @@ jobs:
               run: sleep 60
 
             - name: Set up Python
-              uses: actions/setup-python@v5
+              uses: actions/setup-python@v7.1.0
               with:
-                  python-version: 3.13
+                  python-version: "3.13"
 
             - name: Install uv
-              uses: astral-sh/setup-uv@v5
+              uses: astral-sh/setup-uv@v10.3.3
               with:
                 enable-cache: false
 
             - name: Install ffmpeg
-              uses: FedericoCarboni/setup-ffmpeg@v3
+              run: |
+                sudo apt-get update
+                sudo apt-get install --yes ffmpeg
                   
             - name: Install ipywidgets
               run: uv pip install --system ipywidgets
 
             - name: Checkout code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v7.0.1
               with:
                   fetch-depth: 0
 
             - name: Install optimap
               run: uv pip install --system .[docs]
 
-            - name: Cache excample file downloads
-              uses: actions/cache@v4
+            - name: Cache example file downloads
+              uses: actions/cache@v6.1.0
               with:
                 path: docs/tutorials/optimap_example_data
                 key: optimap-example-files
 
             - name: Cache jupyter notebook cache
-              uses: actions/cache@v4
+              uses: actions/cache@v6.1.0
               with:
                 path: .jupyter_cache
                 key: docs-jupyter-cache
@@ -76,7 +78,7 @@ jobs:
               run: mv docs/_build .github/pages/$DOCS_VERSION
 
             - name: Upload artifact
-              uses: actions/upload-pages-artifact@v3
+              uses: actions/upload-pages-artifact@v5.0.0
               with:
                 path: .github/pages
 
@@ -89,4 +91,4 @@ jobs:
         steps:
             - name: Deploy to GitHub Pages
               id: deployment
-              uses: actions/deploy-pages@v4
+              uses: actions/deploy-pages@v5.0.1

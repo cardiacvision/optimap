@@ -11,29 +11,32 @@ jobs:
     name: Build wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        # macos-13 is an intel runner, macos-14 is apple silicon
-        os: [ubuntu-latest, windows-latest, macos-13, macos-14]
+        # Use separate native runners to build and test both macOS architectures.
+        os: [ubuntu-latest, windows-latest, macos-15-intel, macos-15]
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
         with:
-          fetch-depth: 100
+          fetch-depth: 0
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v10.3.3
         with:
           enable-cache: false
 
+      # cibuildwheel 4 drops Python 3.8; keep the latest compatible 3.x release.
       - name: Build wheels
-        uses: pypa/cibuildwheel@v3.0
+        uses: pypa/cibuildwheel@v3.4.1
         env:
           CIBW_BUILD: "cp38-manylinux_x86_64 cp310-macosx* cp311-win_amd64 cp313-manylinux_x86_64" #  Speed up CI by only building a subset of wheels
           CIBW_BUILD_FRONTEND: "build[uv]"
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.2
         with:
           path: ./wheelhouse/*.whl
           name: wheels-${{ matrix.os }}-${{ strategy.job-index }}
+          if-no-files-found: error

@@ -16,9 +16,17 @@ write_to = "optimap/_version.py"
 fallback_version = "0.1.0"
 
 [tool.cibuildwheel]
+# Match the Python versions advertised in setup.py; newer versions need dependency updates.
+build = "cp3{8,9,10,11,12,13}-*"
 archs = ["auto64"]  # 64-bit only
 skip = "pp* *musllinux*"  # disable PyPy, musl-based wheels
-test-requires = ["pytest"]
+# The PyPI scikit-video release still uses removed NumPy aliases. Keep this
+# workaround in wheel tests until the video backend is replaced.
+test-requires = [
+    "pytest",
+    "numpy<1.24; python_version < '3.10'",
+    "scikit-video @ https://github.com/scikit-video/scikit-video/archive/refs/tags/v1.3.0.tar.gz ; python_version >= '3.10'",
+]
 test-command = "pytest {project}/tests"
 
 [tool.ruff]
