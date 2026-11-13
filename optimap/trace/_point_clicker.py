@@ -47,7 +47,8 @@ class PointClicker:
         if event.inaxes is self.ax:
             ix, iy = event.xdata, event.ydata
             if self._integer:
-                ix, iy = int(round(ix)), int(round(iy))
+                # avoid Python's round-half-to-even
+                ix, iy = int(np.floor(ix + 0.5)), int(np.floor(iy + 0.5))
             if event.button is MouseButton.LEFT:
                 if (ix, iy) not in self._positions:
                     if self._single_point:

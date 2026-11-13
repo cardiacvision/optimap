@@ -1,3 +1,4 @@
+import numbers
 import warnings
 
 import matplotlib.pyplot as plt
@@ -6,6 +7,11 @@ import numpy as np
 from ..image import disc_mask
 
 TRACE_TYPE = "rect"
+
+
+def _is_single_coord(coords):
+    """Return True if `coords` is a single (x, y) coordinate instead of a list of coordinates."""
+    return len(coords) == 2 and all(isinstance(c, numbers.Integral) for c in coords)
 
 
 def set_default_trace_window(window):
@@ -76,7 +82,7 @@ def extract_traces(video, coords, size=5, show=False, window=None, **kwargs):
     single_coord = False
     if len(coords) == 0:
         return
-    elif len(coords) == 2 and isinstance(coords[0], int):
+    elif _is_single_coord(coords):
         coords = [coords]
         single_coord = True
 
@@ -85,7 +91,7 @@ def extract_traces(video, coords, size=5, show=False, window=None, **kwargs):
 
     for (y, x) in coords:
         if x < 0 or x >= video.shape[1] or y < 0 or y >= video.shape[2]:
-            msg = f"Coordinates ({x}, {y}) out of bounds"
+            msg = f"Coordinates ({y}, {x}) out of bounds for video of shape {video.shape}"
             raise ValueError(msg)
 
     def rect_mask(video, x, y):
@@ -254,8 +260,11 @@ def show_traces(traces, x=None, fps=None, colors=None, labels=None, ax=None, **k
         traces = np.expand_dims(traces, 1)
 
     show_legend = labels is not None
-    labels = labels or [None] * traces.shape[1]
-    colors = colors or [None] * traces.shape[1]
+    labels = [None] * traces.shape[1] if labels is None else list(labels)
+    if colors is None or isinstance(colors, str):
+        colors = [colors] * traces.shape[1]
+    else:
+        colors = list(colors)
 
     if x is not None and fps is not None:
         msg = "`x` and `fps` parameters cannot be passed at the same time"
@@ -287,7 +296,7 @@ def show_trace(*args, **kwargs):
     return show_traces(*args, **kwargs)
 
 
-def collage_positions(positions, image_shape, ncols=6):
+def collage_positions(positions, image_shape, ncols=6, padding=0):
     """Arranges a list of position arrays into a grid layout, corresponding to an image collage.
 
     This function takes a list of position arrays (e.g., coordinates of detected features) and
@@ -295,33 +304,34 @@ def collage_positions(positions, image_shape, ncols=6):
     and :func:`optimap.video.collage`).  It handles the offsets required to position the points correctly within
     the combined grid.  All images are assumed to have the same shape `image_shape`.
 
+    Positions are expected in ``(column, row)`` order, as returned by :func:`optimap.select_positions` and used by
+    :func:`show_positions` and :func:`extract_traces`.
+
     Parameters
     ----------
     positions : list of arrays
-        List of list of positions to collage
+        List of list of positions to collage, one array of shape (N, 2) per image
     image_shape : tuple
-        Shape of the images where the positions are from
+        Shape of the images where the positions are from (rows, columns)
     ncols : int, optional
         Number of columns, by default 6
+    padding : int, optional
+        Spacing between images in pixels, by default 0. Should match the ``padding`` used for the image collage.
 
     Returns
     -------
-    list of tuples
+    list of arrays
         Collaged positions
     """
+    rows, cols = image_shape[:2]
     collage = []
-    n = 0
-    offset_x = 0
-    offset_y = 0
-    while n < len(positions):
-        stop = min(ncols, len(positions))
-        for i in range(n, n + stop):
-            points = positions[i]
-            points[:, 1] += offset_x
-            points[:, 0] += offset_y
-            offset_x += image_shape[0]
-            collage.extend(points)
-        n += stop
-        offset_x = 0
-        offset_y += image_shape[1]
+    for i, points in enumerate(positions):
+        points = np.array(points, dtype=float if np.asarray(points).dtype.kind == "f" else int, copy=True)
+        if points.size == 0:
+            continue
+        points = points.reshape(-1, 2)
+        grid_row, grid_col = divmod(i, ncols)
+        points[:, 0] += grid_col * (cols + padding)
+        points[:, 1] += grid_row * (rows + padding)
+        collage.extend(points)
     return collage

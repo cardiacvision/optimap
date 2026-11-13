@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from ..utils import interactive_backend
-from ._core import extract_traces
+from ._core import _is_single_coord, extract_traces
 from ._point_clicker import PointClicker
 
 
@@ -55,7 +55,7 @@ def _compare_traces_plot(videos, coords, size=5,
     if len(coords) == 0:
         print("No coordinates given")
         return
-    elif len(coords) == 2 and isinstance(coords[0], int):
+    elif _is_single_coord(coords):
         coords = [coords]
 
     all_traces = []
@@ -133,7 +133,8 @@ def compare_traces(videos, coords=None, labels=None, colors=None, size=5, ref_fr
         If not passed, a new figure is created.
         Only used if coords is not None.
     """
-    colors = colors or [None] * len(videos)
+    videos = list(videos)  # don't modify the input list
+    colors = [None] * len(videos) if colors is None else list(colors)
     if x is not None and fps is not None:
         msg = "`x` and `fps` parameters cannot be passed at the same time"
         raise ValueError(msg)
@@ -142,7 +143,10 @@ def compare_traces(videos, coords=None, labels=None, colors=None, size=5, ref_fr
     for i in range(len(videos)):
         if videos[i].shape[0] != max_len:
             warnings.warn("Videos have different lengths. Padding with NaNs.")
-            videos[i] = np.pad(videos[i], ((0, max_len - videos[i].shape[0]), (0, 0), (0, 0)), mode="constant", constant_values=np.nan)
+            video = videos[i]
+            if not np.issubdtype(video.dtype, np.floating):
+                video = video.astype(np.float32)
+            videos[i] = np.pad(video, ((0, max_len - video.shape[0]), (0, 0), (0, 0)), mode="constant", constant_values=np.nan)
 
     if fps is not None:
         x = np.arange(max_len) / fps
