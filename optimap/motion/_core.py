@@ -45,20 +45,20 @@ def smooth_displacements(
     wx: int,
     wy: int,
     wt: int,
-    mask: np.ndarray = np.array([[0.0]], dtype=np.float32),
+    mask: np.ndarray = None,
 ):
-    """Smooths optical flow fields in space and time using a Gaussian kernel.
+    """Smooths optical flow fields in space and time using a mean filter over a disc in space and a window in time.
 
     Parameters
     ----------
     displacements : np.ndarray
         {t, x, y, 2} optical flow array
     wx : int
-        kernel size in x-direction
+        kernel half-width in x-direction
     wy : int
-        kernel size in y-direction
+        kernel half-width in y-direction
     wt : int
-        kernel size in t-direction
+        kernel half-width in t-direction
     mask : np.ndarray, optional
         {x, y} mask to apply to flow field before smoothing, by default none
 
@@ -68,7 +68,9 @@ def smooth_displacements(
         {t, x, y, 2} smoothed optical flow array
     """
     displacements = np.ascontiguousarray(displacements)
-    mask = np.ascontiguousarray(mask) if mask is not None else None
+    if mask is None:
+        return _cpp.flowfilter_smooth_spatiotemporal(displacements, wx, wy, wt)
+    mask = np.ascontiguousarray(mask, dtype=np.float32)
     return _cpp.flowfilter_smooth_spatiotemporal(displacements, wx, wy, wt, mask)
 
 
@@ -82,11 +84,11 @@ def estimate_displacements(video, ref_frame=0, show_progress=True, method=None):
         Video to estimate optical flow for (list of images or 3D array {t, x, y})
     ref_frame : int, optional
         Index of reference frame to estimate optical flow to, by default 0
-    show_progress : bool, optional
-        Show progress bar, by default None
     method : str, optional
         Optical flow method, See :py:class:`FlowEstimator` class for list of available methods. By default ``None`` which means ``'farneback'`` if a CUDA GPU is
         available and ``'farneback_cpu'`` otherwise.
+    show_progress : bool, optional
+        Show progress bar, by default True
 
     Returns
     -------
@@ -109,11 +111,11 @@ def estimate_reverse_displacements(video, ref_frame=0, show_progress=True, metho
         Video to estimate optical flow for (list of images or 3D array {t, x, y})
     ref_frame : int, optional
         Index of reference frame to estimate optical flow to, by default 0
-    show_progress : bool, optional
-        Show progress bar, by default None
     method : str, optional
         Optical flow method, See :py:class:`FlowEstimator` class for list of available methods. By default ``None`` which means ``'farneback'`` if a CUDA GPU is
         available and ``'farneback_cpu'`` otherwise.
+    show_progress : bool, optional
+        Show progress bar, by default True
 
     Returns
     -------
@@ -134,6 +136,7 @@ def motion_compensate(
     presmooth_spatial=0.8,
     postsmooth=None,
     method=None,
+    show_progress=True,
 ):
     """Typical motion compensation pipeline for a optical mapping video.
 
@@ -160,13 +163,13 @@ def motion_compensate(
         Standard deviation of smoothing Gaussian kernel in space, by default 0.8
         See :py:func:`optimap.video.smooth_spatiotemporal` for details.
     postsmooth : tuple, optional
-        Tuple of (wx, wy, wt) for Gaussian smoothing kernel in space and time, by default None.
+        Tuple of (wx, wy, wt) for smoothing the optical flow in space and time, by default None.
         If None, no smoothing is applied. See :py:func:`smooth_displacements` for details.
-    show_progress : bool, optional
-        Show progress bar, by default None
     method : str, optional
         Optical flow method, See :py:class:`FlowEstimator` class for list of available methods. By default ``None`` which means ``'farneback'`` if a CUDA GPU is
         available and ``'farneback_cpu'`` otherwise.
+    show_progress : bool, optional
+        Show progress bar, by default True
 
     Returns
     -------
@@ -180,7 +183,7 @@ def motion_compensate(
         video = smooth_spatiotemporal(video, presmooth_temporal, presmooth_spatial)
     if contrast_kernel != 0:
         video = contrast_enhancement(video, contrast_kernel)
-    flows = estimate_displacements(video, ref_frame, method=method)
+    flows = estimate_displacements(video, ref_frame, method=method, show_progress=show_progress)
     if postsmooth is not None:
         flows = smooth_displacements(flows, *postsmooth)
     return warp_video(original_video, flows)
@@ -195,6 +198,7 @@ def reverse_motion_compensate(
     presmooth_spatial=0.8,
     postsmooth=None,
     method=None,
+    show_progress=True,
 ):
     """Typical motion tracking pipeline to transform a video back into motion.
     E.g. we first motion compensated a recording and extracted the fluorescence wave dynamics.
@@ -222,25 +226,25 @@ def reverse_motion_compensate(
         Standard deviation of smoothing Gaussian kernel in space, by default 0.8
         See :py:func:`optimap.video.smooth_spatiotemporal` for details.
     postsmooth : tuple, optional
-        Tuple of (wx, wy, wt) for Gaussian smoothing kernel in space and time, by default None.
+        Tuple of (wx, wy, wt) for smoothing the optical flow in space and time, by default None.
         If None, no smoothing is applied. See :py:func:`smooth_displacements` for details.
-    show_progress : bool, optional
-        Show progress bar, by default None
     method : str, optional
         Optical flow method, See :py:class:`FlowEstimator` class for list of available methods. By default ``None`` which means ``'farneback'`` if a CUDA GPU is
         available and ``'farneback_cpu'`` otherwise.
+    show_progress : bool, optional
+        Show progress bar, by default True
 
     Returns
     -------
     np.ndarray
-
+        Warped ``video_warping`` of shape {t, x, y}
     """
     if presmooth_temporal > 0 or presmooth_spatial > 0:
         video_tracking = video_tracking.astype(np.float32)
         video_tracking = smooth_spatiotemporal(video_tracking, presmooth_temporal, presmooth_spatial)
     if contrast_kernel != 0:
         video_tracking = contrast_enhancement(video_tracking, contrast_kernel)
-    flows = estimate_reverse_displacements(video_tracking, ref_frame, method=method)
+    flows = estimate_reverse_displacements(video_tracking, ref_frame, method=method, show_progress=show_progress)
     if postsmooth is not None:
         flows = smooth_displacements(flows, *postsmooth)
     return warp_video(video_warping, flows)

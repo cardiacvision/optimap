@@ -166,7 +166,7 @@ Array5f spatiotemporalFlowFilter3D(
             for (int kti = -wt; kti <= wt; kti++) {
               for (int kxi = -wx; kxi <= wx; kxi++) {
                 for (int kyi = -wy; kyi <= wy; kyi++) {
-                  for (int kzi = -wy; kzi <= wz; kzi++) {
+                  for (int kzi = -wz; kzi <= wz; kzi++) {
 
                     float d_circle =
                         std::sqrt(static_cast<float>(kxi * kxi + kyi * kyi + kzi * kzi));

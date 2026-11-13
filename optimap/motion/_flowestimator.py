@@ -127,11 +127,12 @@ class FlowEstimator:
             imgs = np.array(imgs)
         if imgs.dtype == np.uint8:
             return imgs
-        elif imgs.min() < 0 or imgs.max() > 1:
+        elif np.nanmin(imgs) < 0 or np.nanmax(imgs) > 1:
             warnings.warn(
-                "WARNING: image values are not in range [0,1], which may lead to unexpected motion tracking"
+                "WARNING: image values are not in range [0,1], which may lead to unexpected motion tracking. "
+                "Values outside of [0,1] are clipped."
             )
-        return (imgs * 255).astype(np.uint8)
+        return (np.clip(imgs, 0, 1) * 255).astype(np.uint8)
 
     @staticmethod
     def _check_and_convert(imgs: Union[np.ndarray, list], method: str):

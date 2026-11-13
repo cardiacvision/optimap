@@ -154,9 +154,6 @@ def warp_video_cpu(
     borderValue=0.0,
     show_progress=False,
 ):
-    imgs = imgs.copy()
-    flows = flows.copy()
-
     h, w = flows.shape[1:3]
     X = np.arange(w)
     Y = np.arange(h)[:, np.newaxis]
@@ -166,14 +163,10 @@ def warp_video_cpu(
     for frame, flow in tqdm(
         zip(imgs, flows), total=len(imgs), desc="Warping", disable=not show_progress
     ):
-        flow = np.copy(flow)
-        flow[:, :, 0] += X
-        flow[:, :, 1] += Y
-
-        flow0 = flow[:, :, 0].copy()
-        flow1 = flow[:, :, 1].copy()
+        flow0 = (flow[:, :, 0] + X).astype(np.float32)
+        flow1 = (flow[:, :, 1] + Y).astype(np.float32)
         warped = cv2.remap(
-            frame,
+            np.ascontiguousarray(frame),
             flow0,
             flow1,
             interpolation,
