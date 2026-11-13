@@ -18,7 +18,7 @@ pip install -e .
 optimap can be updated by running `git pull` in the `optimap` directory. Changes to the Python code will be reflected immediately.
 
 ```{note}
-optimap contains C++ extensions that require a C++ compiler to be installed. On Windows, we recommend installing [Visual Studio](https://visualstudio.microsoft.com/vs/) with the C++ development tools.
+optimap contains C++ extensions that require a compiler with C++20 support. On Windows, we recommend installing [Visual Studio](https://visualstudio.microsoft.com/vs/) with the C++ development tools.
 ```
 
 ```{warning}

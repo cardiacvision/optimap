@@ -11,7 +11,7 @@ from pybind11.setup_helpers import Pybind11Extension, build_ext
 PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 # universal stable ABI is not supported for PyBind11 :-(
-cpp_module = Pybind11Extension("optimap._cpp", ["optimap/_cpp/lib.cpp"], cxx_std=17)
+cpp_module = Pybind11Extension("optimap._cpp", ["optimap/_cpp/lib.cpp"], cxx_std=20)
 cpp_module.include_dirs.append(os.path.join(PROJECT_ROOT, "optimap/_cpp/include"))
 cpp_module.include_dirs.append(numpy.get_include())
 

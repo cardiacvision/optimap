@@ -11,6 +11,7 @@
 #define XTL_SEQUENCE_HPP
 
 #include <array>
+#include <algorithm>
 #include <cstddef>
 #include <type_traits>
 #include <utility>
@@ -32,14 +33,6 @@ namespace xtl
 
     template <class R, class A>
     decltype(auto) forward_sequence(A&& s);
-
-    // equivalent to std::size(c) in c++17
-    template <class C>
-    constexpr auto sequence_size(const C& c) -> decltype(c.size());
-
-    // equivalent to std::size(a) in c++17
-    template <class T, std::size_t N>
-    constexpr std::size_t sequence_size(const T (&a)[N]);
 
     /********************************
      * make_sequence implementation *
@@ -128,13 +121,14 @@ namespace xtl
             static inline R forward(const T& r)
             {
                 R ret;
-                std::copy(std::begin(r), std::end(r), std::begin(ret));
+                // We can not use std::copy here because it gives an array-bounds warning with GCC
+                std::copy_n(std::begin(r), std::size(ret), std::begin(ret));
                 return ret;
             }
         };
 
         template <class R, class A>
-        struct sequence_forwarder_impl<R, A, void_t<decltype(std::declval<R>().resize(
+        struct sequence_forwarder_impl<R, A, std::void_t<decltype(std::declval<R>().resize(
               std::declval<std::size_t>()))>>
         {
             template <class T>
@@ -181,24 +175,6 @@ namespace xtl
         static_assert(!std::is_lvalue_reference<A>::value,
                       "Can not forward an rvalue as an lvalue.");
         return forwarder::forward(std::move(s));
-    }
-
-    /********************************
-     * sequence_size implementation *
-     ********************************/
-
-    // equivalent to std::size(c) in c++17
-    template <class C>
-    constexpr auto sequence_size(const C& c) -> decltype(c.size())
-    {
-        return c.size();
-    }
-
-    // equivalent to std::size(a) in c++17
-    template <class T, std::size_t N>
-    constexpr std::size_t sequence_size(const T (&)[N])
-    {
-        return N;
     }
 
     /****************************

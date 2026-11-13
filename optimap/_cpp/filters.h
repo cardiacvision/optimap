@@ -4,8 +4,8 @@
 #include <omp.h>
 #endif
 
-#include "xtensor/xtensor.hpp"
-#include "xtensor/xview.hpp"
+#include "xtensor/containers/xtensor.hpp"
+#include "xtensor/views/xview.hpp"
 #include "vec2.h"
 
 #include "definitions.h"
