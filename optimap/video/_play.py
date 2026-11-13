@@ -29,7 +29,7 @@ def playn(videos, skip_frame=1, titles=None, cmaps="gray", vmins=None, vmaxs=Non
     return show_videos(videos, skip_frame=skip_frame, titles=titles, cmaps=cmaps, vmins=vmins, vmaxs=vmaxs, interval=interval, **kwargs)
 
 
-@deprecated("use optimap.show_videos instead")
+@deprecated("use optimap.show_video_overlay instead")
 def play_with_overlay(*args, **kwargs):
     """Deprecated alias for :py:func:`optimap.video.show_video_overlay`."""
     return show_video_overlay(*args, **kwargs)
@@ -197,11 +197,11 @@ def show_videos(videos, skip_frame=1, titles=None, cmaps="gray", vmins=None, vma
 
     if vmins is None:
         vmins = [np.nanmin(videos[i][0]) for i in range(n)]
-    elif isinstance(vmins, (int, float)):
+    elif np.isscalar(vmins):
         vmins = [vmins for _ in range(n)]
     if vmaxs is None:
         vmaxs = [np.nanmax(videos[i][0]) for i in range(n)]
-    elif isinstance(vmaxs, (int, float)):
+    elif np.isscalar(vmaxs):
         vmaxs = [vmaxs for _ in range(n)]
 
     fig, axs = plt.subplots(1, n, **kwargs)
