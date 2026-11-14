@@ -138,7 +138,7 @@ class MultiRecorderImporter:
                 struct.unpack(f"{self._endian}i", f.read(4))[0] / 100000
             )
 
-            dtime = f.read(24).decode("utf-8").rstrip("\x00")
+            dtime = f.read(24).split(b"\x00")[0].decode("utf-8")
 
             # Only works with US local:
             cl = locale.getlocale(locale.LC_TIME)
@@ -150,9 +150,13 @@ class MultiRecorderImporter:
                     dtime2 = ":".join(dtime.split(":")[:-1])
                     self._meta["starttime"] = datetime.strptime(dtime2, "%Y-%m-%d %H:%M:%S")
                 except ValueError:
-                    self._meta["starttime"] = datetime.fromtimestamp(0)
-                    msg = f"Could not determine video starttime from string: '{dtime}' in file '{self.filepath}'"
-                    warnings.warn(msg, UserWarning)
+                    try:
+                        # Some OmniRecorder files only store the date
+                        self._meta["starttime"] = datetime.strptime(dtime, "%Y-%m-%d")
+                    except ValueError:
+                        self._meta["starttime"] = datetime.fromtimestamp(0)
+                        msg = f"Could not determine video starttime from string: '{dtime}' in file '{self.filepath}'"
+                        warnings.warn(msg, UserWarning)
             locale.setlocale(locale.LC_TIME, cl)
 
             self._meta["comment"] = f.read(971).rstrip(b"\x00").decode("utf-8")
